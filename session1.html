@@ -498,15 +498,19 @@
         <tr><td>Default</td><td>（表示なし）<code class="inline">? for shortcuts</code></td><td>標準動作。各ツールの初回使用時に承認を求める</td></tr>
         <tr><td>Accept Edits</td><td><code class="inline">▶▶ accept edits on</code></td><td>ファイル編集と一般的なファイル操作（<code class="inline">mkdir</code> <code class="inline">mv</code> <code class="inline">cp</code> 等）は自動承認、それ以外のコマンドは承認</td></tr>
         <tr><td>Plan Mode</td><td><code class="inline">⏸ plan mode on</code></td><td><strong>読み取り専用</strong> ツールだけで計画を立てる（編集しない）</td></tr>
-        <tr><td>Auto</td><td><code class="inline">▶▶ auto mode on</code></td><td>安全チェック付きでツール呼び出しを <strong>自動承認</strong>（研究プレビュー）</td></tr>
+        <tr><td>Auto</td><td><code class="inline">▶▶ auto mode on</code></td><td>バックグラウンドの安全チェック付きでツール呼び出しを <strong>自動承認</strong>（危険な操作のみ確認に切り替わる）</td></tr>
       </table>
       <p><code class="inline">Shift + Tab</code> で上記4つを循環切り替え。</p>
+      <div class="callout tip">
+        <strong>💡 2026年8月14日から Auto mode がデフォルトに</strong>
+        Pro / Max / Team プランでは、2026年8月14日以降に開始する <strong>新しいセッションのデフォルト承認モードが Auto になる</strong>。バックグラウンドの安全チェックが働き、危険な操作（<code class="inline">curl | bash</code> の実行、本番環境へのデプロイ、機密情報の送信など）は従来どおり確認を求める。都度確認する Default をデフォルトに戻したい場合は、<code class="inline">~/.claude/settings.json</code> に <code class="inline">{ "permissions": { "defaultMode": "default" } }</code> を設定する。自分で defaultMode を設定済みの場合や、組織が管理する設定がある場合は、そのまま維持される。
+      </div>
       <h4>使い分けの目安</h4>
       <ul>
         <li>新規領域・本番リポジトリ → <strong>Default</strong></li>
         <li>テストが厚い既存領域 → <strong>Accept Edits</strong></li>
         <li>下調べ・計画したいだけ → <strong>Plan Mode</strong>（<strong>ファイル編集しない</strong>）</li>
-        <li>隔離されたサンドボックスで全部任せたい → <strong>Auto</strong></li>
+        <li>確認の往復を減らして長めのタスクを任せたい → <strong>Auto</strong>（2026年8月14日以降のデフォルト）</li>
       </ul>
       <div class="callout tip">
         <strong>💡 Plan Mode</strong>
