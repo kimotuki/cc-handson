@@ -349,23 +349,23 @@
 
     <section id="sec5">
       <h2 class="step"><span class="step-num">5</span>実践：チーム開発フロー（12分）</h2>
-      <p>題材：第1回で構築した <strong>Laravel × Prism チャットアプリ</strong>（<code class="inline">laravel-chat-app</code>）。clone して自分のリポジトリとして作成し、<strong>Issue 起点の開発フロー</strong> を一周する。</p>
+      <p>題材：第1回・第2回で使った <strong>agmsg</strong>（CLI AI エージェント間のメッセージングツール。Bash + SQLite 製）。clone して自分のリポジトリとして作成し、<strong>Issue 起点の開発フロー</strong> を一周する。</p>
       <figure class="shot">
         <img src="Image/issue-flow.svg" alt="Issue 起点の開発フロー — Issue 作成 → ブランチ作成 → fix 実装 → レビュー・PR → マージ">
         <figcaption>Issue 起点の開発フロー — マージ時の「Closes #N」で Issue が自動クローズし、フローが一周する</figcaption>
       </figure>
 
       <h3>5-1. 題材を clone して自分のリポジトリを作成（2分）</h3>
-      <p>題材の <code class="inline">laravel-chat-app</code> を clone し、gh コマンドで <strong>自分のアカウントのリポジトリ</strong> として作成する。以降の Issue・PR はすべて自分のリポジトリ上で回す。</p>
-<pre><span class="prompt">$</span> git clone https://github.com/kimotuki/laravel-chat-app
-<span class="prompt">$</span> cd laravel-chat-app
+      <p>題材の <code class="inline">agmsg</code> を clone し、gh コマンドで <strong>自分のアカウントのリポジトリ</strong> として作成する。以降の Issue・PR はすべて自分のリポジトリ上で回す。</p>
+<pre><span class="prompt">$</span> git clone https://github.com/kimotuki/agmsg
+<span class="prompt">$</span> cd agmsg
 <span class="prompt">$</span> claude</pre>
       <div class="prompt-box">
         <span class="label">あなたの指示</span>
         <p>gh でこのコードを自分のアカウントの新しい public リポジトリとして作成して push して</p>
       </div>
       <ul>
-        <li><code class="inline">gh repo create laravel-chat-app --public --source=. --push</code> 相当が実行され、origin が自分のリポジトリに切り替わる</li>
+        <li><code class="inline">gh repo create agmsg --public --source=. --push</code> 相当が実行され、origin が自分のリポジトリに切り替わる</li>
       </ul>
 
       <h3>5-2. gh で Issue を作成（2分）</h3>
@@ -410,16 +410,16 @@
       <h3>5-5. 他の人の PR をレビューしてマージ（3分）</h3>
       <p>受講者同士でペアを組み、互いの PR をレビューする。まず相手から次の2つの情報を教えてもらう:</p>
       <ul>
-        <li><strong>リポジトリの URL</strong> — <code class="inline">https://github.com/&lt;相手のアカウント&gt;/laravel-chat-app</code></li>
+        <li><strong>リポジトリの URL</strong> — <code class="inline">https://github.com/&lt;相手のアカウント&gt;/agmsg</code></li>
         <li><strong>レビューしてほしい PR の番号</strong> — 相手が 5-4 で作成した PR の番号</li>
       </ul>
       <div class="callout tip">
         <strong>ヒント</strong>
-        PR の URL（<code class="inline">https://github.com/&lt;相手のアカウント&gt;/laravel-chat-app/pull/&lt;N&gt;</code>）を1つ教えてもらえば、リポジトリの URL と PR 番号の両方が分かる。
+        PR の URL（<code class="inline">https://github.com/&lt;相手のアカウント&gt;/agmsg/pull/&lt;N&gt;</code>）を1つ教えてもらえば、リポジトリの URL と PR 番号の両方が分かる。
       </div>
       <p>教えてもらったリポジトリを clone し、<code class="inline">claude --from-pr &lt;N&gt;</code> で起動すると、<strong>PR の文脈（差分・説明文・レビューコメント）を読み込んだ状態</strong> でセッションを開始できる。</p>
-<pre><span class="prompt">$</span> git clone https://github.com/&lt;相手のアカウント&gt;/laravel-chat-app
-<span class="prompt">$</span> cd laravel-chat-app
+<pre><span class="prompt">$</span> git clone https://github.com/&lt;相手のアカウント&gt;/agmsg
+<span class="prompt">$</span> cd agmsg
 <span class="prompt">$</span> claude --from-pr &lt;N&gt;   <span class="comment"># N は教えてもらった PR 番号</span></pre>
 <pre>/review</pre>
       <p>指摘があれば、レビュー結果を相手の PR にコメントとして残す:</p>
@@ -492,12 +492,12 @@
       <p><code class="inline">--worktree</code> オプションは、この手順を自動化してくれるもの。</p>
 
       <h3>A-2. 演習：長めのタスクを worktree に任せる</h3>
-      <p>5章で作成した自分の <code class="inline">laravel-chat-app</code> を題材に、長めのタスクを別 worktree の Claude Code に任せてみる。<strong>新しいターミナルを開いて</strong>、worktree セッションを起動する:</p>
-<pre><span class="prompt">$</span> cd laravel-chat-app
+      <p>5章で作成した自分の <code class="inline">agmsg</code> を題材に、長めのタスクを別 worktree の Claude Code に任せてみる。<strong>新しいターミナルを開いて</strong>、worktree セッションを起動する:</p>
+<pre><span class="prompt">$</span> cd agmsg
 <span class="prompt">$</span> claude --worktree feature-export</pre>
       <div class="prompt-box">
         <span class="label">あなたの指示（worktree セッション側）</span>
-        <p>チャットの会話を Markdown ファイルとしてダウンロードできるエクスポート機能を追加して。Feature テストも書いて、php artisan test が通ることを確認して</p>
+        <p>メッセージ履歴を Markdown ファイルに書き出すエクスポート機能（scripts/export.sh）を追加して。bats テストも書いて、bats tests/ が通ることを確認して</p>
       </div>
       <ul>
         <li>タスクが走っている間も、<strong>元のターミナルのセッションはそのまま使える</strong> — 6章のスキル改良や別の Issue 対応を並行して進める</li>
@@ -510,15 +510,15 @@
 
     <section id="cleanup">
       <h2 class="step"><span class="step-num">＊</span>後片付け：作成したリポジトリの削除</h2>
-      <p>5章で自分のアカウントに作成した <code class="inline">laravel-chat-app</code> はハンズオン用の練習リポジトリ。演習が終わったら、以下のコマンドを手動で実行して削除しておく。<code class="inline">gh repo delete</code> には追加の権限（<code class="inline">delete_repo</code> スコープ）が必要なので、先に <code class="inline">gh auth refresh</code> で付与してから実行する:</p>
+      <p>5章で自分のアカウントに作成した <code class="inline">agmsg</code> はハンズオン用の練習リポジトリ。演習が終わったら、以下のコマンドを手動で実行して削除しておく。<code class="inline">gh repo delete</code> には追加の権限（<code class="inline">delete_repo</code> スコープ）が必要なので、先に <code class="inline">gh auth refresh</code> で付与してから実行する:</p>
 <pre><span class="prompt">$</span> gh auth refresh -h github.com -s delete_repo
-<span class="prompt">$</span> gh repo delete &lt;自分のアカウント&gt;/laravel-chat-app --yes</pre>
+<span class="prompt">$</span> gh repo delete &lt;自分のアカウント&gt;/agmsg --yes</pre>
       <div class="callout warn">
         <strong>注意</strong>
-        リポジトリの削除は取り消せない。削除対象が <code class="inline">&lt;自分のアカウント&gt;/laravel-chat-app</code> であること（clone 元の <code class="inline">kimotuki/laravel-chat-app</code> や自分の別リポジトリを指定していないこと）を必ず確認してから実行する。
+        リポジトリの削除は取り消せない。削除対象が <code class="inline">&lt;自分のアカウント&gt;/agmsg</code> であること（clone 元の <code class="inline">kimotuki/agmsg</code> や自分の別リポジトリを指定していないこと）を必ず確認してから実行する。
       </div>
       <ul>
-        <li>ローカルの clone が不要になったら、あわせて <code class="inline">cd .. &amp;&amp; rm -rf laravel-chat-app</code> で削除しておく</li>
+        <li>ローカルの clone が不要になったら、あわせて <code class="inline">cd .. &amp;&amp; rm -rf agmsg</code> で削除しておく</li>
         <li>5-5 で clone した相手のリポジトリのローカルコピーも同様に削除してよい（リポジトリ本体の削除は作成した本人が行う）</li>
       </ul>
     </section>
