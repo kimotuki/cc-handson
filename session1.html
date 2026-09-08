@@ -503,7 +503,7 @@
       <p><code class="inline">Shift + Tab</code> で上記4つを循環切り替え。</p>
       <div class="callout tip">
         <strong>💡 2026年8月14日から Auto mode がデフォルトに</strong>
-        Pro / Max / Team プランでは、2026年8月14日以降に開始する <strong>新しいセッションのデフォルト承認モードが Auto になる</strong>。バックグラウンドの安全チェックが働き、危険な操作（<code class="inline">curl | bash</code> の実行、本番環境へのデプロイ、機密情報の送信など）は従来どおり確認を求める。都度確認する Default をデフォルトに戻したい場合は、<code class="inline">~/.claude/settings.json</code> に <code class="inline">{ "permissions": { "defaultMode": "default" } }</code> を設定する。自分で defaultMode を設定済みの場合や、組織が管理する設定がある場合は、そのまま維持される。
+        Pro / Max / Team プランでは、2026年8月14日以降に開始する <strong>新しいセッションのデフォルト承認モードが Auto になる</strong>。バックグラウンドの安全チェックが働き、危険な操作（<code class="inline">curl | bash</code> の実行、本番環境へのデプロイ、機密情報の送信など）は従来どおり確認を求める。都度確認する Manual をデフォルトに戻したい場合は、<code class="inline">~/.claude/settings.json</code> に <code class="inline">{ "permissions": { "defaultMode": "manual" } }</code> を設定する。自分で defaultMode を設定済みの場合や、組織が管理する設定がある場合は、そのまま維持される。
       </div>
       <h4>使い分けの目安</h4>
       <ul>

@@ -349,10 +349,10 @@ Auto-compact / Thinking mode / 既定のパーミッションモードなど、C
 `Shift + Tab` で上記4つを循環切り替え。
 
 > 💡 **2026年8月14日から Auto mode がデフォルトに**
-> Pro / Max / Team プランでは、2026年8月14日以降に開始する **新しいセッションのデフォルト承認モードが Auto になる**。バックグラウンドの安全チェックが働き、危険な操作（`curl | bash` の実行、本番環境へのデプロイ、機密情報の送信など）は従来どおり確認を求める。都度確認する Default をデフォルトに戻したい場合は、`~/.claude/settings.json` に次を設定する:
+> Pro / Max / Team プランでは、2026年8月14日以降に開始する **新しいセッションのデフォルト承認モードが Auto になる**。バックグラウンドの安全チェックが働き、危険な操作（`curl | bash` の実行、本番環境へのデプロイ、機密情報の送信など）は従来どおり確認を求める。都度確認する Manual をデフォルトに戻したい場合は、`~/.claude/settings.json` に次を設定する:
 >
 > ```
-> { "permissions": { "defaultMode": "default" } }
+> { "permissions": { "defaultMode": "manual" } }
 > ```
 >
 > 自分で defaultMode を設定済みの場合や、組織が管理する設定がある場合は、そのまま維持される。
@@ -1054,6 +1054,8 @@ test-gen/
 ### 4. MCP（12分）
 
 #### 4-1. MCP とは（4分）
+
+![MCP の図解 — Claude Code と外部サービスをつなぐ共通規格](Image/mcp-diagram.svg)
 
 * **MCP（Model Context Protocol）** ＝ Claude Code に **外部サービスやツールを接続する標準規格**
 * 接続すると、その外部サービスの操作が「ツール」として Claude から使えるようになる（GitHub・Slack・Figma・DB など）
