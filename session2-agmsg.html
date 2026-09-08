@@ -175,7 +175,7 @@
       <li><a href="#sec4">4. MCP</a></li>
       <li><a href="#sec5">5. SubAgent（サブエージェント）</a></li>
       <li><a href="#sec6">6. Hooks</a></li>
-      <li><a href="#sec7">7. 実践：Laravel アプリ開発の一連フロー</a></li>
+      <li><a href="#sec7">7. 実践：アプリ開発の一連フロー</a></li>
       <li><a href="#sec8">8. まとめ</a></li>
     </ol>
   </nav>
@@ -211,7 +211,7 @@
         <tr><td>4</td><td>MCP</td><td>12分</td></tr>
         <tr><td>5</td><td>SubAgent（サブエージェント）</td><td>12分</td></tr>
         <tr><td>6</td><td>Hooks</td><td>12分</td></tr>
-        <tr><td>7</td><td>実践：Laravel アプリ開発の一連フロー</td><td>28分</td></tr>
+        <tr><td>7</td><td>実践：アプリ開発の一連フロー</td><td>28分</td></tr>
         <tr><td>8</td><td>まとめ</td><td>10分</td></tr>
       </table>
     </section>
@@ -526,8 +526,8 @@ allowed-tools: Read, Edit, Bash
 
       <h3>4-1. MCP とは（4分）</h3>
       <figure class="shot">
-        <img src="Image/mcp-diagram.svg" alt="MCP の概念図 — Claude Code が MCP という標準プロトコルを介して GitHub・Slack・Figma・DB などの MCP サーバーに接続し、各サービスの操作をツールとして使う">
-        <figcaption>MCP — 1つの標準プロトコルで様々な外部サービスに接続し、その操作を「ツール」として使えるようにする</figcaption>
+        <img src="Image/mcp-diagram.svg" alt="MCP の図解 — Claude Code と外部サービスをつなぐ共通規格">
+        <figcaption>MCP — Claude Code と外部サービス（MCP サーバー）をつなぐ共通規格</figcaption>
       </figure>
       <ul>
         <li><strong>MCP（Model Context Protocol）</strong> ＝ Claude Code に <strong>外部サービスやツールを接続する標準規格</strong></li>
@@ -610,6 +610,10 @@ allowed-tools: Read, Edit, Bash
         <span class="label">あなたの指示</span>
         <p>Figmaの「AI Chat」ファイルのExamples/AI Chatの内容をもとにHTML + Tailwind CSS で実装して（リンク貼り付け）。色やスペーシングはデザインのトークンに合わせて。</p>
       </div>
+      <figure class="shot">
+        <img src="Image/figma-code-prompt.png" alt="Claude Code に実装を依頼するプロンプト">
+        <figcaption>Claude Code に実装を依頼するプロンプト</figcaption>
+      </figure>
       <p>「（リンク貼り付け）」の部分には、Examples/AI Chat のフレームを選択した状態でコピーした <strong>node-id 付き URL</strong>（例: <code class="inline">https://www.figma.com/design/xxxx/AI-Chat?node-id=1-1402</code>）を貼る。貼り忘れても Claude が URL を求めてくるので、そこで渡せばよい:</p>
       <figure class="shot">
         <img src="Image/figma-code-url.png" alt="URL を渡すと Claude がデザインの取得を開始する">
@@ -629,10 +633,6 @@ allowed-tools: Read, Edit, Bash
       <h2 class="step"><span class="step-num">5</span>SubAgent（サブエージェント）（12分）</h2>
 
       <h3>5-1. SubAgent とは（4分）</h3>
-      <figure class="shot">
-        <img src="Image/subagent-diagram.svg" alt="SubAgent の概念図 — メインセッションからレビュー用・探索用・テスト実行用のサブエージェントへタスクを依頼し、それぞれ独立したコンテキストで並列に動いて、メインセッションにはサマリーだけを返す">
-        <figcaption>SubAgent — タスクを別の独立したコンテキストに任せ、メインセッションにはサマリーだけが返る</figcaption>
-      </figure>
       <ul>
         <li><strong>サブエージェント</strong> ＝ メイン会話とは <strong>別の独立したコンテキスト</strong> で動く AI アシスタント。専用の <strong>システムプロンプト・ツール権限・モデル</strong> を持てる</li>
         <li>大量の出力が出る作業（全文検索・全テスト実行・複数ファイルのレビュー・ログ調査など）を任せても、<strong>メイン会話にはサマリーだけ返る</strong> — コンテキストを汚さない</li>
@@ -718,10 +718,6 @@ model: sonnet
       <h2 class="step"><span class="step-num">6</span>Hooks（12分）</h2>
 
       <h3>6-1. Hooks とは（4分）</h3>
-      <figure class="shot">
-        <img src="Image/hooks-diagram.svg" alt="Hooks の概念図 — Claude のツール実行の流れに PreToolUse（直前・ブロック）、PostToolUse（直後・フォーマッタ）、Stop（応答終了時・テスト実行）のフックが差し込まれ、終了コード 2 の出力は Claude にフィードバックされる">
-        <figcaption>Hooks — ツール実行の流れに自動でコマンドが差し込まれ、終了コード 2 の出力は Claude にフィードバックされる</figcaption>
-      </figure>
       <ul>
         <li>ツール実行の <strong>前後などに自動でコマンドを差し込む</strong> 仕組み（<code class="inline">settings.json</code> に定義）</li>
         <li>CLAUDE.md の指示と違い、<strong>ハーネスが機械的に実行する</strong> — Claude が「忘れる」ことがない</li>
@@ -732,15 +728,6 @@ model: sonnet
         <tr><td><code class="inline">PostToolUse</code></td><td>ツール実行の直後</td><td>フォーマッタ・リンタの自動実行</td></tr>
         <tr><td><code class="inline">Stop</code></td><td>Claude が応答を終えたとき</td><td>テストの自動実行・完了通知</td></tr>
       </table>
-      <h4>主なユースケース</h4>
-      <ul>
-        <li><strong>危険な操作のブロック</strong>：<code class="inline">rm -rf</code>・<code class="inline">git push --force</code>・本番環境への操作などを <code class="inline">PreToolUse</code> で検知して止める</li>
-        <li><strong>依存パッケージの追加を制限</strong>：<code class="inline">npm install</code> などを検知し、人間の承認なしに依存を増やさせない（6-2 で実装する例）</li>
-        <li><strong>特定ファイルの保護</strong>：<code class="inline">.env</code> やマイグレーションなど触ってほしくないファイルへの書き込みを <code class="inline">PreToolUse</code> でブロック</li>
-        <li><strong>コード整形・静的解析の自動実行</strong>：ファイル編集後に <code class="inline">PostToolUse</code> で Prettier / ESLint / shfmt / ShellCheck などを走らせる</li>
-        <li><strong>テストの自動実行</strong>：<code class="inline">Stop</code> で応答が終わるたびにテストスイートを回し、壊れていれば Claude に差し戻す</li>
-        <li><strong>操作ログ・監査証跡の記録</strong>：<code class="inline">PreToolUse</code> / <code class="inline">PostToolUse</code> でコマンドの実行履歴をログファイルに記録する</li>
-      </ul>
       <div class="callout tip">
         <strong>💡 フィードバックの仕組み</strong>
         フックが <strong>終了コード 2</strong> で終わると、その出力が Claude にフィードバックされる。PreToolUse ならツール実行がブロックされ、PostToolUse なら <strong>Claude が出力を読んで自分で修正</strong> する — これが品質向上ループの鍵。
@@ -805,62 +792,23 @@ exit 0</pre>
     </section>
 
     <section id="sec7">
-      <h2 class="step"><span class="step-num">7</span>実践：Laravel アプリ開発の一連フロー（28分）</h2>
-      <p><strong>個人開発のフロー</strong> を最初から最後まで回す。Hello World で動作確認 → 題材アプリをクローン → 機能追加（改修） → レビュー → 修正 → テスト生成 → セキュリティレビュー → クローン元リポジトリへの PR 作成まで、すべて Claude Code との会話で進める。</p>
+      <h2 class="step"><span class="step-num">7</span>実践：アプリ開発の一連フロー（28分）</h2>
+      <p><strong>個人開発のフロー</strong> を最初から最後まで回す。題材の agmsg をクローン → 機能追加（メッセージ検索） → レビュー → 修正 → テスト生成 → セキュリティレビュー → クローン元リポジトリへの PR 作成まで、すべて Claude Code との会話で進める。</p>
 
-      <h3>7-1. 環境確認（2分）</h3>
-      <p>devcontainer に PHP / Laravel / gh が入っていることを確認する。</p>
-<pre>!php -v
-!composer -V
-!gh auth status</pre>
-      <ul>
-        <li>Claude に聞いてもよい：「この環境に PHP と Laravel が入っているか確認して」</li>
-      </ul>
-
-      <h3>7-2. Laravel の Hello World アプリの作成（2分）</h3>
-      <p>作業ディレクトリで <code class="inline">claude</code> を起動する:</p>
-<pre>$ claude</pre>
-      <div class="prompt-box">
-        <span class="label">あなたの指示</span>
-        <p>PHP と Laravel で「Hello World」を表示する Web アプリを作って。プロジェクト名は hello-laravel で。</p>
-      </div>
-      <ul>
-        <li>雛形の作成からルート定義まで Claude が実行する</li>
-        <li>起動して動作確認：</li>
-      </ul>
-<pre>!php artisan serve --host=0.0.0.0 --port=8000</pre>
-      <ul>
-        <li>ブラウザで <code class="inline">http://localhost:8000</code> → Hello World が表示されれば OK</li>
-      </ul>
-
-      <div class="callout tip">
-        <strong>💡 補足：devcontainer 内のサーバーにホスト PC からアクセスできないとき</strong>
-        <p>devcontainer 内で起動したサーバー（例: <code class="inline">http://127.0.0.1:8000</code>）にホスト PC のブラウザからアクセスできない場合は、サーバーの <strong>バインド先</strong> を確認する。</p>
-        <ul>
-          <li><strong>原因</strong>：<code class="inline">--host=127.0.0.1</code> で起動するとコンテナ内のループバックにしかバインドされず、<code class="inline">docker-compose.yml</code> に <code class="inline">ports: "8000:8000"</code> の公開設定があっても、ポートマッピング経由（コンテナのネットワーク IP 宛て）の接続を受け付けられない</li>
-          <li><strong>対処</strong>：<code class="inline">0.0.0.0</code> にバインドして起動する — <code class="inline">php artisan serve --host=0.0.0.0 --port=8000</code></li>
-          <li><strong>検証結果（例）</strong>：コンテナ内 <code class="inline">127.0.0.1:8000</code> → 200 ✅ / コンテナ IP <code class="inline">172.18.0.2:8000</code> → 200 ✅（ホストからのポートマッピングが通る経路）</li>
-        </ul>
-      </div>
-      <div class="callout warn">
-        <strong>⚠️ 手動起動時も <code class="inline">--host=0.0.0.0</code> を忘れずに</strong>
-        <code class="inline">devcontainer.json</code> に <code class="inline">"onAutoForward": "ignore"</code> があると VS Code の自動ポート転送は無効になるが、docker-compose の明示的なポート公開があれば問題ない。ただし <code class="inline">php artisan serve</code> のまま起動するとホストから見えないので注意。
-      </div>
-
-      <h3>7-3. 題材アプリ（Laravel × Prism チャットアプリ）をクローン（2分）</h3>
-      <p>Hello World で Laravel の動作を確認したら、以降の <strong>改修は題材の Laravel × Prism チャットアプリ</strong> で行う。GitHub からクローンして準備する:</p>
-<pre>$ git clone https://github.com/kimotuki/laravel-chat-app
-$ cd laravel-chat-app
+      <h3>7-1. 題材（agmsg）をクローン（2分）</h3>
+      <p>改修の題材は <strong>agmsg</strong>（第1回のソースコード解析で使った、CLI AI エージェント間のメッセージングツール）。GitHub からクローンして準備する:</p>
+<pre>$ git clone https://github.com/kimotuki/agmsg
+$ cd agmsg
 $ claude</pre>
       <ul>
-        <li>以降のステップ（機能追加・レビュー・修正）は、この <strong>クローンしたアプリを対象</strong> に進める</li>
+        <li>以降のステップ（機能追加・レビュー・修正）は、この <strong>クローンしたリポジトリを対象</strong> に進める</li>
         <li>第1回の「ソースコード解析」と同じ題材なので、構造を把握済みならスムーズに改修へ入れる</li>
       </ul>
 
-      <h3>7-4. 「会話履歴」機能を追加（6分）</h3>
+      <h3>7-2. 「メッセージ検索」機能を追加（8分）</h3>
       <div class="prompt-box">
         <span class="label">あなたの指示（Plan Mode で）</span>
-        <p>このLaravel + Prismチャットアプリに「会話履歴」機能を追加してください。</p>
+        <p>このagmsgに「メッセージ検索」機能を追加してください。scripts/search.sh として、キーワードで過去のメッセージを検索できるようにして。</p>
       </div>
       <p>実装が終わったら、どのような変更が入ったかを <code class="inline">git diff</code> で <strong>人の目で確認する</strong>:</p>
 <pre>!git status
@@ -869,7 +817,7 @@ $ claude</pre>
         <li>新規ファイルの一覧は <code class="inline">git status</code>、既存ファイルの差分は <code class="inline">git diff</code> で見る。意図しない変更が混ざっていないかを確認する</li>
       </ul>
 
-      <h3>7-5. 組み込みスキルでレビュー（4分）</h3>
+      <h3>7-3. 組み込みスキルでレビュー（4分）</h3>
       <p>3-5 で紹介した組み込みスキル <code class="inline">/code-review</code> でレビューする。</p>
 <pre>/code-review</pre>
       <ul>
@@ -877,7 +825,7 @@ $ claude</pre>
         <li>妥当な指摘があれば「指摘の1番を修正して」と依頼し、修正された差分を確認する</li>
       </ul>
 
-      <h3>7-6. レビュー内容を修正（2分）</h3>
+      <h3>7-4. レビュー内容を修正（3分）</h3>
       <div class="prompt-box">
         <span class="label">あなたの指示</span>
         <p>レビュー指摘のうち、○番と○番を直して</p>
@@ -888,15 +836,15 @@ $ claude</pre>
         <li>直した内容が新たな指摘を生んでいないか、必要なら再度 <code class="inline">/code-review</code> をかける</li>
       </ul>
 
-      <h3>7-7. 自作スキルでテストを生成してレビュー（2分）</h3>
-      <p>3-3 で作った自作スキル <code class="inline">/test-gen</code> で、追加した会話履歴機能のテストを生成して検証する。</p>
-<pre>/test-gen ChatController</pre>
+      <h3>7-5. 自作スキルでテストを生成してレビュー（3分）</h3>
+      <p>3-3 で作った自作スキル <code class="inline">/test-gen</code> で、追加した検索機能のテストを生成して検証する。</p>
+<pre>/test-gen scripts/search.sh</pre>
       <ul>
-        <li>正常系・異常系の Feature テストが <code class="inline">tests/Feature/</code> に生成され、<code class="inline">php artisan test</code> が通るまで修正される</li>
+        <li>正常系・異常系のテストが <code class="inline">tests/</code> に生成され（agmsg のテストは bats 形式）、テストが通るまで修正される</li>
         <li>レビューは組み込みスキル、テスト生成は自作 <code class="inline">/test-gen</code> のように、<strong>組み込みスキルでカバーされない定型作業は自作スキルで作っていく</strong></li>
       </ul>
 
-      <h3>7-8. 組み込みスキルでセキュリティレビュー（4分）</h3>
+      <h3>7-6. 組み込みスキルでセキュリティレビュー（4分）</h3>
       <p>組み込みスキル <code class="inline">/security-review</code> で、現在のブランチの変更にセキュリティ上の問題がないかをレビューする。</p>
 <pre>/security-review</pre>
       <ul>
@@ -905,16 +853,21 @@ $ claude</pre>
         <li>3章で <code class="inline">security-guidance</code> プラグインを入れていれば、編集のたびに <strong>自動でも</strong> 同様のチェックが走る</li>
       </ul>
 
-      <h3>7-9. リポジトリへコミット、PR 作成（4分）</h3>
-      <p>修正をコミットし、クローン元（<code class="inline">kimotuki/laravel-chat-app</code>）へ PR を作成する:</p>
-<pre>!git checkout -b feature/conversation-history-[自分の名前]
-!git add -A && git commit -m "会話履歴機能の追加 by [自分の名前]"
-<span class="comment"># クローン元 (kimotuki/laravel-chat-app) に向けた PR を作成</span>
+      <h3>7-7. リポジトリへコミット、PR 作成（4分）</h3>
+      <p>修正をコミットし、クローン元（<code class="inline">kimotuki/agmsg</code>）へ PR を作成する:</p>
+<pre>!git checkout -b feature/message-search-[自分の名前]
+!git add -A && git commit -m "メッセージ検索機能の追加 by [自分の名前]"
+<span class="comment"># クローン元 (kimotuki/agmsg) に向けた PR を作成</span>
 !gh pr create --fill</pre>
       <ul>
-        <li>クローン元には書き込み権限がないため、<code class="inline">gh pr create</code> が push 先を聞いてくる — <strong>「Create a fork of kimotuki/laravel-chat-app」を選ぶ</strong> と、fork の作成 → push → PR 作成まで一気に進む（初回のみ <code class="inline">gh auth login</code>）</li>
+        <li>クローン元には書き込み権限がないため、<code class="inline">gh pr create</code> が push 先を聞いてくる — <strong>「Create a fork of kimotuki/agmsg」を選ぶ</strong> と、fork の作成 → push → PR 作成まで一気に進む（初回のみ <code class="inline">gh auth login</code>）</li>
         <li><code class="inline">--fill</code> はコミットメッセージから PR のタイトル・本文を自動生成する</li>
         <li>ブランチ名・コミットメッセージ・PR 本文は Claude に任せてもよい（「クローン元に PR を作って」）</li>
+      </ul>
+
+      <h3>7-8. オプション課題</h3>
+      <ul>
+        <li>余裕があれば「メッセージ統計」機能も追加する — 「エージェントごとの送信数を集計する scripts/stats.sh を追加して」</li>
       </ul>
     </section>
 

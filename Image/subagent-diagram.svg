@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 340" font-family="-apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#78716c"/>
+    </marker>
+  </defs>
+
+  <rect x="1" y="1" width="908" height="338" fill="#f5f3ee"/>
+
+  <text x="20" y="26" font-size="14" font-weight="700" fill="#a84e32">SubAgent — 別の独立したコンテキストで作業し、サマリーだけを返す</text>
+
+  <!-- メイン会話 -->
+  <rect x="30" y="120" width="230" height="115" rx="10" fill="#f7e4d8" stroke="#d97757" stroke-width="1.5"/>
+  <text x="145" y="152" font-size="14" font-weight="700" fill="#292524" text-anchor="middle">メインセッション</text>
+  <text x="145" y="177" font-size="10.5" fill="#78716c" text-anchor="middle">メインのコンテキストで対話を継続</text>
+  <text x="145" y="195" font-size="10.5" fill="#78716c" text-anchor="middle">本筋の文脈が長持ちする</text>
+
+  <!-- 依頼と返却 -->
+  <path d="M 262 178 H 480 V 92 H 598" fill="none" stroke="#78716c" stroke-width="1.5" marker-start="url(#ar)" marker-end="url(#ar)"/>
+  <path d="M 262 178 H 598" fill="none" stroke="#78716c" stroke-width="1.5" marker-start="url(#ar)" marker-end="url(#ar)"/>
+  <path d="M 262 178 H 480 V 264 H 598" fill="none" stroke="#78716c" stroke-width="1.5" marker-start="url(#ar)" marker-end="url(#ar)"/>
+  <text x="371" y="163" font-size="11" fill="#78716c" text-anchor="middle">→ タスクを依頼</text>
+  <text x="371" y="198" font-size="11" fill="#78716c" text-anchor="middle">← サマリーだけ返る</text>
+
+  <!-- サブエージェント群 -->
+  <text x="740" y="42" font-size="11" fill="#78716c" text-anchor="middle">それぞれ独立したコンテキストで並列に動く</text>
+
+  <rect x="600" y="56" width="280" height="72" rx="10" fill="#ffffff" stroke="#d97757" stroke-width="1.5"/>
+  <text x="740" y="84" font-size="12.5" font-weight="700" fill="#292524" text-anchor="middle">レビュー用サブエージェント</text>
+  <text x="740" y="104" font-size="10.5" fill="#78716c" text-anchor="middle">専用プロンプト＋読み取り専用の権限</text>
+
+  <rect x="600" y="142" width="280" height="72" rx="10" fill="#ffffff" stroke="#d97757" stroke-width="1.5"/>
+  <text x="740" y="170" font-size="12.5" font-weight="700" fill="#292524" text-anchor="middle">探索用（Explore）</text>
+  <text x="740" y="190" font-size="10.5" fill="#78716c" text-anchor="middle">検索・調査の大量出力を隔離</text>
+
+  <rect x="600" y="228" width="280" height="72" rx="10" fill="#ffffff" stroke="#d97757" stroke-width="1.5"/>
+  <text x="740" y="256" font-size="12.5" font-weight="700" fill="#292524" text-anchor="middle">テスト実行用</text>
+  <text x="740" y="276" font-size="10.5" fill="#78716c" text-anchor="middle">全テストの実行ログを隔離</text>
+
+  <!-- 注記 -->
+  <text x="455" y="328" font-size="11.5" fill="#78716c" text-anchor="middle">大量の出力（検索結果・diff・ログ）はサブエージェント側に隔離され、メインセッションにはサマリーだけが返る</text>
+</svg>

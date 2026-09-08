@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 260" font-family="-apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#78716c"/>
+    </marker>
+  </defs>
+
+  <rect x="1" y="1" width="908" height="258" fill="#f5f3ee"/>
+
+  <text x="20" y="26" font-size="14" font-weight="700" fill="#a84e32">Hooks — ツール実行の前後などに自動でコマンドを差し込む</text>
+
+  <!-- Claude -->
+  <rect x="20" y="45" width="150" height="80" rx="10" fill="#ffffff" stroke="#d97757" stroke-width="1.5"/>
+  <text x="95" y="76" font-size="13.5" font-weight="700" fill="#292524" text-anchor="middle">Claude</text>
+  <text x="95" y="101" font-size="10.5" fill="#78716c" text-anchor="middle">ツールを実行しようとする</text>
+
+  <line x1="170" y1="85" x2="198" y2="85" stroke="#78716c" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <!-- PreToolUse -->
+  <rect x="200" y="45" width="150" height="80" rx="10" fill="#f7e4d8" stroke="#d97757" stroke-width="1.5"/>
+  <text x="275" y="72" font-size="13.5" font-weight="700" fill="#292524" text-anchor="middle">PreToolUse</text>
+  <text x="275" y="95" font-size="10.5" fill="#78716c" text-anchor="middle">直前に実行</text>
+  <text x="275" y="111" font-size="10.5" fill="#78716c" text-anchor="middle">危険な操作をブロック</text>
+
+  <line x1="350" y1="85" x2="378" y2="85" stroke="#78716c" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <!-- ツール実行 -->
+  <rect x="380" y="45" width="150" height="80" rx="10" fill="#ffffff" stroke="#d97757" stroke-width="1.5"/>
+  <text x="455" y="76" font-size="13.5" font-weight="700" fill="#292524" text-anchor="middle">ツール実行</text>
+  <text x="455" y="101" font-size="10.5" fill="#78716c" text-anchor="middle">Edit / Bash など</text>
+
+  <line x1="530" y1="85" x2="558" y2="85" stroke="#78716c" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <!-- PostToolUse -->
+  <rect x="560" y="45" width="150" height="80" rx="10" fill="#f7e4d8" stroke="#d97757" stroke-width="1.5"/>
+  <text x="635" y="72" font-size="13.5" font-weight="700" fill="#292524" text-anchor="middle">PostToolUse</text>
+  <text x="635" y="95" font-size="10.5" fill="#78716c" text-anchor="middle">直後に実行</text>
+  <text x="635" y="111" font-size="10.5" fill="#78716c" text-anchor="middle">フォーマッタ・リンタ</text>
+
+  <line x1="710" y1="85" x2="738" y2="85" stroke="#78716c" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <!-- Stop -->
+  <rect x="740" y="45" width="150" height="80" rx="10" fill="#f7e4d8" stroke="#d97757" stroke-width="1.5"/>
+  <text x="815" y="72" font-size="13.5" font-weight="700" fill="#292524" text-anchor="middle">Stop</text>
+  <text x="815" y="95" font-size="10.5" fill="#78716c" text-anchor="middle">応答を終えたとき</text>
+  <text x="815" y="111" font-size="10.5" fill="#78716c" text-anchor="middle">テスト実行・完了通知</text>
+
+  <!-- フィードバックループ -->
+  <path d="M 635 125 V 185 H 95 V 133" fill="none" stroke="#78716c" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#ar)"/>
+  <text x="365" y="177" font-size="11.5" fill="#78716c" text-anchor="middle">終了コード 2 で終わると出力が Claude にフィードバック — ブロック／自分で修正</text>
+
+  <!-- 注記 -->
+  <text x="455" y="240" font-size="11.5" fill="#78716c" text-anchor="middle">フックは settings.json に定義し、ハーネスが機械的に実行する — Claude が「忘れる」ことがない</text>
+</svg>

@@ -173,9 +173,7 @@
       <li><a href="#sec4">4. コンテキスト管理</a></li>
       <li><a href="#sec5">5. 実践：チーム開発フロー</a></li>
       <li><a href="#sec6">6. 実践：チーム開発フローの自動化</a></li>
-      <li style="list-style:none;"><a href="#appendix-worktree">A. 付録：git worktree で並行開発</a></li>
-      <li style="list-style:none;"><a href="#cleanup">＊ 後片付け：作成したリポジトリの削除</a></li>
-      <li value="7"><a href="#sec7">7. まとめ・コース総括</a></li>
+      <li><a href="#sec7">7. まとめ・コース総括</a></li>
     </ol>
   </nav>
 
@@ -349,26 +347,13 @@
 
     <section id="sec5">
       <h2 class="step"><span class="step-num">5</span>実践：チーム開発フロー（12分）</h2>
-      <p>題材：第1回で構築した <strong>Laravel × Prism チャットアプリ</strong>（<code class="inline">laravel-chat-app</code>）。clone して自分のリポジトリとして作成し、<strong>Issue 起点の開発フロー</strong> を一周する。</p>
+      <p>題材：チーム共有のリポジトリ（例：第2回で使った <code class="inline">agmsg</code> の fork から1つ選ぶ）に対して、<strong>Issue 起点の開発フロー</strong> を一周する。</p>
       <figure class="shot">
-        <img src="Image/issue-flow.svg" alt="Issue 起点の開発フロー — Issue 作成 → ブランチ作成 → fix 実装 → レビュー・PR → マージ">
+        <img src="Image/issue-flow.svg" alt="Issue 起点の開発フロー — Issue 作成 → ブランチ作成 → fix 実装 → レビュー・PR → 相互レビュー・マージ">
         <figcaption>Issue 起点の開発フロー — マージ時の「Closes #N」で Issue が自動クローズし、フローが一周する</figcaption>
       </figure>
 
-      <h3>5-1. 題材を clone して自分のリポジトリを作成（2分）</h3>
-      <p>題材の <code class="inline">laravel-chat-app</code> を clone し、gh コマンドで <strong>自分のアカウントのリポジトリ</strong> として作成する。以降の Issue・PR はすべて自分のリポジトリ上で回す。</p>
-<pre><span class="prompt">$</span> git clone https://github.com/kimotuki/laravel-chat-app
-<span class="prompt">$</span> cd laravel-chat-app
-<span class="prompt">$</span> claude</pre>
-      <div class="prompt-box">
-        <span class="label">あなたの指示</span>
-        <p>gh でこのコードを自分のアカウントの新しい public リポジトリとして作成して push して</p>
-      </div>
-      <ul>
-        <li><code class="inline">gh repo create laravel-chat-app --public --source=. --push</code> 相当が実行され、origin が自分のリポジトリに切り替わる</li>
-      </ul>
-
-      <h3>5-2. gh で Issue を作成（2分）</h3>
+      <h3>5-1. gh で Issue を作成（2分）</h3>
       <div class="prompt-box">
         <span class="label">あなたの指示</span>
         <p>「README に日本語のクイックスタートを追記してほしい」という Issue を gh で作成して</p>
@@ -378,7 +363,11 @@
         <li><strong>Issue 本文がそのまま Claude への要件になる</strong> — 再現手順や期待動作を丁寧に書くほど後工程の精度が上がる</li>
       </ul>
 
-      <h3>5-3. ブランチを切って fix を実装（3分）</h3>
+      <h3>5-2. clone してブランチを作成（2分）</h3>
+      <p>チームのリポジトリを clone し、Issue 対応のブランチを切る。</p>
+<pre><span class="prompt">$</span> git clone &lt;チームのリポジトリURL&gt;
+<span class="prompt">$</span> cd &lt;リポジトリ名&gt;
+<span class="prompt">$</span> claude</pre>
       <div class="prompt-box">
         <span class="label">あなたの指示</span>
         <p>Issue #1 に対応するブランチを切って</p>
@@ -386,6 +375,8 @@
       <ul>
         <li><code class="inline">gh issue view 1</code> で内容を確認し、<code class="inline">fix/issue-1</code> のようなブランチが作られる</li>
       </ul>
+
+      <h3>5-3. Issue に対する fix を実装（3分）</h3>
       <div class="prompt-box">
         <span class="label">あなたの指示</span>
         <p>Issue #1 を読んで、Plan Mode で対応方針を立ててから修正して</p>
@@ -408,30 +399,14 @@
       </ul>
 
       <h3>5-5. 他の人の PR をレビューしてマージ（3分）</h3>
-      <p>受講者同士でペアを組み、互いの PR をレビューする。まず相手から次の2つの情報を教えてもらう:</p>
-      <ul>
-        <li><strong>リポジトリの URL</strong> — <code class="inline">https://github.com/&lt;相手のアカウント&gt;/laravel-chat-app</code></li>
-        <li><strong>レビューしてほしい PR の番号</strong> — 相手が 5-4 で作成した PR の番号</li>
-      </ul>
-      <div class="callout tip">
-        <strong>ヒント</strong>
-        PR の URL（<code class="inline">https://github.com/&lt;相手のアカウント&gt;/laravel-chat-app/pull/&lt;N&gt;</code>）を1つ教えてもらえば、リポジトリの URL と PR 番号の両方が分かる。
-      </div>
-      <p>教えてもらったリポジトリを clone し、<code class="inline">claude --from-pr &lt;N&gt;</code> で起動すると、<strong>PR の文脈（差分・説明文・レビューコメント）を読み込んだ状態</strong> でセッションを開始できる。</p>
-<pre><span class="prompt">$</span> git clone https://github.com/&lt;相手のアカウント&gt;/laravel-chat-app
-<span class="prompt">$</span> cd laravel-chat-app
-<span class="prompt">$</span> claude --from-pr &lt;N&gt;   <span class="comment"># N は教えてもらった PR 番号</span></pre>
+      <p>受講者同士で PR 番号を交換し、互いの PR をレビューする。<code class="inline">claude --from-pr &lt;N&gt;</code> で <strong>PR の文脈（差分・説明文・レビューコメント）を読み込んだ状態</strong> でセッションを開始できる。</p>
+<pre><span class="prompt">$</span> claude --from-pr &lt;N&gt;   <span class="comment"># N はレビューする PR 番号</span></pre>
 <pre>/review</pre>
-      <p>指摘があれば、レビュー結果を相手の PR にコメントとして残す:</p>
-      <div class="prompt-box">
-        <span class="label">あなたの指示</span>
-        <p>レビュー結果を PR にコメントして</p>
-      </div>
       <ul>
-        <li><code class="inline">gh pr comment &lt;N&gt;</code> 相当が実行され、相手の PR にコメントが付く（public リポジトリなら、コラボレーターでなくてもコメントは書き込める）</li>
-        <li>PR の作者は <strong>自分のリポジトリ</strong> で <code class="inline">claude --from-pr &lt;自分のPR番号&gt;</code> を起動し、「レビューコメントに対応して」→ 修正 → push</li>
+        <li>指摘があれば PR にコメントを残す（「レビュー結果を PR にコメントして」）</li>
+        <li>PR の作者は <code class="inline">claude --from-pr &lt;自分のPR番号&gt;</code> で起動し、「レビューコメントに対応して」→ 修正 → push</li>
+        <li>問題がなくなったらマージ：</li>
       </ul>
-      <p>対応が終わって問題がなくなったら、<strong>PR の作者（リポジトリのオーナー）が</strong> 自分の PR をマージする:</p>
       <div class="prompt-box">
         <span class="label">あなたの指示</span>
         <p>この PR をマージして</p>
@@ -446,80 +421,19 @@
       <p>5章で回した「Issue 起点の開発フロー」は毎回同じ手順の繰り返し — つまり <strong>スキル化の好対象</strong>。フロー全体を1つのスキルに落とし込み、1コマンドで回せるようにする。</p>
       <div class="prompt-box">
         <span class="label">あなたの指示</span>
-        <p>issue-review-flow というスキルを作って。Issue 番号を引数で受け取り、<br>
+        <p>issue-flow というスキルを作って。Issue 番号を引数で受け取り、<br>
         1. gh issue view で Issue の内容を確認<br>
         2. fix/issue-&lt;番号&gt; ブランチを作成<br>
-        3. 対応方針を立てて、確認してから修正を実装<br>
+        3. Plan Mode で対応方針を立ててから修正を実装<br>
         4. /code-review でレビューし、妥当な指摘を修正<br>
         5. コミットして PR を作成（本文に Closes #&lt;番号&gt; を入れる）<br>
         という手順にして。</p>
       </div>
-      <p>作成できたら、実行する前に生成されたスキルの内容を確認する。指示した5つの手順がそのまま入っているか、意図しない操作が紛れ込んでいないかをレビューしておく:</p>
-<pre><span class="prompt">$</span> cat .claude/skills/issue-review-flow/SKILL.md</pre>
-      <p>内容に問題がなければ、新しい Issue を1つ作って実行してみる:</p>
-<pre>/issue-review-flow 2</pre>
+      <p>作成できたら、新しい Issue を1つ作って実行してみる:</p>
+<pre>/issue-flow 2</pre>
       <ul>
         <li>定型フローをスキル化すれば、<strong>チームの誰でも同じ品質のフローを1コマンドで再現</strong> できる</li>
-        <li><code class="inline">.claude/skills/issue-review-flow/</code> をコミットすれば、3章で学んだとおりチーム全員に共有される</li>
-      </ul>
-    </section>
-
-    <section id="appendix-worktree">
-      <h2 class="step"><span class="step-num">A</span>付録：git worktree で並行開発</h2>
-      <p>6章まで早く終わった方向けの発展課題。<code class="inline">git worktree</code> は <strong>1つのリポジトリから複数の作業ディレクトリを切り出す</strong> Git の機能。ブランチごとに独立したディレクトリで作業できるので、「長めのタスクを別の Claude Code セッションに任せつつ、自分はメインの作業を続ける」という並行開発ができる。</p>
-      <figure class="shot">
-        <img src="Image/worktree-diagram.svg" alt="git worktree の概念図 — 1つのリポジトリ（.git 本体を持つメインの作業ディレクトリ）から、feature-a 用と bugfix-123 用の2つの worktree が切り出され、それぞれ別ターミナルの Claude Code セッションで動く">
-        <figcaption>git worktree — .git（履歴）は共有しつつ、作業ディレクトリとブランチは独立。変更が衝突しない</figcaption>
-      </figure>
-
-      <h3>A-1. 一般的な使い方</h3>
-      <p><code class="inline">--worktree</code> の一般的な使い方としては、複数のターミナルでそれぞれ別の worktree セッションを動かすパターンがある。</p>
-<pre><span class="comment"># Terminal 1: 機能 A の開発</span>
-<span class="prompt">$</span> claude --worktree feature-a
-
-<span class="comment"># Terminal 2: 同時にバグ修正</span>
-<span class="prompt">$</span> claude --worktree bugfix-123</pre>
-      <p>それぞれのセッションは <strong>別ブランチ・別ディレクトリ</strong> で動くので、変更が衝突しない。</p>
-      <p>手動で worktree を作ってから Claude Code を起動する方法もある。新しいブランチを作る場合は <code class="inline">-b</code> を付け、既存のブランチを使う場合はブランチ名をそのまま指定する:</p>
-<pre><span class="comment"># 新しいブランチ feature-a を作って worktree を作成</span>
-<span class="prompt">$</span> git worktree add ../project-feature-a -b feature-a
-
-<span class="comment"># 既存のブランチ bugfix-123 から worktree を作成</span>
-<span class="prompt">$</span> git worktree add ../project-bugfix bugfix-123
-
-<span class="comment"># 作成した worktree に移動して Claude Code を起動</span>
-<span class="prompt">$</span> cd ../project-feature-a &amp;&amp; claude</pre>
-      <p><code class="inline">--worktree</code> オプションは、この手順を自動化してくれるもの。</p>
-
-      <h3>A-2. 演習：長めのタスクを worktree に任せる</h3>
-      <p>5章で作成した自分の <code class="inline">laravel-chat-app</code> を題材に、長めのタスクを別 worktree の Claude Code に任せてみる。<strong>新しいターミナルを開いて</strong>、worktree セッションを起動する:</p>
-<pre><span class="prompt">$</span> cd laravel-chat-app
-<span class="prompt">$</span> claude --worktree feature-export</pre>
-      <div class="prompt-box">
-        <span class="label">あなたの指示（worktree セッション側）</span>
-        <p>チャットの会話を Markdown ファイルとしてダウンロードできるエクスポート機能を追加して。Feature テストも書いて、php artisan test が通ることを確認して</p>
-      </div>
-      <ul>
-        <li>タスクが走っている間も、<strong>元のターミナルのセッションはそのまま使える</strong> — 6章のスキル改良や別の Issue 対応を並行して進める</li>
-        <li>worktree 側のタスクが終わったら、いつも通り「コミットして PR を作成して」まで任せられる</li>
-      </ul>
-      <p>worktree の状態確認と、マージ後の片付け:</p>
-<pre><span class="prompt">$</span> git worktree list             <span class="comment"># 作成された worktree の一覧</span>
-<span class="prompt">$</span> git worktree remove &lt;パス&gt;    <span class="comment"># 不要になった worktree を削除</span></pre>
-    </section>
-
-    <section id="cleanup">
-      <h2 class="step"><span class="step-num">＊</span>後片付け：作成したリポジトリの削除</h2>
-      <p>5章で自分のアカウントに作成した <code class="inline">laravel-chat-app</code> はハンズオン用の練習リポジトリ。演習が終わったら、以下のコマンドを手動で実行して削除しておく。<code class="inline">gh repo delete</code> には追加の権限（<code class="inline">delete_repo</code> スコープ）が必要なので、先に <code class="inline">gh auth refresh</code> で付与してから実行する:</p>
-<pre><span class="prompt">$</span> gh auth refresh -h github.com -s delete_repo
-<span class="prompt">$</span> gh repo delete &lt;自分のアカウント&gt;/laravel-chat-app --yes</pre>
-      <div class="callout warn">
-        <strong>注意</strong>
-        リポジトリの削除は取り消せない。削除対象が <code class="inline">&lt;自分のアカウント&gt;/laravel-chat-app</code> であること（clone 元の <code class="inline">kimotuki/laravel-chat-app</code> や自分の別リポジトリを指定していないこと）を必ず確認してから実行する。
-      </div>
-      <ul>
-        <li>ローカルの clone が不要になったら、あわせて <code class="inline">cd .. &amp;&amp; rm -rf laravel-chat-app</code> で削除しておく</li>
-        <li>5-5 で clone した相手のリポジトリのローカルコピーも同様に削除してよい（リポジトリ本体の削除は作成した本人が行う）</li>
+        <li><code class="inline">.claude/skills/issue-flow/</code> をコミットすれば、3章で学んだとおりチーム全員に共有される</li>
       </ul>
     </section>
 

@@ -51,7 +51,7 @@
   <rect x="740" y="45" width="150" height="80" rx="10" fill="#f7e4d8" stroke="#d97757" stroke-width="1.5"/>
   <circle cx="762" cy="67" r="12" fill="#d97757"/>
   <text x="762" y="71.5" font-size="12" font-weight="700" fill="#ffffff" text-anchor="middle">5</text>
-  <text x="815" y="72" font-size="13.5" font-weight="700" fill="#292524" text-anchor="middle">相互レビュー</text>
+  <text x="815" y="72" font-size="13.5" font-weight="700" fill="#292524" text-anchor="middle">マージ</text>
   <text x="815" y="95" font-size="10.5" fill="#78716c" text-anchor="middle">claude --from-pr</text>
   <text x="815" y="111" font-size="10.5" fill="#78716c" text-anchor="middle">修正 → マージ</text>
 
