@@ -177,6 +177,7 @@
       <li><a href="#sec6">6. Hooks</a></li>
       <li><a href="#sec7">7. 実践：アプリ開発の一連フロー</a></li>
       <li><a href="#sec8">8. まとめ</a></li>
+      <li><a href="#appendix">付録. /loop と /goal</a></li>
     </ol>
   </nav>
 
@@ -895,8 +896,73 @@ $ claude</pre>
       </ul>
     </section>
 
+    <section id="appendix">
+      <h2 class="step"><span class="step-num">付</span>付録：/loop と /goal — Claude に「続けさせる」2つのコマンド</h2>
+      <p>通常、Claude Code は1ターン（依頼 → 作業 → 応答）ごとに止まり、次の入力を待つ。<code class="inline">/loop</code> と <code class="inline">/goal</code> は、この <strong>ターンの区切りを越えて Claude に作業を続けさせる</strong> ための組み込みコマンド。「時間で繰り返す」のが <code class="inline">/loop</code>、「条件を満たすまで続ける」のが <code class="inline">/goal</code>。</p>
+      <table>
+        <tr><th>観点</th><th><code class="inline">/loop</code></th><th><code class="inline">/goal</code></th></tr>
+        <tr><td>続ける基準</td><td>一定の時間間隔</td><td>完了条件を満たしたか（小型モデルが毎ターン判定）</td></tr>
+        <tr><td>止まる条件</td><td>停止を指示する／7日で自動失効</td><td>条件達成・達成不可能と判定・ターン上限</td></tr>
+        <tr><td>向いている用途</td><td>CI・デプロイの監視、PR コメントの定期確認</td><td>テストが全部通るまで、Issue の対応が完了するまで</td></tr>
+      </table>
+
+      <h3>付録-1. /loop — 一定間隔で繰り返す</h3>
+      <ul>
+        <li><code class="inline">/loop [間隔] &lt;プロンプトまたはスラッシュコマンド&gt;</code> の形式。間隔は <code class="inline">30s</code> <code class="inline">5m</code> <code class="inline">2h</code> <code class="inline">1d</code> のように書く（秒は1分に丸められる。<code class="inline">7m</code> のような cron に合わない間隔は近い値に丸められ、その旨が表示される）</li>
+        <li><strong>間隔を省略</strong> すると、Claude が毎回の結果を見て次の待ち時間を <strong>1分〜1時間の範囲で自分で決める</strong>（待機中は <code class="inline">Esc</code> で停止できる）</li>
+        <li>固定間隔のループは「このループを止めて」のように <strong>自然言語で停止を指示</strong> する。登録中のタスクは「登録中のスケジュールタスクを教えて」で確認できる</li>
+        <li>ループは <strong>セッション内のもの</strong>（新しいセッションでは消える。<code class="inline">--resume</code> で再開すれば復元される）。作成から <strong>7日で自動失効</strong> するので、止め忘れても永久には回らない</li>
+        <li>毎回の実行でコンテキストとトークンを消費する — 間隔は必要以上に短くしない</li>
+      </ul>
+<pre>/loop 5m 自分が出した PR の CI が終わったか確認して、失敗していたら原因を教えて
+/loop 20m /code-review
+/loop CI が通ってレビューコメントが無くなるまで確認を続けて</pre>
+      <h4>演習</h4>
+      <p>7-7 で作成した PR（<code class="inline">kimotuki/agmsg</code> 向け）を題材に、CI とレビューコメントの変化を定期的に確認させる。<code class="inline">agmsg</code> のディレクトリで <code class="inline">claude</code> を起動し:</p>
+      <div class="prompt-box">
+        <span class="label">あなたの指示</span>
+        <p>/loop 2m gh で自分の PR の CI ステータスとレビューコメントを確認して、前回から変化があれば教えて</p>
+      </div>
+      <ul>
+        <li>2〜3回動くのを観察したら、「このループを止めて」で停止し、「登録中のスケジュールタスクを教えて」で消えたことを確認する</li>
+        <li>余裕があれば間隔を省略した <code class="inline">/loop gh で自分の PR の CI ステータスを確認して</code> も試し、Claude が選んだ待ち時間とその理由が表示されるのを見る（待機中に <code class="inline">Esc</code> で停止）</li>
+      </ul>
+
+      <h3>付録-2. /goal — 条件を満たすまで続ける</h3>
+      <ul>
+        <li><code class="inline">/goal &lt;完了条件&gt;</code> で条件を設定すると、<strong>条件が満たされるまで Claude がターンをまたいで自動的に作業を続ける</strong>。各ターンの終わりに小型モデル（既定は Haiku）が条件を判定し、「未達（理由つきで次ターンへ）／達成（自動解除）／達成不可能（自動解除）」のいずれかを返す</li>
+        <li>有効な間は <code class="inline">◎ /goal active</code> が表示される。<code class="inline">Ctrl+O</code> で判定理由を確認できる</li>
+        <li><code class="inline">/goal</code>（引数なし）で状態表示、<code class="inline">/goal clear</code>（<code class="inline">stop</code> <code class="inline">reset</code> <code class="inline">cancel</code> <code class="inline">off</code> も同じ）で解除。1セッションに1つだけ有効で、新しく設定すると置き換わる</li>
+        <li>条件は <strong>機械的に検証できる形</strong> で書く（「<code class="inline">bats tests/</code> がすべて成功する」など）。「または10ターンで止める」のような <strong>上限を条件に含めて</strong> 暴走を防ぐ</li>
+        <li>続けている間はトークンを消費し続ける。セッションを <code class="inline">--resume</code> すると有効だった目標は復元される（ターン数などはリセット）</li>
+      </ul>
+<pre>/goal bats tests/ がすべて成功し、shellcheck scripts/*.sh が警告なしで終わる。または10ターンで止める
+/goal
+/goal clear</pre>
+      <h4>演習</h4>
+      <p><code class="inline">agmsg</code> のディレクトリで、まず完了条件を設定してから機能追加を依頼する:</p>
+      <div class="prompt-box">
+        <span class="label">あなたの指示</span>
+        <p>/goal bats tests/ がすべて成功し、shellcheck scripts/*.sh が警告なしで終わる。または10ターンで止める</p>
+      </div>
+      <div class="prompt-box">
+        <span class="label">あなたの指示</span>
+        <p>scripts/search.sh に、表示件数を絞る --limit N オプションを追加して。対応する bats テストも追加して</p>
+      </div>
+      <ul>
+        <li>テストが通らない間は Claude が自動で次のターンに進み、修正を続けることを観察する（<code class="inline">Ctrl+O</code> で「なぜ未達か」の判定理由を見る）</li>
+        <li>条件を満たすと <code class="inline">/goal</code> が自動で解除される。途中でやめたいときは <code class="inline">/goal clear</code></li>
+        <li>終わったら <code class="inline">git diff</code> で変更内容を人の目で確認し、不要なら <code class="inline">git checkout -- .</code> で元に戻す</li>
+      </ul>
+      <h4>参考リンク</h4>
+      <ul>
+        <li><a href="https://code.claude.com/docs/en/scheduled-tasks" target="_blank" rel="noopener">Claude Code ドキュメント — Scheduled tasks（/loop）</a></li>
+        <li><a href="https://code.claude.com/docs/en/goal" target="_blank" rel="noopener">Claude Code ドキュメント — /goal</a></li>
+      </ul>
+    </section>
+
     <footer>
-      <p>Claude Code ハンズオン — Section2:Claude Code を使ったソフトウェア開発<br>Copyright © AI-Driven Development Study Group</p>
+      <p>Claude Code ハンズオン — Section2：Claude Code を使ったソフトウェア開発<br>Copyright © AI-Driven Development Study Group</p>
       <p><a href="session1.html">← Section1</a> ／ <a href="index.html">コースポータル</a> ／ <a href="session3.html">Section3 →</a></p>
     </footer>
   </main>
