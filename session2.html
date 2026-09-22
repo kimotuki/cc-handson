@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>第2回：Claude Code を使ったソフトウェア開発 — Claude Code ハンズオン</title>
+<title>Section2：Claude Code を使ったソフトウェア開発 — Claude Code ハンズオン</title>
 <style>
   :root {
     --accent: #d97757;
@@ -182,7 +182,7 @@
 
   <main>
     <header class="hero">
-      <h1>第2回：Claude Code を使ったソフトウェア開発</h1>
+      <h1>Section2：Claude Code を使ったソフトウェア開発</h1>
       <p>「プロジェクト知識を Claude に定着させ、コード変更を安全に任せる」</p>
       <div class="badges">
         <span class="badge">120分</span>
@@ -295,7 +295,7 @@
         <tr><td><code class="inline">&lt;repo&gt;/.claude/settings.json</code></td><td>プロジェクト共通（チームで共有・コミット対象）</td></tr>
         <tr><td><code class="inline">&lt;repo&gt;/.claude/settings.local.json</code></td><td>プロジェクト個人用（git 管理外）</td></tr>
       </table>
-      <p>第1回で settings.json の配置場所（user / project / local）に触れた。ここでは <strong>書ける主な項目</strong> と、<strong>設定が効いているかの確認方法</strong> を押さえる。</p>
+      <p>Section1 で settings.json の配置場所（user / project / local）に触れた。ここでは <strong>書ける主な項目</strong> と、<strong>設定が効いているかの確認方法</strong> を押さえる。</p>
       <h4>主な設定キー</h4>
       <table>
         <tr><th>キー</th><th>役割</th></tr>
@@ -392,7 +392,7 @@
         <li>「毎回プロンプトで説明していた定型作業」をコマンド一発にできる</li>
         <li>自分で書くほかに、<strong>プラグインで配布されたスキルを入れる</strong>・<strong>skill-creator に作ってもらう</strong> という選択肢がある</li>
         <li><strong>プラグイン</strong> ＝ スキル・サブエージェント・Hooks・MCP 接続などの拡張を <strong>ひとまとめにして配布する入れ物</strong>。<code class="inline">/plugin</code> で導入・管理する</li>
-        <li><strong>マーケットプレイス</strong> ＝ プラグインの配布カタログ。Anthropic 公式の <strong>claude-plugins-official</strong> のほか、GitHub リポジトリをマーケットプレイスとして登録すればチーム独自の配布元も持てる（第3回で扱う）</li>
+        <li><strong>マーケットプレイス</strong> ＝ プラグインの配布カタログ。Anthropic 公式の <strong>claude-plugins-official</strong> のほか、GitHub リポジトリをマーケットプレイスとして登録すればチーム独自の配布元も持てる（Section3 で扱う）</li>
       </ul>
 
       <h3>3-2. プラグインを入れて機能を足す（5分）</h3>
@@ -809,13 +809,13 @@ exit 0</pre>
       <p><strong>個人開発のフロー</strong> を最初から最後まで回す。題材の agmsg をクローン → 機能追加（メッセージ検索） → レビュー → 修正 → テスト生成 → セキュリティレビュー → クローン元リポジトリへの PR 作成まで、すべて Claude Code との会話で進める。</p>
 
       <h3>7-1. 題材（agmsg）をクローン（2分）</h3>
-      <p>改修の題材は <strong>agmsg</strong>（第1回のソースコード解析で使った、CLI AI エージェント間のメッセージングツール）。GitHub からクローンして準備する:</p>
+      <p>改修の題材は <strong>agmsg</strong>（Section1 のソースコード解析で使った、CLI AI エージェント間のメッセージングツール）。GitHub からクローンして準備する:</p>
 <pre>$ git clone https://github.com/kimotuki/agmsg
 $ cd agmsg
 $ claude</pre>
       <ul>
         <li>以降のステップ（機能追加・レビュー・修正）は、この <strong>クローンしたリポジトリを対象</strong> に進める</li>
-        <li>第1回の「ソースコード解析」と同じ題材なので、構造を把握済みならスムーズに改修へ入れる</li>
+        <li>Section1 の「ソースコード解析」と同じ題材なので、構造を把握済みならスムーズに改修へ入れる</li>
       </ul>
 
       <h3>7-2. 「メッセージ検索」機能を追加（8分）</h3>
@@ -896,8 +896,8 @@ $ claude</pre>
     </section>
 
     <footer>
-      <p>Claude Code ハンズオン — 第2回:Claude Code を使ったソフトウェア開発<br>Copyright © AI-Driven Development Study Group</p>
-      <p><a href="session1.html">← 第1回</a> ／ <a href="index.html">コースポータル</a> ／ <a href="session3.html">第3回 →</a></p>
+      <p>Claude Code ハンズオン — Section2:Claude Code を使ったソフトウェア開発<br>Copyright © AI-Driven Development Study Group</p>
+      <p><a href="session1.html">← Section1</a> ／ <a href="index.html">コースポータル</a> ／ <a href="session3.html">Section3 →</a></p>
     </footer>
   </main>
 </div>

@@ -1,12 +1,12 @@
 # Claude Code ハンズオン
 
-Claude Code の基本操作からソフトウェア開発・チーム開発までを **全3回・計4.5時間**（第1回90分 / 第2回120分 / 第3回60分）で実践するハンズオンコースです。
+Claude Code の基本操作からソフトウェア開発・チーム開発までを **全3 Section・計5.5時間**（Section1 90分 / Section2 120分 / Section3 120分）で実践するハンズオンコースです。
 
 題材には OSS の **[agmsg](https://github.com/fujibee/agmsg)**（CLI AI エージェント間のメッセージングツール。Bash + SQLite 製）を使い、ソースコード解析 → 機能追加 → レビュー → PR 作成 → チーム開発フローまでを一気通貫で体験します。
 
 ## 📖 教材の閲覧
 
-ブラウザで [`index.html`](index.html)（コースポータル）を開くと、各回の資料にアクセスできます（外部依存なしの静的 HTML）。
+ブラウザで [`index.html`](index.html)（コースポータル）を開くと、各 Section の資料にアクセスできます（外部依存なしの静的 HTML）。
 
 ```bash
 open index.html
@@ -14,10 +14,10 @@ open index.html
 
 | ファイル | 内容 |
 |---|---|
-| [`index.html`](index.html) | コースポータル（概要・各回へのリンク） |
-| [`session1.html`](session1.html) | 第1回：Claude Code の基本 |
-| [`session2.html`](session2.html) | 第2回：Claude Code を使ったソフトウェア開発 |
-| [`session3.html`](session3.html) | 第3回：Claude Code を使ったチーム開発 |
+| [`index.html`](index.html) | コースポータル（概要・各 Section へのリンク） |
+| [`session1.html`](session1.html) | Section1：Claude Code の基本 |
+| [`session2.html`](session2.html) | Section2：Claude Code を使ったソフトウェア開発 |
+| [`session3.html`](session3.html) | Section3：Claude Code を使ったチーム開発 |
 | [`HANDSON.md`](HANDSON.md) | 講義資料のソース（Markdown） |
 
 ## 🎯 学べること
