@@ -23,7 +23,7 @@
   <text x="165" y="237" font-size="13" font-weight="600" fill="#292524" text-anchor="middle">ファイル内容</text>
 
   <rect x="62" y="266" width="206" height="56" rx="9" fill="#f7e4d8" stroke="#d97757" stroke-width="1"/>
-  <text x="165" y="299" font-size="13" font-weight="600" fill="#292524" text-anchor="middle">会話（指示・応答）</text>
+  <text x="165" y="299" font-size="13" font-weight="600" fill="#292524" text-anchor="middle">会話履歴（指示・応答）</text>
 
   <!-- 中央：コンパクション -->
   <line x1="290" y1="190" x2="352" y2="190" stroke="#78716c" stroke-width="1.6" marker-end="url(#arrow)"/>
