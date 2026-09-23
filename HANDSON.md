@@ -1094,7 +1094,7 @@ ENABLE_CLAUDEAI_MCP_SERVERS=false claude
 3. 接続したコネクタを1つ使ってみる:
 
 ```
-Google Calendar で今日の予定を一覧して
+Google Calendar で今日の予定の一覧を出して
 ```
 
 * 承認ダイアログで **どのツールが呼ばれるか** を確認してから許可する。`/status` の「MCP servers」表示も見ておく
