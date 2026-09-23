@@ -270,14 +270,23 @@
 
       <h3>2-4. 用語説明（3分）</h3>
       <h4>モデル</h4>
-      <p>ここでは Large Language Model (LLM) を指す。Anthropic 社が提供するモデルファミリー：</p>
+      <ul>
+        <li>ここでは <strong>Large Language Model（LLM）</strong> を指す。コンテキスト（入力）を受け取り、その続きをトークン単位で予測して文章やコードを生成する「頭脳」。Claude Code では <strong>考える・判断するのがモデル、ファイル操作やコマンド実行を担うのがハーネス</strong>（後述）</li>
+        <li>学習データには <strong>締切（knowledge cutoff）</strong> があり、それ以降の出来事や新しいライブラリは知らない → 必要なら Web 検索やドキュメントを読ませて補う</li>
+        <li>モデル自身に <strong>セッションをまたぐ記憶はない</strong>。知っているのは今コンテキストに入っている内容だけ → プロジェクトの前提は CLAUDE.md やメモリで毎回渡す（4章）</li>
+        <li>Anthropic 社のモデルファミリー。上位ほど賢いが、トークン単価と応答時間も増える:</li>
+      </ul>
       <table>
-        <tr><th>モデル</th><th>特徴</th></tr>
-        <tr><td>Fable</td><td>最上位。最も難しい推論・長時間の自律的なエージェント作業向け</td></tr>
-        <tr><td>Opus</td><td>高性能。複雑な設計判断・大規模なリファクタリング向け</td></tr>
-        <tr><td>Sonnet</td><td>性能と速度のバランス型。日常的な開発タスクの主力</td></tr>
-        <tr><td>Haiku</td><td>最速・低コスト。簡単な質問や定型作業向け</td></tr>
+        <tr><th>モデル</th><th>特徴</th><th>使いどころ</th></tr>
+        <tr><td>Fable</td><td>最上位</td><td>最も難しい推論・長時間の自律的なエージェント作業</td></tr>
+        <tr><td>Opus</td><td>高性能</td><td>複雑な設計判断・大規模なリファクタリング</td></tr>
+        <tr><td>Sonnet</td><td>性能・速度・コストのバランス型</td><td>日常的な開発タスクの主力</td></tr>
+        <tr><td>Haiku</td><td>最速・低コスト</td><td>簡単な質問・定型作業</td></tr>
       </table>
+      <ul>
+        <li>コンテキストウィンドウの大きさもモデルで決まる（Fable / Opus / Sonnet 系は 1M トークン、Haiku 4.5 は 200K トークン。2026年時点）</li>
+        <li>切り替えは <code class="inline">/model</code>、思考の深さは <code class="inline">/effort</code>（3-3）。日常は既定のモデルで進め、設計判断や難しいバグ調査だけ Opus / Fable に上げるのが基本の使い方</li>
+      </ul>
       <h4>トークン</h4>
       <ul>
         <li>LLM が文章を処理する <strong>最小単位</strong>（英語は約4文字 ≒ 1トークン、日本語は1〜2文字 ≒ 1トークン）</li>
