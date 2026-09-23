@@ -178,7 +178,8 @@
       <li><a href="#sec7">7. Hooks</a></li>
       <li><a href="#sec8">8. 実践：アプリ開発の一連フロー</a></li>
       <li><a href="#sec9">9. まとめ</a></li>
-      <li><a href="#appendix">付録. /loop と /goal</a></li>
+      <li><a href="#appendix">付録A. /loop と /goal</a></li>
+      <li><a href="#appendix-teams">付録B. Agent Teams</a></li>
     </ol>
   </nav>
 
@@ -953,7 +954,7 @@ $ claude</pre>
     </section>
 
     <section id="appendix">
-      <h2 class="step"><span class="step-num">付</span>付録：/loop と /goal — Claude に「続けさせる」2つのコマンド</h2>
+      <h2 class="step"><span class="step-num">付</span>付録A：/loop と /goal — Claude に「続けさせる」2つのコマンド</h2>
       <p>通常、Claude Code は1ターン（依頼 → 作業 → 応答）ごとに止まり、次の入力を待つ。<code class="inline">/loop</code> と <code class="inline">/goal</code> は、この <strong>ターンの区切りを越えて Claude に作業を続けさせる</strong> ための組み込みコマンド。「時間で繰り返す」のが <code class="inline">/loop</code>、「条件を満たすまで続ける」のが <code class="inline">/goal</code>。</p>
       <table>
         <tr><th>観点</th><th><code class="inline">/loop</code></th><th><code class="inline">/goal</code></th></tr>
@@ -962,7 +963,7 @@ $ claude</pre>
         <tr><td>向いている用途</td><td>CI・デプロイの監視、PR コメントの定期確認</td><td>テストが全部通るまで、Issue の対応が完了するまで</td></tr>
       </table>
 
-      <h3>付録-1. /loop — 一定間隔で繰り返す</h3>
+      <h3>A-1. /loop — 一定間隔で繰り返す</h3>
       <ul>
         <li><code class="inline">/loop [間隔] &lt;プロンプトまたはスラッシュコマンド&gt;</code> の形式。間隔は <code class="inline">30s</code> <code class="inline">5m</code> <code class="inline">2h</code> <code class="inline">1d</code> のように書く（秒は1分に丸められる。<code class="inline">7m</code> のような cron に合わない間隔は近い値に丸められ、その旨が表示される）</li>
         <li><strong>間隔を省略</strong> すると、Claude が毎回の結果を見て次の待ち時間を <strong>1分〜1時間の範囲で自分で決める</strong>（待機中は <code class="inline">Esc</code> で停止できる）</li>
@@ -984,7 +985,7 @@ $ claude</pre>
         <li>余裕があれば間隔を省略した <code class="inline">/loop gh で自分の PR の CI ステータスを確認して</code> も試し、Claude が選んだ待ち時間とその理由が表示されるのを見る（待機中に <code class="inline">Esc</code> で停止）</li>
       </ul>
 
-      <h3>付録-2. /goal — 条件を満たすまで続ける</h3>
+      <h3>A-2. /goal — 条件を満たすまで続ける</h3>
       <ul>
         <li><code class="inline">/goal &lt;完了条件&gt;</code> で条件を設定すると、<strong>条件が満たされるまで Claude がターンをまたいで自動的に作業を続ける</strong>。各ターンの終わりに小型モデル（既定は Haiku）が条件を判定し、「未達（理由つきで次ターンへ）／達成（自動解除）／達成不可能（自動解除）」のいずれかを返す</li>
         <li>有効な間は <code class="inline">◎ /goal active</code> が表示される。<code class="inline">Ctrl+O</code> で判定理由を確認できる</li>
@@ -1014,6 +1015,93 @@ $ claude</pre>
       <ul>
         <li><a href="https://code.claude.com/docs/en/scheduled-tasks" target="_blank" rel="noopener">Claude Code ドキュメント — Scheduled tasks（/loop）</a></li>
         <li><a href="https://code.claude.com/docs/en/goal" target="_blank" rel="noopener">Claude Code ドキュメント — /goal</a></li>
+      </ul>
+    </section>
+
+    <section id="appendix-teams">
+      <h2 class="step"><span class="step-num">付</span>付録B：Agent Teams — 複数の Claude Code を協調させる</h2>
+      <p>6章のサブエージェントが「調べて結果を持ち帰る部下」だとすると、<strong>Agent Teams は「並列で動く同僚」</strong>。自分のセッションが <strong>リード</strong> となり、独立した Claude Code セッションである <strong>チームメイト</strong> を複数立てて、共有タスクリストとメッセージで協調させる。実験的機能（要有効化）で、トークン消費も大きいが、複数の観点を同時に動かしたいときに強い。</p>
+
+      <h3>B-1. Agent Teams とは</h3>
+      <ul>
+        <li><strong>リード</strong>（自分のセッション）が仕事を分割してチームメイトに割り当て、結果を統合する。<strong>チームメイト</strong> はそれぞれ独立したコンテキストウィンドウを持つ、まるごと1つの Claude Code セッション</li>
+        <li><strong>共有タスクリスト</strong>：pending → in progress → completed の状態を持つ作業項目。依存関係も管理され、前提タスクが終わると次が自動的に解放される。リードが割り当てるほか、手が空いたチームメイトが <strong>自分で次のタスクを取る</strong>（self-claim）</li>
+        <li><strong>メッセージ</strong>：チームメイト同士・リードとの間で直接やりとりできる。「〇〇担当に△△も確認するよう伝えて」とリードに頼めば届く</li>
+      </ul>
+      <table>
+        <tr><th>観点</th><th>SubAgent（6章）</th><th>Agent Teams</th></tr>
+        <tr><td>動く場所</td><td>1つのセッションの中</td><td>複数の独立したセッション</td></tr>
+        <tr><td>コンテキスト</td><td>結果の要約だけが親に戻る</td><td>各チームメイトが独立したコンテキストを持つ</td></tr>
+        <tr><td>やりとり</td><td>親に結果を返すだけ（一方向）</td><td>チームメイト同士がメッセージで会話し、タスクリストで自律的に調整</td></tr>
+        <tr><td>トークン</td><td>少ない</td><td>チームメイトの人数分だけ増える</td></tr>
+        <tr><td>向く用途</td><td>素早く済ませたい単発の調査・レビュー</td><td>複数観点の同時レビュー、仮説を互いに検証する調査、ファイルが分かれた機能の並列実装</td></tr>
+      </table>
+      <h4>有効化と表示モード</h4>
+      <ul>
+        <li>実験的機能のため既定では無効。環境変数 <code class="inline">CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1</code> を shell で export するか、<code class="inline">~/.claude/settings.json</code> の <code class="inline">env</code> に書いて有効化する。対話セッションでのみ動き、<code class="inline">-p</code>（ヘッドレス）ではチームメイトは立たず通常のサブエージェントとして動く</li>
+        <li><strong>in-process</strong>（既定）：1つのターミナル内で動く。エージェントパネルで <code class="inline">↑↓</code> → <code class="inline">Enter</code> でチームメイトの画面を開いて直接指示、<code class="inline">x</code> で停止、<code class="inline">Ctrl+T</code> でタスクリストの表示切替</li>
+        <li><strong>split-pane</strong>：tmux / iTerm2 でチームメイトごとにペインを分割。<code class="inline">claude --teammate-mode auto</code> か <code class="inline">settings.json</code> の <code class="inline">teammateMode</code> で指定</li>
+      </ul>
+<pre><span class="comment">// ~/.claude/settings.json</span>
+{
+  <span class="str">"env"</span>: { <span class="str">"CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS"</span>: <span class="str">"1"</span> }
+}</pre>
+      <div class="callout warn">
+        <strong>⚠️ 使うときの注意</strong>
+        <ul>
+          <li><strong>同じファイルを複数のチームメイトに触らせない</strong>（上書きし合う）。ファイル単位・モジュール単位で担当を分ける</li>
+          <li>順序依存の強い作業は向かない — 1セッションかサブエージェントの方が速い</li>
+          <li><code class="inline">/resume</code> や <code class="inline">/rewind</code> では in-process のチームメイトは復元されない。再開後は立て直す</li>
+          <li>チームメイトは自分のサブエージェントやチームを持てない（入れ子にならない）</li>
+          <li>リードが Plan Mode のときに立てたチームメイトは計画だけ作り、その計画は <strong>リード側で自動承認</strong> されて実装に移る（人が計画を見る機会がない点に注意）</li>
+        </ul>
+      </div>
+
+      <h3>B-2. 使い方</h3>
+      <p>すべて自然言語で頼む。人数・役割・担当範囲・使うモデルを明示するとよい。</p>
+<pre>3人のチームメイトを立てて、この PR をレビューして：
+- 1人はセキュリティ（入力検証・SQL の扱い）
+- 1人はシェルスクリプトの堅牢性（set -euo pipefail・クォート・エラー処理）
+- 1人はテスト網羅（tests/ の bats で足りていない観点）
+各自の所見を共有し合って、最後に1つのレポートにまとめて</pre>
+<pre>4人のチームメイトで並列にリファクタして。モデルは Sonnet。担当は
+scripts/ / tests/ / docs/ / README で分けて、担当外のファイルは触らないで</pre>
+<pre>セキュリティ担当に、search.sh の LIKE 句のエスケープも確認するよう伝えて</pre>
+<pre>チームメイトの所見を review-report.md にまとめて、全員を終了させて</pre>
+
+      <h4>演習</h4>
+      <p><code class="inline">agmsg</code> のディレクトリで、Agent Teams を有効にして起動する:</p>
+<pre><span class="prompt">$</span> export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+<span class="prompt">$</span> claude</pre>
+      <ol>
+        <li>観点別の並列レビューを依頼する:
+          <div class="prompt-box">
+            <span class="label">あなたの指示</span>
+            <p>3人のチームメイトを立てて scripts/ をレビューして。1人はセキュリティ（SQLite への値の埋め込み・入力検証）、1人はシェルスクリプトの堅牢性（set -euo pipefail・変数のクォート・エラー処理）、1人はテスト網羅（tests/ の bats で足りていない観点）。各自の所見を共有し合って、最後に1つのレビューレポートにまとめて</p>
+          </div>
+        </li>
+        <li><code class="inline">Ctrl+T</code> でタスクリストを開き、誰が何を担当しているかを見る。エージェントパネルで <code class="inline">↑↓</code> → <code class="inline">Enter</code> でチームメイトの画面を覗く</li>
+        <li>途中でリードに追加の指示を出す:
+          <div class="prompt-box">
+            <span class="label">あなたの指示</span>
+            <p>セキュリティ担当に、search.sh の LIKE 句のエスケープも確認するよう伝えて</p>
+          </div>
+        </li>
+        <li>まとめさせて解散する:
+          <div class="prompt-box">
+            <span class="label">あなたの指示</span>
+            <p>レポートを review-report.md に保存して、チームメイトを全員終了させて</p>
+          </div>
+        </li>
+      </ol>
+      <ul>
+        <li>6章で <code class="inline">shell-code-reviewer</code> サブエージェント1体に頼んだときと、観点の広がり・所要時間・<code class="inline">/usage</code> のトークン消費を比べてみる</li>
+        <li>終わったら <code class="inline">review-report.md</code> は <code class="inline">git status</code> で確認し、リポジトリに入れないなら削除する</li>
+      </ul>
+      <h4>参考リンク</h4>
+      <ul>
+        <li><a href="https://code.claude.com/docs/en/agent-teams" target="_blank" rel="noopener">Claude Code ドキュメント — Agent teams</a></li>
+        <li><a href="https://code.claude.com/docs/en/sub-agents" target="_blank" rel="noopener">Claude Code ドキュメント — Subagents</a></li>
       </ul>
     </section>
 
