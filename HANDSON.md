@@ -1102,7 +1102,6 @@ Google Calendar で今日の予定を一覧して
 ##### 参考リンク
 
 * [Claude Code ドキュメント — MCP（claude.ai connectors の節）](https://code.claude.com/docs/en/mcp)
-* [Claude ヘルプセンター — Use connectors to extend Claude's capabilities](https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities)
 * [Claude — Connectors ディレクトリ](https://claude.com/connectors)
 
 ### 5. MCP（12分）
