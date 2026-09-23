@@ -41,7 +41,7 @@
 |---|---|---|---|
 | Section 1 | Claude Code の基本 | Claude Code とは / 基本的な使い方 / コマンド | Claude Code を使ったソースコード解析 |
 | Section 2 | Claude Code を使ったソフトウェア開発 | 設定ファイル / Skills・プラグイン / skill-creator / コネクタ / MCP / SubAgent / Hooks | Claude Code を使ったコード変更 |
-| Section 3 | Claude Code を使ったチーム開発 | CLAUDE.md・Skills の共有 / git worktree での並行開発 | チーム開発フローの体験 |
+| Section 3 | Claude Code を使ったチーム開発 | CLAUDE.md・Skills の共有 / プロジェクトナレッジの整理 / git worktree での並行開発 | チーム開発フローの体験 |
 
 ---
 
@@ -1565,6 +1565,7 @@ scripts/search.sh に、表示件数を絞る --limit N オプションを追加
 ## 到達目標
 
 * CLAUDE.md / Skills / settings をチームで共有・運用できる
+* プロジェクトの知識を「ルール・設計・手順」に仕分けて、CLAUDE.md・docs・Skills に配置できる
 * `git worktree` で長めのタスクを別セッションに任せ、並行して開発を進められる
 * Issue 起点のチーム開発フロー（Issue → ブランチ → fix → レビュー → PR → マージ）を Claude Code で回せる
 
@@ -1574,11 +1575,12 @@ scripts/search.sh に、表示件数を絞る --limit N オプションを追加
 |----|--------------------------------------------|------|
 | 1  | オープニング（到達目標・時間配分の説明）   | 5分  |
 | 2  | チームでの CLAUDE.md 運用                  | 12分 |
-| 3  | Skills の共有                     | 15分 |
-| 4  | 実践：チーム開発フロー            | 45分 |
-| 5  | 実践：チーム開発フローの自動化    | 15分 |
-| 6  | git worktree で並行開発           | 20分 |
-| 7  | まとめ・コース総括                | 8分  |
+| 3  | プロジェクトナレッジの整理と投入  | 15分 |
+| 4  | Skills の共有                     | 15分 |
+| 5  | 実践：チーム開発フロー            | 35分 |
+| 6  | 実践：チーム開発フローの自動化    | 15分 |
+| 7  | git worktree で並行開発           | 15分 |
+| 8  | まとめ・コース総括                | 8分  |
 
 ---
 
@@ -1598,27 +1600,95 @@ scripts/search.sh に、表示件数を絞る --limit N オプションを追加
 | 個人ルールの混入                   | `CLAUDE.local.md` に分離                   |
 | 書いたきり更新しない               | 規約変更・構成変更と同じ PR で更新         |
 
-### 3. Skills の共有（15分）
+### 3. プロジェクトナレッジの整理と投入（15分）
 
-#### 3-1. 共有できるもの（6分）
+チームが持つ知識（規約・設計の背景・作業手順・仕様書）をそのまま CLAUDE.md に詰め込むと、コンテキストを圧迫して指示が守られにくくなる。**知識の種類ごとに置き場所を分け**、常時読み込むものと必要なときだけ読むものを切り分けるのがコツ。
+
+#### 3-1. 知識を仕分ける（5分）
+
+| 知識の種類 | 例 | 置き場所 | 読み込まれるタイミング |
+|------------|----|----------|------------------------|
+| 常に守らせるルール | テストコマンド、コーディング規約、ブランチ運用 | `CLAUDE.md` | セッション開始時に常時 |
+| 特定のファイルを触るときだけのルール | `scripts/` 配下のシェル規約、テストの書き方 | `.claude/rules/*.md`（frontmatter の `paths:` で対象を指定） | 該当ファイルを扱うときに遅延読み込み |
+| 設計・背景の知識（長文） | アーキテクチャ、設計判断の記録、用語集 | `docs/*.md` に置き、CLAUDE.md から `@docs/architecture.md` で import、または「必要なとき docs/ を読む」と指示 | import は常時／参照指示なら必要時 |
+| 定型作業の手順 | リリース手順、テスト生成の手順 | `.claude/skills/<name>/SKILL.md` | 呼び出し時・Claude が必要と判断した時 |
+| コード以外の資料 | 仕様書 PDF、議事録、顧客要件 | claude.ai の Projects のナレッジ（付録B） | チャットで質問したとき |
+
+* 判断基準は **「これを消したら Claude が失敗するか？」**。YES なら CLAUDE.md、NO なら docs/ やスキルへ。CLAUDE.md は **200行未満** が目安（長いほどコンテキストを消費し、指示が守られにくくなる）
+* CLAUDE.md は managed 設定 → `~/.claude/CLAUDE.md` → プロジェクトの `CLAUDE.md` → `CLAUDE.local.md` の順に **連結して** 読み込まれる（上書きではない）。サブディレクトリの CLAUDE.md は、そのディレクトリのファイルを扱うときに読み込まれる
+* `@path` による import は相対パス・絶対パス・`@~/...` が使え、import 先からさらに import できる（最大4段）。コードブロック内の `@` は無視される
+* 個人メモ（auto-memory）は **マシン単位で共有されない**。チームで共有したい知識は必ずリポジトリ内のファイルに置く
+
+#### 3-2. 既存ドキュメントを Markdown 化して投入する（5分）
+
+1. **集める**：Confluence / Notion / Word / PDF などの既存資料を Markdown にして `docs/` に置く。変換は Claude に頼める（「この PDF を docs/architecture.md として Markdown 化して」）
+2. **仕分ける**：Claude に読ませて、常に守るルールと参照用の知識に分けさせる
+
+```
+docs/ の内容を読んで、常に守るべき規約と、必要なときに参照する設計知識に分けて。規約は CLAUDE.md に5〜10行で追記し、設計知識は docs/ に残して CLAUDE.md から @docs/... で参照させて
+```
+
+3. **つなぐ**：CLAUDE.md からの import と、パス別ルール（`.claude/rules/`）を置く
+4. **確かめる**：`/memory` で読み込まれているファイルの一覧を、`/context` で消費量を確認する（付録A）
+
+```markdown
+# CLAUDE.md（抜粋）— ルールは短く、背景は import で
+- テスト: `bats tests/`、静的解析: `shellcheck scripts/*.sh`
+- 設計の全体像は @docs/architecture.md を参照
+```
+
+```markdown
+# .claude/rules/shell.md — scripts/ 配下を編集するときだけ読み込まれる
+---
+paths:
+  - "scripts/**/*.sh"
+---
+- 先頭で `set -euo pipefail` を宣言する
+- 変数展開は必ずダブルクォートで囲む
+```
+
+> 💡 **CLAUDE.md の変更も PR で**：2章のとおり、CLAUDE.md・rules・docs の変更はチームの規約変更そのもの。PR でレビューしてからマージする。
+
+#### 3-3. 演習：agmsg のナレッジを投入する（5分）
+
+Section 2 で使った `agmsg` のディレクトリで `claude` を起動し、既存ドキュメントを仕分けて投入する。
+
+```
+ARCHITECTURE.md と README.md を読んで、開発時に常に守るべき規約を CLAUDE.md に5行以内で追記して。設計の説明は CLAUDE.md には書かず、@ARCHITECTURE.md の参照にして
+```
+
+```
+scripts/ 配下の .sh を編集するときだけ適用されるルールを .claude/rules/shell.md に作って。set -euo pipefail と変数のダブルクォートを必須にして
+```
+
+* `/memory` で CLAUDE.md と import 先が読み込まれていることを確認する
+* 「メッセージ送信の流れを説明して」と聞き、`ARCHITECTURE.md` を根拠に答えることを確認する
+* 「scripts/send.sh のエラーメッセージを分かりやすくして」と頼み、`.claude/rules/shell.md` の規約が守られることを確認する
+* できあがった CLAUDE.md・rules を `git diff` で確認する。5章で自分のリポジトリを作成したら同じ変更をコミットしておくと、以降の Issue 対応で Claude が規約を守るようになる
+
+### 4. Skills の共有（15分）
+
+#### 4-1. 共有できるもの（6分）
 
 | 対象                       | 配置場所                  | 共有方法           |
 |----------------------------|---------------------------|--------------------|
 | Skills                     | `.claude/skills/`         | リポジトリにコミット |
 | Hooks・パーミッション設定  | `.claude/settings.json`   | リポジトリにコミット |
+| SubAgent（レビュー観点の統一） | `.claude/agents/`      | リポジトリにコミット |
 | 個人用設定                 | `.claude/settings.local.json` | git 管理外     |
 
-#### 3-2. チームでの活用例（4分）
+#### 4-2. チームでの活用例（4分）
 
 * テスト生成の手順を `/test-gen` スキルとして共有 → **テスト観点の平準化**
 * `PostToolUse` でリンタを強制 → **「Claude が書いてもチーム標準のコード」を担保**
+* Section 2 で作った `shell-code-reviewer` サブエージェントをコミット → **レビュー観点の統一**（誰が回しても同じ基準でレビューされる）
 * 新メンバーのオンボーディング：`claude` を起動して「このプロジェクトの開発の流れを教えて」
 
 ##### 演習1
 
 * Section 2 で作った `test-gen` スキルをコミットし、隣の受講者のリポジトリで動かしてもらう
 
-#### 3-3. プラグイン（5分）
+#### 4-3. プラグイン（5分）
 
 Skills / Hooks / 設定を **まとめて配布できる単位** が **プラグイン**。`.claude/` への手動コミットより、バージョン管理・更新が楽で、マーケットプレイス経由で導入できる。
 
@@ -1673,13 +1743,13 @@ Claude Code のセッション内で以下を実行する:
 
 > 💡 プラグインは **任意のコードを実行できる**。導入は信頼できるマーケットプレイス・作者のものに限ること。
 
-### 4. 実践：チーム開発フロー（45分）
+### 5. 実践：チーム開発フロー（35分）
 
 題材：チーム共有のリポジトリ（例：Section 2 で使った `agmsg` の fork から1つ選ぶ）に対して、**Issue 起点の開発フロー** を一周する。
 
 ![Issue 起点の開発フロー — Issue 作成 → ブランチ作成 → fix 実装 → レビュー・PR → 相互レビュー・マージ](Image/issue-flow.svg)
 
-#### 4-1. gh で Issue を作成（5分）
+#### 5-1. gh で Issue を作成（5分）
 
 ```
 「README に日本語のクイックスタートを追記してほしい」という Issue を gh で作成して
@@ -1688,7 +1758,7 @@ Claude Code のセッション内で以下を実行する:
 * `gh issue create` が実行される — タイトル・本文も Claude が整えてくれる
 * **Issue 本文がそのまま Claude への要件になる** — 再現手順や期待動作を丁寧に書くほど後工程の精度が上がる
 
-#### 4-2. clone してブランチを作成（5分）
+#### 5-2. clone してブランチを作成（5分）
 
 チームのリポジトリを clone し、Issue 対応のブランチを切る。
 
@@ -1704,7 +1774,7 @@ Issue #1 に対応するブランチを切って
 
 * `gh issue view 1` で内容を確認し、`fix/issue-1` のようなブランチが作られる
 
-#### 4-3. Issue に対する fix を実装（15分）
+#### 5-3. Issue に対する fix を実装（10分）
 
 ```
 Issue #1 を読んで、Plan Mode で対応方針を立ててから修正して
@@ -1713,7 +1783,7 @@ Issue #1 を読んで、Plan Mode で対応方針を立ててから修正して
 * Claude が Issue 本文を読み、計画を提示 → レビューして承認 → 実装 → テスト
 * 人間は **計画と差分のレビュー** に集中する
 
-#### 4-4. スキルでレビューして PR を作成（5分）
+#### 5-4. スキルでレビューして PR を作成（5分）
 
 push する前に、組み込みスキルで自己レビューする。
 
@@ -1729,7 +1799,9 @@ Issue #1 を closes する PR を作成して
 
 * PR 本文に `Closes #1` が入り、**マージすると Issue が自動クローズ** される
 
-#### 4-5. 他の人の PR をレビューしてマージ（15分）
+> 💡 **main が先に進んでいたら**：PR を作る前に main を取り込み、競合があれば Claude に解消させる —「origin/main を取り込んで、競合があれば解消して。bats tests/ が通ることを確認して」。解消結果は `git diff` で必ず人が確認する。
+
+#### 5-5. 他の人の PR をレビューしてマージ（10分）
 
 受講者同士で PR 番号を交換し、互いの PR をレビューする。`claude --from-pr <N>` で **PR の文脈（差分・説明文・レビューコメント）を読み込んだ状態** でセッションを開始できる。
 
@@ -1751,9 +1823,9 @@ claude --from-pr <N>   # N はレビューする PR 番号
 
 * `gh pr merge` が実行され、`Closes #1` により Issue も自動クローズ — **Issue 起点のフローが一周** する
 
-### 5. 実践：チーム開発フローの自動化（15分）
+### 6. 実践：チーム開発フローの自動化（15分）
 
-4章で回した「Issue 起点の開発フロー」は毎回同じ手順の繰り返し — つまり **スキル化の好対象**。フロー全体を1つのスキルに落とし込み、1コマンドで回せるようにする。
+5章で回した「Issue 起点の開発フロー」は毎回同じ手順の繰り返し — つまり **スキル化の好対象**。フロー全体を1つのスキルに落とし込み、1コマンドで回せるようにする。
 
 ```
 issue-flow というスキルを作って。Issue 番号を引数で受け取り、
@@ -1772,15 +1844,24 @@ issue-flow というスキルを作って。Issue 番号を引数で受け取り
 ```
 
 * 定型フローをスキル化すれば、**チームの誰でも同じ品質のフローを1コマンドで再現** できる
-* `.claude/skills/issue-flow/` をコミットすれば、3章で学んだとおりチーム全員に共有される
+* `.claude/skills/issue-flow/` をコミットすれば、4章で学んだとおりチーム全員に共有される
 
-### 6. git worktree で並行開発（20分）
+> 💡 **GitHub 上でも回す — Claude Code GitHub Actions**：`/install-github-app` を実行すると、GitHub App のインストールとワークフローの追加まで対話的にセットアップできる。以後は PR や Issue のコメントで `@claude` にメンションすると、GitHub Actions 上の Claude Code がレビューや修正を行い、結果をコメント・コミットで返す。認証はサブスクリプションなら `claude setup-token` で作る OAuth トークン（Pro / Max / Team / Enterprise）、API 利用なら API キーをリポジトリの Secret に登録する。Issue / PR の本文は **信頼できない入力** なので、Actions 側の権限は最小にし、マージは人がレビューしてから行う。
+
+> 💡 **CI・スクリプトから使う — ヘッドレスモード**：`claude -p "<指示>"` で対話なしに実行でき、`--allowedTools` で使えるツールを、`--output-format json` で出力形式を指定できる。CI では `--bare` を付けると CLAUDE.md や hooks の自動読み込みを省いて速く・再現性よく動く。例：マージ済み PR からリリースノートを生成する
+
+```bash
+claude -p "前回のタグ以降にマージされた PR を gh で集めて、CHANGELOG.md にリリースノートとして追記して" \
+  --allowedTools "Read,Edit,Bash(gh pr list:*),Bash(git tag:*),Bash(git log:*)"
+```
+
+### 7. git worktree で並行開発（15分）
 
 `git worktree` は **1つのリポジトリから複数の作業ディレクトリを切り出す** Git の機能。ブランチごとに独立したディレクトリで作業できるので、「長めのタスクを別の Claude Code セッションに任せつつ、自分はメインの作業を続ける」という並行開発ができる。
 
 ![git worktree の概念図 — .git（履歴）は共有しつつ、作業ディレクトリとブランチは独立](Image/worktree-diagram.svg)
 
-#### 6-1. 一般的な使い方（7分）
+#### 7-1. 一般的な使い方（5分）
 
 `--worktree` の一般的な使い方としては、複数のターミナルでそれぞれ別の worktree セッションを動かすパターンがある。
 
@@ -1809,9 +1890,9 @@ cd ../project-feature-a && claude
 
 `--worktree` オプションは、この手順を自動化してくれるもの。
 
-#### 6-2. 演習：長めのタスクを worktree に任せる（13分）
+#### 7-2. 演習：長めのタスクを worktree に任せる（10分）
 
-4章で使った `agmsg` リポジトリを題材に、長めのタスクを別 worktree の Claude Code に任せてみる。**新しいターミナルを開いて**、worktree セッションを起動する:
+5章で使った `agmsg` リポジトリを題材に、長めのタスクを別 worktree の Claude Code に任せてみる。**新しいターミナルを開いて**、worktree セッションを起動する:
 
 ```bash
 cd agmsg
@@ -1822,7 +1903,7 @@ claude --worktree feature-export
 メッセージ履歴を Markdown ファイルに書き出すエクスポート機能（scripts/export.sh）を追加して。bats テストも書いて、bats tests/ が通ることを確認して
 ```
 
-* タスクが走っている間も、**元のターミナルのセッションはそのまま使える** — 5章のスキル改良や別の Issue 対応を並行して進める
+* タスクが走っている間も、**元のターミナルのセッションはそのまま使える** — 6章のスキル改良や別の Issue 対応を並行して進める
 * worktree 側のタスクが終わったら、いつも通り「コミットして PR を作成して」まで任せられる
 
 worktree の状態確認と、マージ後の片付け:
@@ -1832,7 +1913,7 @@ git worktree list             # 作成された worktree の一覧
 git worktree remove <パス>    # 不要になった worktree を削除
 ```
 
-### 7. まとめ・コース総括（8分）
+### 8. まとめ・コース総括（8分）
 
 #### Section 3 のまとめ
 
@@ -1937,14 +2018,14 @@ git worktree remove <パス>    # 不要になった worktree を削除
 * claude.ai/code 上の **プロジェクト会話（コーディネーター）** が、タスクごとに **スレッド**（クラウドで動く Claude Code セッション）を立てて **並列に実行** する。スレッドは PC を閉じても動き続ける
 * 各スレッドはプロジェクトの **リポジトリ・ファイル・Google Drive**、**プロジェクト指示**、環境変数を共有した状態で開始する
 * **Overview** ペインでスレッドの状態（Working / Waiting on you / Ready for review など）を一覧でき、**Pull requests** タブで各スレッドが作った PR をまとめて追える
-* **プロジェクト指示** は Project settings → Memory → Project Instructions（最大16,000文字）に書く。対象ブランチ・確認方法・承認が必要な操作など、4章で CLAUDE.md に書いたルールと同じ考え方
+* **プロジェクト指示** は Project settings → Memory → Project Instructions（最大16,000文字）に書く。対象ブランチ・確認方法・承認が必要な操作など、3章で CLAUDE.md に書いたルールと同じ考え方
 * すでに動かしているクラウドセッションから **Continue as a project** で始めたり、**Move to project** で既存プロジェクトに取り込んだりもできる
 
 > 💡 Pro / Max プランのパブリックベータ（段階的に提供中）。Team / Enterprise プランではまだ使えないため、利用できる人だけ試す。
 
 ##### 演習
 
-1. claude.ai/code → **Projects** → **New project**。Name は「agmsg」、Context に **4章で作成した自分の agmsg リポジトリ** を追加して **Create project**
+1. claude.ai/code → **Projects** → **New project**。Name は「agmsg」、Context に **5章で作成した自分の agmsg リポジトリ** を追加して **Create project**
 2. Project settings → Memory → **Project Instructions** に次を設定する:
 
 ```
@@ -1962,7 +2043,7 @@ scripts/search.sh に、表示件数を絞る --limit N オプションを追加
 ```
 
 * **Overview** で2つのスレッドが並列に動くのを観察し、**Ready for review** になったら **Pull requests** タブから PR を開いて差分をレビューする
-* 4章で手で回した「Issue → ブランチ → 実装 → レビュー → PR」を、コーディネーターがスレッド単位で肩代わりしていることを確認する
+* 5章で手で回した「Issue → ブランチ → 実装 → レビュー → PR」を、コーディネーターがスレッド単位で肩代わりしていることを確認する
 
 ##### 参考リンク
 
