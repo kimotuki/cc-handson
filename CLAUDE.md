@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## リポジトリ概要
 
-Claude Code ハンズオン（全3 Section・計5.5時間。Section1 90分 / Section2 120分 / Section3 120分）の教材リポジトリ。ビルド・テスト・依存パッケージは無く、静的 HTML と Markdown のみで構成される。閲覧確認は `open index.html`。
+Claude Code ハンズオン（全3 Section・計5.5時間。Section 1 90分 / Section 2 120分 / Section 3 120分）の教材リポジトリ。ビルド・テスト・依存パッケージは無く、静的 HTML と Markdown のみで構成される。閲覧確認は `open index.html`。
 
 ## ファイル構成と編集ルール
 
@@ -17,5 +17,5 @@ Claude Code ハンズオン（全3 Section・計5.5時間。Section1 90分 / Sec
 
 - 全 HTML は外部依存なしの単一ファイル。CSS は各ファイルに同一のものを埋め込んであり、デザイントークン（アンバー基調 `--accent: #d97706`、`.callout` / `.prompt-box` / `.lesson` 等のコンポーネント）を共有する。新ページを作る場合は既存ページの CSS をコピーして使う
 - 日本語テキストは Unicode **NFC** で統一する（過去に NFD（濁点分離）混入で Edit の文字列一致が失敗した経緯あり）
-- 各 Section の時間配分は所定の合計（Section1 90分 / Section2 120分 / Section3 120分）に合わせる。セクションの分数を変更したら、その Section の合計に一致するよう再配分する
+- 各 Section の時間配分は所定の合計（Section 1 90分 / Section 2 120分 / Section 3 120分）に合わせる。セクションの分数を変更したら、その Section の合計に一致するよう再配分する
 - コマンド例は題材（agmsg: Bash + SQLite）に合わせる（`bats tests/`、`shellcheck scripts/*.sh` 等）

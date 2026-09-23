@@ -39,13 +39,13 @@
 
 | Section | テーマ | 主な内容 | 実践 |
 |---|---|---|---|
-| Section1 | Claude Code の基本 | Claude Code とは / 基本的な使い方 / コマンド | Claude Code を使ったソースコード解析 |
-| Section2 | Claude Code を使ったソフトウェア開発 | 設定ファイル / Skills・プラグイン / skill-creator / Hooks / MCP / SubAgent | Claude Code を使ったコード変更 |
-| Section3 | Claude Code を使ったチーム開発 | CLAUDE.md・Skills の共有 / コンテキスト管理 | チーム開発フローの体験 |
+| Section 1 | Claude Code の基本 | Claude Code とは / 基本的な使い方 / コマンド | Claude Code を使ったソースコード解析 |
+| Section 2 | Claude Code を使ったソフトウェア開発 | 設定ファイル / Skills・プラグイン / skill-creator / Hooks / MCP / SubAgent | Claude Code を使ったコード変更 |
+| Section 3 | Claude Code を使ったチーム開発 | CLAUDE.md・Skills の共有 / コンテキスト管理 | チーム開発フローの体験 |
 
 ---
 
-# Section1：Claude Code の基本
+# Section 1：Claude Code の基本
 
 ## テーマ
 
@@ -98,7 +98,7 @@
 
 1. **プロンプトを受け取る。** ユーザの入力に加えて、Claude Code が用意する指示（システムプロンプト）・使えるツールの一覧・これまでの会話履歴をまとめて受け取る。
 2. **評価して応答する。** Claude が今の状況を見て、どう進めるか決める。テキストで答える／ツールを使う（ファイル読込・編集・コマンド実行など）／その両方、のいずれか。
-3. **ツールを実行する。** 要求されたツールを実行し、結果を Claude に返す。この結果が次の判断材料になる。Hooks を使えば、ツールの実行を **実行前に止めたり書き換えたり** できる（Section2）。
+3. **ツールを実行する。** 要求されたツールを実行し、結果を Claude に返す。この結果が次の判断材料になる。Hooks を使えば、ツールの実行を **実行前に止めたり書き換えたり** できる（Section 2）。
 4. **繰り返す。** ステップ 2 と 3 を繰り返す。この 1 サイクルが **1 ターン**。ツールを使わずに答えだけ返せる状態になるまで続く。
 5. **結果を返す。** 最終的な回答テキストを返し、その作業で使った **トークン量・コスト・セッション ID** も確認できる（`/usage` や `/status` で見られる）。
 
@@ -401,7 +401,7 @@ Claude Code の挙動は、階層化された設定ファイルで制御され�
 | 形式   | JSON                                     | Markdown（自然言語）                   |
 | 役割   | ハーネスの動作設定（許可・Hooks・環境変数） | Claude への指示・プロジェクト知識     |
 
-> 書き方のコツや Hooks の実例など、詳しい運用は **Section2** で扱う。
+> 書き方のコツや Hooks の実例など、詳しい運用は **Section 2** で扱う。
 
 ##### 参考リンク
 
@@ -606,7 +606,7 @@ ghコマンドを使って、私のGitHubアカウントに agmsg-analysis と�
 
 ### 8. まとめ（4分）
 
-#### Section1 の振り返り
+#### Section 1 の振り返り
 
 | 章 | 学んだこと |
 |----|------------|
@@ -690,7 +690,7 @@ loops-guide.html を A4 縦の PDF に変換して、loops-guide.pdf として�
 
 ---
 
-# Section2：Claude Code を使ったソフトウェア開発
+# Section 2：Claude Code を使ったソフトウェア開発
 
 ## テーマ
 
@@ -798,7 +798,7 @@ $ claude
 | `<repo>/.claude/settings.json`        | プロジェクト共通（チームで共有・コミット対象） |
 | `<repo>/.claude/settings.local.json`  | プロジェクト個人用（git 管理外）         |
 
-Section1 で settings.json の配置場所（user / project / local）に触れた。ここでは **書ける主な項目** と、**設定が効いているかの確認方法** を押さえる。
+Section 1 で settings.json の配置場所（user / project / local）に触れた。ここでは **書ける主な項目** と、**設定が効いているかの確認方法** を押さえる。
 
 主な設定キー:
 
@@ -906,7 +906,7 @@ CLAUDE.md とは別に、**Claude が自分で書き溜めるプロジェクト�
 * 「毎回プロンプトで説明していた定型作業」をコマンド一発にできる
 * 自分で書くほかに、**プラグインで配布されたスキルを入れる**・**skill-creator に作ってもらう** という選択肢がある
 * **プラグイン** ＝ スキル・サブエージェント・Hooks・MCP 接続などの拡張を **ひとまとめにして配布する入れ物**。`/plugin` で導入・管理する
-* **マーケットプレイス** ＝ プラグインの配布カタログ。Anthropic 公式の **claude-plugins-official** のほか、GitHub リポジトリをマーケットプレイスとして登録すればチーム独自の配布元も持てる（Section3 で扱う）
+* **マーケットプレイス** ＝ プラグインの配布カタログ。Anthropic 公式の **claude-plugins-official** のほか、GitHub リポジトリをマーケットプレイスとして登録すればチーム独自の配布元も持てる（Section 3 で扱う）
 
 #### 3-2. プラグインを入れて機能を足す（5分）
 
@@ -1329,7 +1329,7 @@ exit 0
 
 #### 7-1. 題材（agmsg）をクローン（2分）
 
-改修の題材は **agmsg**（Section1 のソースコード解析で使った、CLI AI エージェント間のメッセージングツール）。GitHub からクローンして準備する:
+改修の題材は **agmsg**（Section 1 のソースコード解析で使った、CLI AI エージェント間のメッセージングツール）。GitHub からクローンして準備する:
 
 ```
 $ git clone https://github.com/kimotuki/agmsg
@@ -1338,7 +1338,7 @@ $ claude
 ```
 
 * 以降のステップ（機能追加・レビュー・修正）は、この **クローンしたリポジトリを対象** に進める
-* Section1 の「ソースコード解析」と同じ題材なので、構造を把握済みならスムーズに改修へ入れる
+* Section 1 の「ソースコード解析」と同じ題材なので、構造を把握済みならスムーズに改修へ入れる
 
 #### 7-2. 「メッセージ検索」機能を追加（8分）
 
@@ -1503,7 +1503,7 @@ scripts/search.sh に、表示件数を絞る --limit N オプションを追加
 
 ---
 
-# Section3：Claude Code を使ったチーム開発
+# Section 3：Claude Code を使ったチーム開発
 
 ## テーマ
 
@@ -1564,7 +1564,7 @@ scripts/search.sh に、表示件数を絞る --limit N オプションを追加
 
 ##### 演習1
 
-* Section2 で作った `test-gen` スキルをコミットし、隣の受講者のリポジトリで動かしてもらう
+* Section 2 で作った `test-gen` スキルをコミットし、隣の受講者のリポジトリで動かしてもらう
 
 #### 3-3. プラグイン（5分）
 
@@ -1668,7 +1668,7 @@ Claude Code のセッション内で以下を実行する:
 
 ### 5. 実践：チーム開発フロー（35分）
 
-題材：チーム共有のリポジトリ（例：Section2 で使った `agmsg` の fork から1つ選ぶ）に対して、**Issue 起点の開発フロー** を一周する。
+題材：チーム共有のリポジトリ（例：Section 2 で使った `agmsg` の fork から1つ選ぶ）に対して、**Issue 起点の開発フロー** を一周する。
 
 ![Issue 起点の開発フロー — Issue 作成 → ブランチ作成 → fix 実装 → レビュー・PR → 相互レビュー・マージ](Image/issue-flow.svg)
 
@@ -1827,7 +1827,7 @@ git worktree remove <パス>    # 不要になった worktree を削除
 
 ### 8. まとめ・コース総括（8分）
 
-#### Section3 のまとめ
+#### Section 3 のまとめ
 
 * CLAUDE.md・Skills・settings は **リポジトリにコミットしてチームの資産** にする
 * コンテキストは有限 — `/context` で監視し、`/compact` と `/clear` を使い分ける
@@ -1837,8 +1837,8 @@ git worktree remove <パス>    # 不要になった worktree を削除
 
 | 回    | 身につけたこと                                         |
 |-------|--------------------------------------------------------|
-| Section1 | エージェントの仕組み・基本コマンド・ソースコード解析   |
-| Section2 | CLAUDE.md / Skills / Hooks・安全なコード変更の進め方   |
-| Section3 | チームでの共有・コンテキスト管理・PR ベースの開発フロー |
+| Section 1 | エージェントの仕組み・基本コマンド・ソースコード解析   |
+| Section 2 | CLAUDE.md / Skills / Hooks・安全なコード変更の進め方   |
+| Section 3 | チームでの共有・コンテキスト管理・PR ベースの開発フロー |
 
 ここから先は **日常業務で使い続けること** が最良の学習。まずは「調査・解析タスク」から Claude Code に任せてみよう。
