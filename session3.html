@@ -582,7 +582,7 @@ paths:
     </section>
 
     <section id="appendix-context">
-      <h2 class="step"><span class="step-num">付</span>付録A：コンテキスト管理 — /context・/compact・/clear の使い分け</h2>
+      <h2 class="step"><span class="step-num">付</span>付録A：コンテキスト管理 — /context・/compact・/clear と SubAgent の使い分け</h2>
 
       <h3>A-1. なぜ管理が必要か</h3>
       <ul>
@@ -623,10 +623,35 @@ paths:
         CLAUDE.md の肥大化や Skill を多く登録することも、セッション開始時からコンテキストを消費する。適時最小化を心掛けながら環境を整えていくことが重要。
       </div>
 
+      <h3>A-4. SubAgent でコンテキストを分離する</h3>
+      <p><code class="inline">/compact</code> や <code class="inline">/clear</code> は「溜まってから減らす」対処。<strong>最初からメイン会話に入れない</strong> のが Section 2 の6章で扱った <strong>SubAgent</strong>。サブエージェントは <strong>別のコンテキストウィンドウ</strong> で動き、何十個ファイルを読んでも、テスト出力が何千行あっても、メイン会話に戻るのは <strong>結果の要約だけ</strong>。</p>
+      <table>
+        <tr><th>向いている作業</th><th>例</th></tr>
+        <tr><td>広く読む調査</td><td>「scripts/ 配下で SQLite を直接呼んでいる箇所を全部洗い出して」</td></tr>
+        <tr><td>長い出力の分析</td><td>「bats tests/ を実行して、失敗したテストの原因だけ要約して」</td></tr>
+        <tr><td>観点を絞ったレビュー</td><td>6章で作った <code class="inline">shell-code-reviewer</code> にレビューを任せる</td></tr>
+        <tr><td>メイン会話と無関係な脇道</td><td>「この依存ライブラリの最新版の変更点を調べて」</td></tr>
+      </table>
+      <ul>
+        <li>使い方は自然言語でよい：「<strong>サブエージェントで</strong>調べて」「<strong>別コンテキストで</strong>レビューして」。調査の規模が大きいと Claude が自分でサブエージェントを使うこともある</li>
+        <li>サブエージェントは <strong>メイン会話の内容を知らない</strong>。目的・対象ファイル・返してほしい形（一覧だけ／要約だけ）を依頼文に含める</li>
+        <li>戻ってくるのは要約なので細部は落ちる。あとで参照したい調査結果は「<code class="inline">docs/notes/</code> にファイルとして保存して」と頼み、ファイルに残す</li>
+        <li>節約されるのは <strong>メイン会話のコンテキスト</strong>。サブエージェント側でもトークンは消費するので、総量が減るわけではない</li>
+        <li>さらに大きく分けたいときは Section 2 付録B の <strong>Agent Teams</strong>（独立コンテキストのチームメイトを並列に動かす）</li>
+      </ul>
+      <div class="prompt-box">
+        <span class="label">あなたの指示</span>
+        <p>サブエージェントで scripts/ 配下を調査して、SQLite を直接呼んでいるファイルと行番号の一覧だけ返して。調査の途中経過はメイン会話に出さないで</p>
+      </div>
+
       <h4>演習</h4>
       <div class="prompt-box">
         <span class="label">やってみよう</span>
         <p>/context で現在の使用量を確認 → /compact を指示付きで実行 → 使用量の変化を見る</p>
+      </div>
+      <div class="prompt-box">
+        <span class="label">やってみよう</span>
+        <p>同じ調査（scripts/ 配下の SQLite 呼び出しの洗い出し）を、① メイン会話で直接頼んだ場合と ② サブエージェントに任せた場合で行い、/context の増え方を比べる</p>
       </div>
     </section>
 
