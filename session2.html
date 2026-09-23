@@ -172,11 +172,12 @@
       <li><a href="#goal">1. 到達目標・時間配分</a></li>
       <li><a href="#sec2">2. 設定ファイルとメモリ（CLAUDE.md・settings.json・MEMORY.md）</a></li>
       <li><a href="#sec3">3. Skills とプラグイン</a></li>
-      <li><a href="#sec4">4. MCP</a></li>
-      <li><a href="#sec5">5. SubAgent（サブエージェント）</a></li>
-      <li><a href="#sec6">6. Hooks</a></li>
-      <li><a href="#sec7">7. 実践：アプリ開発の一連フロー</a></li>
-      <li><a href="#sec8">8. まとめ</a></li>
+      <li><a href="#sec4">4. コネクタ</a></li>
+      <li><a href="#sec5">5. MCP</a></li>
+      <li><a href="#sec6">6. SubAgent（サブエージェント）</a></li>
+      <li><a href="#sec7">7. Hooks</a></li>
+      <li><a href="#sec8">8. 実践：アプリ開発の一連フロー</a></li>
+      <li><a href="#sec9">9. まとめ</a></li>
       <li><a href="#appendix">付録. /loop と /goal</a></li>
     </ol>
   </nav>
@@ -200,20 +201,21 @@
       <ul>
         <li><code class="inline">CLAUDE.md</code>・メモリ・<code class="inline">settings.json</code> の仕組みを理解し、設定が効いているかを確認できる</li>
         <li>プラグインで機能を追加し、skill-creator で自作スキルを作れる</li>
-        <li>MCP で外部サービス（Figma）を接続し、デザインからコード生成の流れを理解する</li>
+        <li>コネクタ・MCP で外部サービス（Figma など）を接続し、デザインからコード生成の流れを理解する</li>
         <li>題材の OSS（agmsg）への機能追加からレビュー・PR 作成まで、Claude Code との会話で完遂できる</li>
       </ul>
       <h3>時間配分（120分）</h3>
       <table>
         <tr><th>#</th><th>内容</th><th>時間</th></tr>
-        <tr><td>1</td><td>オープニング（到達目標・時間配分の説明）</td><td>8分</td></tr>
+        <tr><td>1</td><td>オープニング（到達目標・時間配分の説明）</td><td>6分</td></tr>
         <tr><td>2</td><td>設定ファイルとメモリ（CLAUDE.md・settings.json・MEMORY.md）</td><td>18分</td></tr>
-        <tr><td>3</td><td>Skills とプラグイン</td><td>20分</td></tr>
-        <tr><td>4</td><td>MCP</td><td>12分</td></tr>
-        <tr><td>5</td><td>SubAgent（サブエージェント）</td><td>12分</td></tr>
-        <tr><td>6</td><td>Hooks</td><td>12分</td></tr>
-        <tr><td>7</td><td>実践：アプリ開発の一連フロー</td><td>28分</td></tr>
-        <tr><td>8</td><td>まとめ</td><td>10分</td></tr>
+        <tr><td>3</td><td>Skills とプラグイン</td><td>18分</td></tr>
+        <tr><td>4</td><td>コネクタ</td><td>6分</td></tr>
+        <tr><td>5</td><td>MCP</td><td>12分</td></tr>
+        <tr><td>6</td><td>SubAgent（サブエージェント）</td><td>12分</td></tr>
+        <tr><td>7</td><td>Hooks</td><td>12分</td></tr>
+        <tr><td>8</td><td>実践：アプリ開発の一連フロー</td><td>28分</td></tr>
+        <tr><td>9</td><td>まとめ</td><td>8分</td></tr>
       </table>
     </section>
 
@@ -301,7 +303,7 @@
       <table>
         <tr><th>キー</th><th>役割</th></tr>
         <tr><td><code class="inline">permissions</code></td><td>ツール実行の許可/拒否/確認（<code class="inline">allow</code> / <code class="inline">deny</code> / <code class="inline">ask</code>）</td></tr>
-        <tr><td><code class="inline">hooks</code></td><td>ツール実行の前後に差し込むコマンド（6章）</td></tr>
+        <tr><td><code class="inline">hooks</code></td><td>ツール実行の前後に差し込むコマンド（7章）</td></tr>
         <tr><td><code class="inline">env</code></td><td>セッションに渡す環境変数</td></tr>
         <tr><td><code class="inline">model</code></td><td>既定モデル</td></tr>
         <tr><td><code class="inline">outputStyle</code></td><td>応答スタイル</td></tr>
@@ -385,7 +387,7 @@
     </section>
 
     <section id="sec3">
-      <h2 class="step"><span class="step-num">3</span>Skills とプラグイン（20分）</h2>
+      <h2 class="step"><span class="step-num">3</span>Skills とプラグイン（18分）</h2>
 
       <h3>3-1. Skills とは（2分）</h3>
       <ul>
@@ -396,7 +398,7 @@
         <li><strong>マーケットプレイス</strong> ＝ プラグインの配布カタログ。Anthropic 公式の <strong>claude-plugins-official</strong> のほか、GitHub リポジトリをマーケットプレイスとして登録すればチーム独自の配布元も持てる（Section 3 で扱う）</li>
       </ul>
 
-      <h3>3-2. プラグインを入れて機能を足す（5分）</h3>
+      <h3>3-2. プラグインを入れて機能を足す（4分）</h3>
       <p><strong>プラグイン</strong> ＝ スキル・エージェント・Hooks・MCP サーバーをまとめた配布パッケージ。マーケットプレイスから入れる。公式マーケットプレイス <code class="inline">claude-plugins-official</code> は最初から利用できる。</p>
       <p>例として、Claude の変更を自動でセキュリティレビューする <code class="inline">security-guidance</code> を入れてみる:</p>
 <pre>/plugin install security-guidance@claude-plugins-official
@@ -411,7 +413,7 @@
         <p>security-guidance を install → /reload-plugins → /plugin の Installed タブで入ったことを確認する</p>
       </div>
 
-      <h3>3-3. skill-creator でスキルを作る（5分）</h3>
+      <h3>3-3. skill-creator でスキルを作る（4分）</h3>
       <p>手書きで <code class="inline">SKILL.md</code> を書いてもよいが、<strong>skill-creator</strong> プラグインを使うと <strong>対話的にスキルを作れる</strong>。</p>
 <pre>/plugin install skill-creator@claude-plugins-official
 /reload-plugins</pre>
@@ -523,9 +525,64 @@ allowed-tools: Read, Edit, Bash
     </section>
 
     <section id="sec4">
-      <h2 class="step"><span class="step-num">4</span>MCP（12分）</h2>
+      <h2 class="step"><span class="step-num">4</span>コネクタ（6分）</h2>
 
-      <h3>4-1. MCP とは（4分）</h3>
+      <h3>4-1. コネクタとは（3分）</h3>
+      <ul>
+        <li><strong>コネクタ</strong> ＝ claude.ai で接続する外部サービス連携（Gmail / Google Calendar / Google Drive / Slack / Notion / Figma / Asana / Linear / Jira など）。実体は <strong>Anthropic が用意・ホストする MCP 接続</strong> で、<a href="https://claude.ai/customize/connectors" target="_blank" rel="noopener">claude.ai/customize/connectors</a> で「Add」して OAuth 認証するだけで使える</li>
+        <li>claude.ai アカウントで Claude Code にログインしていれば、接続済みのコネクタは <strong>Claude Code のセッションにも自動で流れてくる</strong>。<code class="inline">/mcp</code> を開くと「claude.ai」セクションに一覧表示される（次章 5-2 のスクリーンショット参照）</li>
+        <li>MCP との関係：<strong>コネクタ＝Anthropic が管理する MCP</strong>、<strong><code class="inline">claude mcp add</code>＝自分で設定する MCP</strong>。同じサービスを両方で入れた場合はローカル設定が優先され、コネクタ側は <code class="inline">hidden — same URL as your server</code> と表示される</li>
+        <li>操作できる範囲は、<strong>自分がそのサービスで持つ権限</strong> と同じ。ツール定義は必要になるまで読み込まれない（Tool Search）ので、接続しているだけでコンテキストを大きく消費することはない</li>
+      </ul>
+      <h4>利用条件 — サブスクリプションか API か</h4>
+      <table>
+        <tr><th>Claude Code の認証方法</th><th>コネクタ</th></tr>
+        <tr><td><strong>Claude サブスクリプション</strong>（Pro / Max / Team / Enterprise）で claude.ai アカウントにログイン</td><td>✅ 自動で利用可（Free プランは接続数に制限あり）</td></tr>
+        <tr><td><strong>Claude Console の API キー</strong>（従量課金）</td><td>❌ claude.ai アカウントを使わないため対象外。必要なら <code class="inline">claude mcp add</code> で自分で MCP を追加する</td></tr>
+        <tr><td><strong>Amazon Bedrock / Google Vertex AI / Microsoft Foundry</strong> 経由</td><td>❌ 同上</td></tr>
+      </table>
+      <div class="callout tip">
+        <strong>💡 Team / Enterprise の管理者コントロール</strong>
+        管理者が Organization settings → Connectors で <strong>組織として許可するコネクタや操作範囲（読み取りのみ等）を制御</strong> できる。Okta などの ID プロバイダ連携で、メンバーの認証をまとめて済ませることもできる。
+      </div>
+
+      <h3>4-2. 確認と制御（3分）</h3>
+      <ul>
+        <li><strong>claude.ai 側</strong>：Settings → Connectors（<code class="inline">claude.ai/customize/connectors</code>）で追加・認証・解除</li>
+        <li><strong>Claude Code 側</strong>：<code class="inline">/mcp</code> → 「claude.ai」セクション。<code class="inline">needs auth</code> のものは選んで <strong>Authenticate</strong></li>
+        <li>プロジェクトによってはコネクタを使わせたくない（機密性の高いリポジトリなど）。全体を無効化するには環境変数か <code class="inline">settings.json</code> で指定する。個別に除外したい場合は <code class="inline">deniedMcpServers</code> 設定で対象を指定する</li>
+      </ul>
+<pre><span class="comment"># 環境変数でこの起動だけ無効化</span>
+<span class="prompt">$</span> ENABLE_CLAUDEAI_MCP_SERVERS=false claude</pre>
+<pre><span class="comment">// settings.json で常に無効化</span>
+{ <span class="str">"disableClaudeAiConnectors"</span>: true }</pre>
+
+      <h3>演習4</h3>
+      <ol>
+        <li><code class="inline">/mcp</code> を実行し、「claude.ai」セクションにどのコネクタが並んでいるか確認する（何も無ければ、ブラウザで <code class="inline">claude.ai/customize/connectors</code> から Google Calendar や Slack など1つを Add して戻ってくる）</li>
+        <li><code class="inline">needs auth</code> のものがあれば <strong>Authenticate</strong> して <code class="inline">connected</code> にする</li>
+        <li>接続したコネクタを1つ使ってみる:
+          <div class="prompt-box">
+            <span class="label">あなたの指示</span>
+            <p>Google Calendar で今日の予定を一覧して</p>
+          </div>
+        </li>
+      </ol>
+      <ul>
+        <li>承認ダイアログで <strong>どのツールが呼ばれるか</strong> を確認してから許可する。<code class="inline">/status</code> の「MCP servers」表示も見ておく</li>
+      </ul>
+      <h4>参考リンク</h4>
+      <ul>
+        <li><a href="https://code.claude.com/docs/en/mcp" target="_blank" rel="noopener">Claude Code ドキュメント — MCP（claude.ai connectors の節）</a></li>
+        <li><a href="https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities" target="_blank" rel="noopener">Claude ヘルプセンター — Use connectors to extend Claude's capabilities</a></li>
+        <li><a href="https://claude.com/connectors" target="_blank" rel="noopener">Claude — Connectors ディレクトリ</a></li>
+      </ul>
+    </section>
+
+    <section id="sec5">
+      <h2 class="step"><span class="step-num">5</span>MCP（12分）</h2>
+
+      <h3>5-1. MCP とは（4分）</h3>
       <figure class="shot">
         <img src="Image/mcp-diagram.svg" alt="MCP の概念図 — Claude Code が MCP という標準プロトコルを介して GitHub・Slack・Figma・DB などの MCP サーバーに接続し、各サービスの操作をツールとして使う">
         <figcaption>MCP — 1つの標準プロトコルで様々な外部サービスに接続し、その操作を「ツール」として使えるようにする</figcaption>
@@ -549,7 +606,7 @@ allowed-tools: Read, Edit, Bash
         起動画面の「MCP servers: ◯ need auth」表示や <code class="inline">/status</code> からも状態が分かる。うまく動かないときは <strong>まず <code class="inline">/mcp</code> で <code class="inline">connected</code> になっているか</strong> を確認する。
       </div>
 
-      <h3>4-2. Figma MCP を接続する（4分）</h3>
+      <h3>5-2. Figma MCP を接続する（4分）</h3>
       <p>Figma 公式の MCP（リモート）を、3章で学んだ <strong>プラグイン機構</strong> で導入する:</p>
 <pre>/plugin install figma@claude-plugins-official
 /reload-plugins</pre>
@@ -581,7 +638,7 @@ allowed-tools: Read, Edit, Bash
         ローカル（デスクトップ）方式は Figma デスクトップアプリ＋Dev 席（有料プラン）が必要。
       </div>
 
-      <h3>4-3. ハンズオン：サンプルデザイン（AI Chat）をコードにする（4分）</h3>
+      <h3>5-3. ハンズオン：サンプルデザイン（AI Chat）をコードにする（4分）</h3>
       <p>自分でデザインを用意しなくても試せるよう、Figma 標準ライブラリ <strong>Simple Design System</strong> のサンプル画面（Examples/AI Chat）を使う。</p>
       <p>まず Figma で <strong>新規デザインファイル</strong> を作成し（ドラフト・無料プランで OK）、左サイドバーの <strong>アセット</strong> タブから <strong>Simple Design System / Examples</strong> を開く。About / AI Chat / Article / Contact Us などのサンプル画面が並んでいる:</p>
       <figure class="shot">
@@ -619,17 +676,17 @@ allowed-tools: Read, Edit, Bash
       <ul>
         <li>Claude が figma の <code class="inline">get_design_context</code>（コード生成）・<code class="inline">get_variable_defs</code>（色/サイズ等のトークン抽出）・<code class="inline">get_screenshot</code>（選択範囲の画像）などのツールを呼び、デザインからコードを生成する</li>
       </ul>
-      <h3>演習4</h3>
+      <h3>演習5</h3>
       <div class="prompt-box">
         <span class="label">やってみよう</span>
         <p>アセットに並ぶ他のサンプル（Article・Contact Us など）を挿入し、同じ流れでコード生成を試す</p>
       </div>
     </section>
 
-    <section id="sec5">
-      <h2 class="step"><span class="step-num">5</span>SubAgent（サブエージェント）（12分）</h2>
+    <section id="sec6">
+      <h2 class="step"><span class="step-num">6</span>SubAgent（サブエージェント）（12分）</h2>
 
-      <h3>5-1. SubAgent とは（4分）</h3>
+      <h3>6-1. SubAgent とは（4分）</h3>
       <figure class="shot">
         <img src="Image/subagent-diagram.svg" alt="SubAgent の概念図 — メインセッションからレビュー用・探索用・テスト実行用のサブエージェントへタスクを依頼し、それぞれ独立したコンテキストで並列に動いて、メインセッションにはサマリーだけを返す">
         <figcaption>SubAgent — タスクを別の独立したコンテキストに任せ、メインセッションにはサマリーだけが返る</figcaption>
@@ -655,7 +712,7 @@ allowed-tools: Read, Edit, Bash
         </ul>
       </div>
 
-      <h3>5-2. サブエージェントの作成（4分）</h3>
+      <h3>6-2. サブエージェントの作成（4分）</h3>
       <p>作り方は2つ:</p>
       <ul>
         <li>① <strong>Claude に自然言語で頼む</strong>（「シェルスクリプトのコードレビューをするサブエージェントを作って」のように依頼）</li>
@@ -695,7 +752,7 @@ model: sonnet
         <li>frontmatter：<code class="inline">name</code>・<code class="inline">description</code>（委譲判断の鍵）は必須。<code class="inline">tools</code>（省略時は全ツール継承）・<code class="inline">model</code>（省略時は <code class="inline">inherit</code>）は任意</li>
       </ul>
 
-      <h3>5-3. ハンズオン：レビュー専用サブエージェントを使う（4分）</h3>
+      <h3>6-3. ハンズオン：レビュー専用サブエージェントを使う（4分）</h3>
       <p>上の <code class="inline">shell-code-reviewer</code> を作成し（または Claude に「シェルスクリプトのコードレビュー用サブエージェントを作って」と頼んで生成し）、呼び出してみる。</p>
       <div class="prompt-box">
         <span class="label">あなたの指示</span>
@@ -715,10 +772,10 @@ model: sonnet
       </ul>
     </section>
 
-    <section id="sec6">
-      <h2 class="step"><span class="step-num">6</span>Hooks（12分）</h2>
+    <section id="sec7">
+      <h2 class="step"><span class="step-num">7</span>Hooks（12分）</h2>
 
-      <h3>6-1. Hooks とは（4分）</h3>
+      <h3>7-1. Hooks とは（4分）</h3>
       <figure class="shot">
         <img src="Image/hooks-diagram.svg" alt="Hooks の概念図 — Claude のツール実行の流れに PreToolUse（直前・ブロック）、PostToolUse（直後・フォーマッタ）、Stop（応答終了時・テスト実行）のフックが差し込まれ、終了コード 2 の出力は Claude にフィードバックされる">
         <figcaption>Hooks — ツール実行の流れに自動でコマンドが差し込まれ、終了コード 2 の出力は Claude にフィードバックされる</figcaption>
@@ -736,7 +793,7 @@ model: sonnet
       <h4>主なユースケース</h4>
       <ul>
         <li><strong>危険な操作のブロック</strong>：<code class="inline">rm -rf</code>・<code class="inline">git push --force</code>・本番環境への操作などを <code class="inline">PreToolUse</code> で検知して止める</li>
-        <li><strong>依存パッケージの追加を制限</strong>：<code class="inline">npm install</code> などを検知し、人間の承認なしに依存を増やさせない（6-2 で実装する例）</li>
+        <li><strong>依存パッケージの追加を制限</strong>：<code class="inline">npm install</code> などを検知し、人間の承認なしに依存を増やさせない（7-2 で実装する例）</li>
         <li><strong>特定ファイルの保護</strong>：<code class="inline">.env</code> やマイグレーションなど触ってほしくないファイルへの書き込みを <code class="inline">PreToolUse</code> でブロック</li>
         <li><strong>コード整形・静的解析の自動実行</strong>：ファイル編集後に <code class="inline">PostToolUse</code> で Prettier / ESLint / shfmt / ShellCheck などを走らせる</li>
         <li><strong>テストの自動実行</strong>：<code class="inline">Stop</code> で応答が終わるたびにテストスイートを回し、壊れていれば Claude に差し戻す</li>
@@ -747,7 +804,7 @@ model: sonnet
         フックが <strong>終了コード 2</strong> で終わると、その出力が Claude にフィードバックされる。PreToolUse ならツール実行がブロックされ、PostToolUse なら <strong>Claude が出力を読んで自分で修正</strong> する — これが品質向上ループの鍵。
       </div>
 
-      <h3>6-2. 例：パッケージの install / update をブロック（PreToolUse）（4分）</h3>
+      <h3>7-2. 例：パッケージの install / update をブロック（PreToolUse）（4分）</h3>
       <p><code class="inline">npm</code> / <code class="inline">pnpm</code> / <code class="inline">bun</code> によるパッケージの追加・更新は、依存の増加やロックファイルの変更を伴う。レビューなしに走らせたくない操作を、<code class="inline">PreToolUse</code> で <strong>実行前に検知して止める</strong>。</p>
       <p><code class="inline">.claude/settings.json</code>：</p>
 <pre>{
@@ -778,7 +835,7 @@ exit 0</pre>
         <li>「何を入れる・何を上げるか」は人間が握る、というガバナンスを <strong>機械的に担保</strong> するのが Hooks の本質</li>
       </ul>
 
-      <h3>6-3. コード品質を高める Hooks 実例（4分）</h3>
+      <h3>7-3. コード品質を高める Hooks 実例（4分）</h3>
       <h4>危険なコマンドのブロック（PreToolUse）</h4>
 <pre>{
   <span class="str">"hooks"</span>: {
@@ -805,11 +862,11 @@ exit 0</pre>
       </table>
     </section>
 
-    <section id="sec7">
-      <h2 class="step"><span class="step-num">7</span>実践：アプリ開発の一連フロー（28分）</h2>
+    <section id="sec8">
+      <h2 class="step"><span class="step-num">8</span>実践：アプリ開発の一連フロー（28分）</h2>
       <p><strong>個人開発のフロー</strong> を最初から最後まで回す。題材の agmsg をクローン → 機能追加（メッセージ検索） → レビュー → 修正 → テスト生成 → セキュリティレビュー → クローン元リポジトリへの PR 作成まで、すべて Claude Code との会話で進める。</p>
 
-      <h3>7-1. 題材（agmsg）をクローン（2分）</h3>
+      <h3>8-1. 題材（agmsg）をクローン（2分）</h3>
       <p>改修の題材は <strong>agmsg</strong>（Section 1 のソースコード解析で使った、CLI AI エージェント間のメッセージングツール）。GitHub からクローンして準備する:</p>
 <pre>$ git clone https://github.com/kimotuki/agmsg
 $ cd agmsg
@@ -819,7 +876,7 @@ $ claude</pre>
         <li>Section 1 の「ソースコード解析」と同じ題材なので、構造を把握済みならスムーズに改修へ入れる</li>
       </ul>
 
-      <h3>7-2. 「メッセージ検索」機能を追加（8分）</h3>
+      <h3>8-2. 「メッセージ検索」機能を追加（8分）</h3>
       <div class="prompt-box">
         <span class="label">あなたの指示（Plan Mode で）</span>
         <p>このagmsgに「メッセージ検索」機能を追加してください。scripts/search.sh として、キーワードで過去のメッセージを検索できるようにして。</p>
@@ -831,7 +888,7 @@ $ claude</pre>
         <li>新規ファイルの一覧は <code class="inline">git status</code>、既存ファイルの差分は <code class="inline">git diff</code> で見る。意図しない変更が混ざっていないかを確認する</li>
       </ul>
 
-      <h3>7-3. 組み込みスキルでレビュー（4分）</h3>
+      <h3>8-3. 組み込みスキルでレビュー（4分）</h3>
       <p>3-5 で紹介した組み込みスキル <code class="inline">/code-review</code> でレビューする。</p>
 <pre>/code-review</pre>
       <ul>
@@ -839,7 +896,7 @@ $ claude</pre>
         <li>妥当な指摘があれば「指摘の1番を修正して」と依頼し、修正された差分を確認する</li>
       </ul>
 
-      <h3>7-4. レビュー内容を修正（3分）</h3>
+      <h3>8-4. レビュー内容を修正（3分）</h3>
       <div class="prompt-box">
         <span class="label">あなたの指示</span>
         <p>レビュー指摘のうち、○番と○番を直して</p>
@@ -850,7 +907,7 @@ $ claude</pre>
         <li>直した内容が新たな指摘を生んでいないか、必要なら再度 <code class="inline">/code-review</code> をかける</li>
       </ul>
 
-      <h3>7-5. 自作スキルでテストを生成してレビュー（3分）</h3>
+      <h3>8-5. 自作スキルでテストを生成してレビュー（3分）</h3>
       <p>3-3 で作った自作スキル <code class="inline">/test-gen</code> で、追加した検索機能のテストを生成して検証する。</p>
 <pre>/test-gen scripts/search.sh</pre>
       <ul>
@@ -858,7 +915,7 @@ $ claude</pre>
         <li>レビューは組み込みスキル、テスト生成は自作 <code class="inline">/test-gen</code> のように、<strong>組み込みスキルでカバーされない定型作業は自作スキルで作っていく</strong></li>
       </ul>
 
-      <h3>7-6. 組み込みスキルでセキュリティレビュー（4分）</h3>
+      <h3>8-6. 組み込みスキルでセキュリティレビュー（4分）</h3>
       <p>組み込みスキル <code class="inline">/security-review</code> で、現在のブランチの変更にセキュリティ上の問題がないかをレビューする。</p>
 <pre>/security-review</pre>
       <ul>
@@ -867,7 +924,7 @@ $ claude</pre>
         <li>3章で <code class="inline">security-guidance</code> プラグインを入れていれば、編集のたびに <strong>自動でも</strong> 同様のチェックが走る</li>
       </ul>
 
-      <h3>7-7. リポジトリへコミット、PR 作成（4分）</h3>
+      <h3>8-7. リポジトリへコミット、PR 作成（4分）</h3>
       <p>修正をコミットし、クローン元（<code class="inline">kimotuki/agmsg</code>）へ PR を作成する:</p>
 <pre>!git checkout -b feature/message-search-[自分の名前]
 !git add -A && git commit -m "メッセージ検索機能の追加 by [自分の名前]"
@@ -879,18 +936,18 @@ $ claude</pre>
         <li>ブランチ名・コミットメッセージ・PR 本文は Claude に任せてもよい（「クローン元に PR を作って」）</li>
       </ul>
 
-      <h3>7-8. オプション課題</h3>
+      <h3>8-8. オプション課題</h3>
       <ul>
         <li>余裕があれば「メッセージ統計」機能も追加する — 「エージェントごとの送信数を集計する scripts/stats.sh を追加して」</li>
       </ul>
     </section>
 
-    <section id="sec8">
-      <h2 class="step"><span class="step-num">✓</span>まとめ（10分）</h2>
+    <section id="sec9">
+      <h2 class="step"><span class="step-num">✓</span>まとめ（8分）</h2>
       <ul>
         <li><code class="inline">CLAUDE.md</code> は <strong>Claude への引き継ぎ書</strong> — 簡潔・宣言的に保つ。<code class="inline">settings.json</code> は <strong>ハーネスの強制設定</strong>（<code class="inline">/config</code> <code class="inline">/permissions</code> <code class="inline">/hooks</code> で確認）</li>
         <li><strong>プラグイン</strong> で機能を足し、<strong>skill-creator</strong> で自作スキルを作り、<strong>Hooks</strong> で品質担保を自動化する</li>
-        <li><strong>MCP</strong> で外部サービス（Figma など）を接続すると、Claude の作業範囲が広がる</li>
+        <li><strong>コネクタ・MCP</strong> で外部サービス（Figma など）を接続すると、Claude の作業範囲が広がる</li>
         <li><strong>SubAgent</strong> で重い調査・レビューを別コンテキストに逃がし、メイン会話を汚さない</li>
         <li>コード変更は <strong>Plan Mode で計画 → 承認 → 小さく実装 → テスト</strong> のリズムで</li>
       </ul>
@@ -918,7 +975,7 @@ $ claude</pre>
 /loop 20m /code-review
 /loop CI が通ってレビューコメントが無くなるまで確認を続けて</pre>
       <h4>演習</h4>
-      <p>7-7 で作成した PR（<code class="inline">kimotuki/agmsg</code> 向け）を題材に、CI とレビューコメントの変化を定期的に確認させる。<code class="inline">agmsg</code> のディレクトリで <code class="inline">claude</code> を起動し:</p>
+      <p>8-7 で作成した PR（<code class="inline">kimotuki/agmsg</code> 向け）を題材に、CI とレビューコメントの変化を定期的に確認させる。<code class="inline">agmsg</code> のディレクトリで <code class="inline">claude</code> を起動し:</p>
       <div class="prompt-box">
         <span class="label">あなたの指示</span>
         <p>/loop 2m gh で自分の PR の CI ステータスとレビューコメントを確認して、前回から変化があれば教えて</p>

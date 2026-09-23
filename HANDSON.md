@@ -40,7 +40,7 @@
 | Section | テーマ | 主な内容 | 実践 |
 |---|---|---|---|
 | Section 1 | Claude Code の基本 | Claude Code とは / 基本的な使い方 / コマンド | Claude Code を使ったソースコード解析 |
-| Section 2 | Claude Code を使ったソフトウェア開発 | 設定ファイル / Skills・プラグイン / skill-creator / Hooks / MCP / SubAgent | Claude Code を使ったコード変更 |
+| Section 2 | Claude Code を使ったソフトウェア開発 | 設定ファイル / Skills・プラグイン / skill-creator / コネクタ / MCP / SubAgent / Hooks | Claude Code を使ったコード変更 |
 | Section 3 | Claude Code を使ったチーム開発 | CLAUDE.md・Skills の共有 / コンテキスト管理 | チーム開発フローの体験 |
 
 ---
@@ -700,21 +700,22 @@ loops-guide.html を A4 縦の PDF に変換して、loops-guide.pdf として�
 
 * `CLAUDE.md`・メモリ・`settings.json` の仕組みを理解し、設定が効いているかを確認できる
 * プラグインで機能を追加し、skill-creator で自作スキルを作れる
-* MCP で外部サービス（Figma）を接続し、デザインからコード生成の流れを理解する
+* コネクタ・MCP で外部サービス（Figma など）を接続し、デザインからコード生成の流れを理解する
 * 題材の OSS（agmsg）への機能追加からレビュー・PR 作成まで、Claude Code との会話で完遂できる
 
 ## 時間配分（120分）
 
 | #  | 内容                                       | 時間 |
 |----|--------------------------------------------|------|
-| 1  | オープニング（到達目標・時間配分の説明）   | 8分  |
+| 1  | オープニング（到達目標・時間配分の説明）   | 6分  |
 | 2  | 設定ファイルとメモリ（CLAUDE.md・settings.json・MEMORY.md） | 18分 |
-| 3  | Skills とプラグイン           | 20分 |
-| 4  | MCP                           | 12分  |
-| 5  | SubAgent（サブエージェント）  | 12分  |
-| 6  | Hooks                         | 12分  |
-| 7  | 実践：アプリ開発の一連フロー | 28分 |
-| 8  | まとめ                        | 10分  |
+| 3  | Skills とプラグイン           | 18分 |
+| 4  | コネクタ                      | 6分  |
+| 5  | MCP                           | 12分  |
+| 6  | SubAgent（サブエージェント）  | 12分  |
+| 7  | Hooks                         | 12分  |
+| 8  | 実践：アプリ開発の一連フロー | 28分 |
+| 9  | まとめ                        | 8分   |
 
 ---
 
@@ -805,7 +806,7 @@ Section 1 で settings.json の配置場所（user / project / local）に触れ
 | キー | 役割 |
 |------|------|
 | `permissions` | ツール実行の許可/拒否/確認（`allow` / `deny` / `ask`） |
-| `hooks` | ツール実行の前後に差し込むコマンド（6章） |
+| `hooks` | ツール実行の前後に差し込むコマンド（7章） |
 | `env` | セッションに渡す環境変数 |
 | `model` | 既定モデル |
 | `outputStyle` | 応答スタイル |
@@ -898,7 +899,7 @@ CLAUDE.md とは別に、**Claude が自分で書き溜めるプロジェクト�
 | `<repo>/CLAUDE.md` | リポジトリにコミットする **チーム共有の指示** |
 | `~/.claude/projects/<dir>/memory/` | **Claude が自分で書き溜める** プロジェクト別の記憶 |
 
-### 3. Skills とプラグイン（20分）
+### 3. Skills とプラグイン（18分）
 
 #### 3-1. Skills とは（2分）
 
@@ -908,7 +909,7 @@ CLAUDE.md とは別に、**Claude が自分で書き溜めるプロジェクト�
 * **プラグイン** ＝ スキル・サブエージェント・Hooks・MCP 接続などの拡張を **ひとまとめにして配布する入れ物**。`/plugin` で導入・管理する
 * **マーケットプレイス** ＝ プラグインの配布カタログ。Anthropic 公式の **claude-plugins-official** のほか、GitHub リポジトリをマーケットプレイスとして登録すればチーム独自の配布元も持てる（Section 3 で扱う）
 
-#### 3-2. プラグインを入れて機能を足す（5分）
+#### 3-2. プラグインを入れて機能を足す（4分）
 
 **プラグイン** ＝ スキル・エージェント・Hooks・MCP サーバーをまとめた配布パッケージ。マーケットプレイスから入れる。公式マーケットプレイス `claude-plugins-official` は最初から利用できる。
 
@@ -926,7 +927,7 @@ CLAUDE.md とは別に、**Claude が自分で書き溜めるプロジェクト�
 
 * `security-guidance` を install → `/reload-plugins` → `/plugin` の **Installed** タブで入ったことを確認する
 
-#### 3-3. skill-creator でスキルを作る（5分）
+#### 3-3. skill-creator でスキルを作る（4分）
 
 手書きで `SKILL.md` を書いてもよいが、**skill-creator** プラグインを使うと **対話的にスキルを作れる**。
 
@@ -1051,9 +1052,62 @@ test-gen/
 - `claude-md-management`：CLAUDE.md の保守を支援します
 - `hookify`：会話パターンや指示からフックを作ります
 
-### 4. MCP（12分）
+### 4. コネクタ（6分）
 
-#### 4-1. MCP とは（4分）
+#### 4-1. コネクタとは（3分）
+
+* **コネクタ** ＝ claude.ai で接続する外部サービス連携（Gmail / Google Calendar / Google Drive / Slack / Notion / Figma / Asana / Linear / Jira など）。実体は **Anthropic が用意・ホストする MCP 接続** で、[claude.ai/customize/connectors](https://claude.ai/customize/connectors) で「Add」して OAuth 認証するだけで使える
+* claude.ai アカウントで Claude Code にログインしていれば、接続済みのコネクタは **Claude Code のセッションにも自動で流れてくる**。`/mcp` を開くと「claude.ai」セクションに一覧表示される（次章 5-2 のスクリーンショット参照）
+* MCP との関係：**コネクタ＝Anthropic が管理する MCP**、**`claude mcp add`＝自分で設定する MCP**。同じサービスを両方で入れた場合はローカル設定が優先され、コネクタ側は `hidden — same URL as your server` と表示される
+* 操作できる範囲は、**自分がそのサービスで持つ権限** と同じ。ツール定義は必要になるまで読み込まれない（Tool Search）ので、接続しているだけでコンテキストを大きく消費することはない
+
+##### 利用条件 — サブスクリプションか API か
+
+| Claude Code の認証方法 | コネクタ |
+|------------------------|----------|
+| **Claude サブスクリプション**（Pro / Max / Team / Enterprise）で claude.ai アカウントにログイン | ✅ 自動で利用可（Free プランは接続数に制限あり） |
+| **Claude Console の API キー**（従量課金） | ❌ claude.ai アカウントを使わないため対象外。必要なら `claude mcp add` で自分で MCP を追加する |
+| **Amazon Bedrock / Google Vertex AI / Microsoft Foundry** 経由 | ❌ 同上 |
+
+> 💡 **Team / Enterprise の管理者コントロール**：管理者が Organization settings → Connectors で **組織として許可するコネクタや操作範囲（読み取りのみ等）を制御** できる。Okta などの ID プロバイダ連携で、メンバーの認証をまとめて済ませることもできる。
+
+#### 4-2. 確認と制御（3分）
+
+* **claude.ai 側**：Settings → Connectors（`claude.ai/customize/connectors`）で追加・認証・解除
+* **Claude Code 側**：`/mcp` → 「claude.ai」セクション。`needs auth` のものは選んで **Authenticate**
+* プロジェクトによってはコネクタを使わせたくない（機密性の高いリポジトリなど）。全体を無効化するには環境変数か `settings.json` で指定する。個別に除外したい場合は `deniedMcpServers` 設定で対象を指定する
+
+```bash
+# 環境変数でこの起動だけ無効化
+ENABLE_CLAUDEAI_MCP_SERVERS=false claude
+```
+
+```json
+// settings.json で常に無効化
+{ "disableClaudeAiConnectors": true }
+```
+
+##### 演習4
+
+1. `/mcp` を実行し、「claude.ai」セクションにどのコネクタが並んでいるか確認する（何も無ければ、ブラウザで `claude.ai/customize/connectors` から Google Calendar や Slack など1つを Add して戻ってくる）
+2. `needs auth` のものがあれば **Authenticate** して `connected` にする
+3. 接続したコネクタを1つ使ってみる:
+
+```
+Google Calendar で今日の予定を一覧して
+```
+
+* 承認ダイアログで **どのツールが呼ばれるか** を確認してから許可する。`/status` の「MCP servers」表示も見ておく
+
+##### 参考リンク
+
+* [Claude Code ドキュメント — MCP（claude.ai connectors の節）](https://code.claude.com/docs/en/mcp)
+* [Claude ヘルプセンター — Use connectors to extend Claude's capabilities](https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities)
+* [Claude — Connectors ディレクトリ](https://claude.com/connectors)
+
+### 5. MCP（12分）
+
+#### 5-1. MCP とは（4分）
 
 ![MCP の図解 — Claude Code と外部サービスをつなぐ共通規格](Image/mcp-diagram.svg)
 
@@ -1074,7 +1128,7 @@ test-gen/
 
 > 💡 起動画面の「MCP servers: ◯ need auth」表示や `/status` からも状態が分かる。うまく動かないときは **まず `/mcp` で `connected` になっているか** を確認する。
 
-#### 4-2. Figma MCP を接続する（4分）
+#### 5-2. Figma MCP を接続する（4分）
 
 Figma 公式の MCP（リモート）を、3章で学んだ **プラグイン機構** で導入する:
 
@@ -1112,7 +1166,7 @@ Figma 公式の MCP（リモート）を、3章で学んだ **プラグイン機
 > 💡 プラグインを使わず直接追加する場合: `claude mcp add --transport http figma https://mcp.figma.com/mcp`
 > 💡 ローカル（デスクトップ）方式は Figma デスクトップアプリ＋Dev 席（有料プラン）が必要。
 
-#### 4-3. ハンズオン：サンプルデザイン（AI Chat）をコードにする（4分）
+#### 5-3. ハンズオン：サンプルデザイン（AI Chat）をコードにする（4分）
 
 自分でデザインを用意しなくても試せるよう、Figma 標準ライブラリ **Simple Design System** のサンプル画面（Examples/AI Chat）を使う。
 
@@ -1149,13 +1203,13 @@ Figmaの「AI Chat」ファイルのExamples/AI Chatの内容をもとにHTML + 
 
 * Claude が figma の `get_design_context`（コード生成）・`get_variable_defs`（色/サイズ等のトークン抽出）・`get_screenshot`（選択範囲の画像）などのツールを呼び、デザインからコードを生成する
 
-##### 演習4
+##### 演習5
 
 * アセットに並ぶ他のサンプル（Article・Contact Us など）を挿入し、同じ流れでコード生成を試す
 
-### 5. SubAgent（サブエージェント）（12分）
+### 6. SubAgent（サブエージェント）（12分）
 
-#### 5-1. SubAgent とは（4分）
+#### 6-1. SubAgent とは（4分）
 
 * **サブエージェント** ＝ メイン会話とは **別の独立したコンテキスト** で動く AI アシスタント。専用の **システムプロンプト・ツール権限・モデル** を持てる
 * 大量の出力が出る作業（全文検索・全テスト実行・複数ファイルのレビュー・ログ調査など）を任せても、**メイン会話にはサマリーだけ返る** — コンテキストを汚さない
@@ -1172,7 +1226,7 @@ Figmaの「AI Chat」ファイルのExamples/AI Chatの内容をもとにHTML + 
 * **再利用・共有**：`.claude/agents/` に置けばプロジェクト／チームで使い回せる
 * **安全性**：ツール権限を絞れる（例：読み取り専用のレビュアーにして書き込みをさせない）
 
-#### 5-2. サブエージェントの作成（4分）
+#### 6-2. サブエージェントの作成（4分）
 
 作り方は2つ:
 
@@ -1215,7 +1269,7 @@ model: sonnet
 
 * frontmatter：`name`・`description`（委譲判断の鍵）は必須。`tools`（省略時は全ツール継承）・`model`（省略時は `inherit`）は任意
 
-#### 5-3. ハンズオン：レビュー専用サブエージェントを使う（4分）
+#### 6-3. ハンズオン：レビュー専用サブエージェントを使う（4分）
 
 上の `shell-code-reviewer` を作成し（または Claude に「シェルスクリプトのコードレビュー用サブエージェントを作って」と頼んで生成し）、呼び出してみる。
 
@@ -1238,9 +1292,9 @@ shell-code-reviewer エージェントで scripts/ の変更をレビューし�
 * 実行中は **エージェント名・経過時間・消費トークン** が表示され、終わると **結果のサマリーだけ** がメイン会話に差し込まれる（途中の大量の読み込み・diff は残らない）
 * `Esc` で実行を中断できる
 
-### 6. Hooks（12分）
+### 7. Hooks（12分）
 
-#### 6-1. Hooks とは（4分）
+#### 7-1. Hooks とは（4分）
 
 * ツール実行の **前後などに自動でコマンドを差し込む** 仕組み（`settings.json` に定義）
 * CLAUDE.md の指示と違い、**ハーネスが機械的に実行する** — Claude が「忘れる」ことがない
@@ -1254,7 +1308,7 @@ shell-code-reviewer エージェントで scripts/ の変更をレビューし�
 
 > 💡 フックが **終了コード 2** で終わると、その出力が Claude にフィードバックされる。PreToolUse ならツール実行がブロックされ、PostToolUse なら **Claude が出力を読んで自分で修正** する — これが品質向上ループの鍵。
 
-#### 6-2. 例：パッケージの install / update をブロック（PreToolUse）（4分）
+#### 7-2. 例：パッケージの install / update をブロック（PreToolUse）（4分）
 
 `npm` / `pnpm` / `bun` によるパッケージの追加・更新は、依存の増加やロックファイルの変更を伴う。レビューなしに走らせたくない操作を、`PreToolUse` で **実行前に検知して止める**。
 
@@ -1293,7 +1347,7 @@ exit 0
 * `npm install` / `pnpm add` / `bun update` などを検知したら **終了コード 2 でブロック**。理由は Claude に伝わるので、勝手に依存を足さず相談・代替手段へ切り替える
 * 「何を入れる・何を上げるか」は人間が握る、というガバナンスを **機械的に担保** するのが Hooks の本質
 
-#### 6-3. コード品質を高める Hooks 実例（4分）
+#### 7-3. コード品質を高める Hooks 実例（4分）
 
 ##### 危険なコマンドのブロック（PreToolUse）
 
@@ -1323,11 +1377,11 @@ exit 0
 | テストの自動実行         | `Stop`                      | `bats tests/`                    |
 | 危険コマンドのブロック   | `PreToolUse`（Bash）        | 検知スクリプトで `exit 2`        |
 
-### 7. 実践：アプリ開発の一連フロー（28分）
+### 8. 実践：アプリ開発の一連フロー（28分）
 
 **個人開発のフロー** を最初から最後まで回す。題材の agmsg をクローン → 機能追加（メッセージ検索） → レビュー → 修正 → テスト生成 → セキュリティレビュー → クローン元リポジトリへの PR 作成まで、すべて Claude Code との会話で進める。
 
-#### 7-1. 題材（agmsg）をクローン（2分）
+#### 8-1. 題材（agmsg）をクローン（2分）
 
 改修の題材は **agmsg**（Section 1 のソースコード解析で使った、CLI AI エージェント間のメッセージングツール）。GitHub からクローンして準備する:
 
@@ -1340,7 +1394,7 @@ $ claude
 * 以降のステップ（機能追加・レビュー・修正）は、この **クローンしたリポジトリを対象** に進める
 * Section 1 の「ソースコード解析」と同じ題材なので、構造を把握済みならスムーズに改修へ入れる
 
-#### 7-2. 「メッセージ検索」機能を追加（8分）
+#### 8-2. 「メッセージ検索」機能を追加（8分）
 
 ```
 このagmsgに「メッセージ検索」機能を追加してください。
@@ -1356,7 +1410,7 @@ scripts/search.sh として、キーワードで過去のメッセージを検�
 
 * 新規ファイルの一覧は `git status`、既存ファイルの差分は `git diff` で見る。意図しない変更が混ざっていないかを確認する
 
-#### 7-3. 組み込みスキルでレビュー（4分）
+#### 8-3. 組み込みスキルでレビュー（4分）
 
 3-5 で紹介した組み込みスキル `/code-review` でレビューする。
 
@@ -1367,7 +1421,7 @@ scripts/search.sh として、キーワードで過去のメッセージを検�
 * `/code-review` を実行する — 未コミットの差分に対して、バグ・エッジケース・改善点のレビューが返ってくる
 * 妥当な指摘があれば「指摘の1番を修正して」と依頼し、修正された差分を確認する
 
-#### 7-4. レビュー内容を修正（3分）
+#### 8-4. レビュー内容を修正（3分）
 
 ```
 レビュー指摘のうち、○番と○番を直して
@@ -1381,7 +1435,7 @@ scripts/search.sh として、キーワードで過去のメッセージを検�
 
 * 直した内容が新たな指摘を生んでいないか、必要なら再度 `/code-review` をかける
 
-#### 7-5. 自作スキルでテストを生成してレビュー（3分）
+#### 8-5. 自作スキルでテストを生成してレビュー（3分）
 
 3-3 で作った自作スキル `/test-gen` で、追加した検索機能のテストを生成して検証する。
 
@@ -1392,7 +1446,7 @@ scripts/search.sh として、キーワードで過去のメッセージを検�
 * 正常系・異常系のテストが `tests/` に生成され（agmsg のテストは bats 形式）、テストが通るまで修正される
 * レビューは組み込みスキル、テスト生成は自作 `/test-gen` のように、**組み込みスキルでカバーされない定型作業は自作スキルで作っていく**
 
-#### 7-6. 組み込みスキルでセキュリティレビュー（4分）
+#### 8-6. 組み込みスキルでセキュリティレビュー（4分）
 
 組み込みスキル `/security-review` で、現在のブランチの変更にセキュリティ上の問題がないかをレビューする。
 
@@ -1404,7 +1458,7 @@ scripts/search.sh として、キーワードで過去のメッセージを検�
 * `/code-review`（バグ・改善点）と `/security-review`（セキュリティ）は **観点が違う** — 両方かけると安心
 * 3章で `security-guidance` プラグインを入れていれば、編集のたびに **自動でも** 同様のチェックが走る
 
-#### 7-7. リポジトリへコミット、PR 作成（4分）
+#### 8-7. リポジトリへコミット、PR 作成（4分）
 
 修正をコミットし、クローン元（`kimotuki/agmsg`）へ PR を作成する:
 
@@ -1419,15 +1473,15 @@ scripts/search.sh として、キーワードで過去のメッセージを検�
 * `--fill` はコミットメッセージから PR のタイトル・本文を自動生成する
 * ブランチ名・コミットメッセージ・PR 本文は Claude に任せてもよい（「クローン元に PR を作って」）
 
-#### 7-8. オプション課題
+#### 8-8. オプション課題
 
 * 余裕があれば「メッセージ統計」機能も追加する — 「エージェントごとの送信数を集計する scripts/stats.sh を追加して」
 
-### 8. まとめ（10分）
+### 9. まとめ（8分）
 
 * `CLAUDE.md` は **Claude への引き継ぎ書** — 簡潔・宣言的に保つ。`settings.json` は **ハーネスの強制設定**（`/config` `/permissions` `/hooks` で確認）
 * **プラグイン** で機能を足し、**skill-creator** で自作スキルを作り、**Hooks** で品質担保を自動化する
-* **MCP** で外部サービス（Figma など）を接続すると、Claude の作業範囲が広がる
+* **コネクタ・MCP** で外部サービス（Figma など）を接続すると、Claude の作業範囲が広がる
 * **SubAgent** で重い調査・レビューを別コンテキストに逃がし、メイン会話を汚さない
 * コード変更は **Plan Mode で計画 → 承認 → 小さく実装 → テスト** のリズムで
 
@@ -1457,7 +1511,7 @@ scripts/search.sh として、キーワードで過去のメッセージを検�
 
 ##### 演習
 
-7-7 で作成した PR（`kimotuki/agmsg` 向け）を題材に、CI とレビューコメントの変化を定期的に確認させる。`agmsg` のディレクトリで `claude` を起動し:
+8-7 で作成した PR（`kimotuki/agmsg` 向け）を題材に、CI とレビューコメントの変化を定期的に確認させる。`agmsg` のディレクトリで `claude` を起動し:
 
 ```
 /loop 2m gh で自分の PR の CI ステータスとレビューコメントを確認して、前回から変化があれば教えて

@@ -24,6 +24,6 @@ open index.html
 
 - エージェントループ・コンテキスト・承認モードなど Claude Code の**基本の仕組みと操作**
 - 既存 OSS リポジトリの**ソースコード解析**（構造把握 → 特定 → 深掘り → サマリ）
-- CLAUDE.md / Skills / プラグイン / Hooks / MCP / SubAgent による**開発環境の整備と自動化**
+- CLAUDE.md / Skills / プラグイン / コネクタ / MCP / SubAgent / Hooks による**開発環境の整備と自動化**
 - 機能追加 → AI レビュー → テスト生成 → PR 作成の**個人開発フロー**
 - Issue 起点の開発フローとスキル化による**チーム開発の実践**
