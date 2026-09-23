@@ -269,16 +269,6 @@
       </div>
 
       <h3>2-4. 用語説明（3分）</h3>
-      <h4>セッション</h4>
-      <ul>
-        <li><code class="inline">claude</code> の起動から終了までの <strong>1つの対話単位</strong>。会話履歴（コンテキスト）はセッションごとに保持される</li>
-        <li>終了しても履歴は残っており、<code class="inline">claude --continue</code>（直前）や <code class="inline">claude -r</code>（一覧から選択）で再開できる</li>
-        <li>セッションが変わるとコンテキストはまっさらになる — <strong>1タスク1セッション</strong> が使い方の基本</li>
-      </ul>
-      <figure class="shot">
-        <img src="Image/session-diagram.svg" alt="セッションの図解 — 終了後は再開（--continue / -r）か新規開始かを選べる">
-        <figcaption>セッション — 起動から終了までが1つの対話単位。終了後は「続きを再開」か「まっさらな新規セッション」を選べる</figcaption>
-      </figure>
       <h4>モデル</h4>
       <p>ここでは Large Language Model (LLM) を指す。Anthropic 社が提供するモデルファミリー：</p>
       <table>
@@ -288,16 +278,6 @@
         <tr><td>Sonnet</td><td>性能と速度のバランス型。日常的な開発タスクの主力</td></tr>
         <tr><td>Haiku</td><td>最速・低コスト。簡単な質問や定型作業向け</td></tr>
       </table>
-      <h4>コンテキスト</h4>
-      <ul>
-        <li>会話・ファイル内容・コマンド出力すべてが <strong>コンテキストウィンドウ</strong> に積まれる</li>
-        <li>同じセッションで会話を続けていくと <strong>コンテキストウィンドウを消費していく</strong></li>
-        <li>上限に近づくと <strong>自動コンパクション</strong>（要約圧縮）が走る — <strong>情報のロスを伴う</strong></li>
-      </ul>
-      <figure class="shot">
-        <img src="Image/context-diagram.svg" alt="コンテキストウィンドウと自動コンパクションの図解">
-        <figcaption>コンテキストウィンドウ — 上限に近づくと自動コンパクション（要約圧縮）が走る</figcaption>
-      </figure>
       <h4>トークン</h4>
       <ul>
         <li>LLM が文章を処理する <strong>最小単位</strong>（英語は約4文字 ≒ 1トークン、日本語は1〜2文字 ≒ 1トークン）</li>
@@ -309,6 +289,26 @@
         <figcaption>トークン — 文章は小さな単位に分割して処理される（英語と日本語で粒度が異なる）</figcaption>
       </figure>
       <p>参考: トークン分割を体験できるツール（OpenAI Tokenizer） — <a href="https://platform.openai.com/tokenizer" target="_blank" rel="noopener">platform.openai.com/tokenizer</a></p>
+      <h4>セッション</h4>
+      <ul>
+        <li><code class="inline">claude</code> の起動から終了までの <strong>1つの対話単位</strong>。会話履歴（コンテキスト）はセッションごとに保持される</li>
+        <li>終了しても履歴は残っており、<code class="inline">claude --continue</code>（直前）や <code class="inline">claude -r</code>（一覧から選択）で再開できる</li>
+        <li>セッションが変わるとコンテキストはまっさらになる — <strong>1タスク1セッション</strong> が使い方の基本</li>
+      </ul>
+      <figure class="shot">
+        <img src="Image/session-diagram.svg" alt="セッションの図解 — 終了後は再開（--continue / -r）か新規開始かを選べる">
+        <figcaption>セッション — 起動から終了までが1つの対話単位。終了後は「続きを再開」か「まっさらな新規セッション」を選べる</figcaption>
+      </figure>
+      <h4>コンテキスト</h4>
+      <ul>
+        <li>会話・ファイル内容・コマンド出力すべてが <strong>コンテキストウィンドウ</strong> に積まれる</li>
+        <li>同じセッションで会話を続けていくと <strong>コンテキストウィンドウを消費していく</strong></li>
+        <li>上限に近づくと <strong>自動コンパクション</strong>（要約圧縮）が走る — <strong>情報のロスを伴う</strong></li>
+      </ul>
+      <figure class="shot">
+        <img src="Image/context-diagram.svg" alt="コンテキストウィンドウと自動コンパクションの図解">
+        <figcaption>コンテキストウィンドウ — 上限に近づくと自動コンパクション（要約圧縮）が走る</figcaption>
+      </figure>
       <h4>ハーネス</h4>
       <ul>
         <li>モデル（LLM）を実用的なエージェントとして動かすための <strong>周辺機構の総称</strong></li>
