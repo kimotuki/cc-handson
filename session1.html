@@ -822,9 +822,37 @@ Hello world</pre>
         <li>出来上がったら <code class="inline">!open loops-guide.pdf</code> で確認する（Windows は <code class="inline">!start loops-guide.pdf</code>）</li>
         <li>「見出しの途中で改ページしないようにして」「余白を広めに」のような <strong>印刷向けの微調整も会話で</strong> 頼める</li>
       </ul>
+
+      <h3>付録-4. 指定デザインのプレゼン資料作成をスキル化する</h3>
+      <p>付録-1〜3 の「記事を読む → 指定デザインで html 形式のプレゼン資料にする」という手順は、次に別の記事でも同じことをしたくなる。毎回プロンプトで説明する代わりに、手順を <strong>スキル</strong>（<code class="inline">/スキル名</code> で呼び出せる手順書）として保存しておく。作り方は Claude に頼むだけでよい。</p>
+      <div class="prompt-box">
+        <span class="label">あなたの指示</span>
+        <p>いま loops-guide.html を作った手順をスキルにしてください。名前は slide-deck。入力は Web 記事の URL か Markdown ファイル、出力は日本語の html 形式のプレゼン資料1ファイル。デザインは design-template.png に合わせた loops-guide.html の配色・フォント・レイアウトのルールを文章として SKILL.md に書き込み、画像がなくても同じデザインで作れるようにしてください。どのフォルダでも使いたいので ~/.claude/skills/ に保存してください。</p>
+      </div>
+      <ul>
+        <li><code class="inline">~/.claude/skills/slide-deck/SKILL.md</code> が作られる。<code class="inline">~/.claude/skills/</code> に置いたスキルは <strong>どのプロジェクトからでも呼び出せる</strong>（フォルダ内だけで使うなら <code class="inline">.claude/skills/</code>）</li>
+      </ul>
+      <h4>できたスキルの内容を確認する</h4>
+      <p>実行する前に、生成された手順書を必ず自分の目で読む。</p>
+<pre>!ls ~/.claude/skills/slide-deck/
+!cat ~/.claude/skills/slide-deck/SKILL.md</pre>
+      <ul>
+        <li>先頭の <code class="inline">name</code>（スキル名）と <code class="inline">description</code>（いつ使うスキルかの説明）が入っているか。description は Claude がスキルを自動で使う判断材料になるので、具体的に書かれているとよい</li>
+        <li>本文に <strong>手順</strong>（記事を読む → 構成を決める → html を生成 → ブラウザで確認）と <strong>デザインのルール</strong>（背景色・アクセント色・フォント・1スライドの文字量など）が文章で残っているか。「design-template.png を見て」のように画像に依存した記述だけになっていたら、ルールを文章化するよう頼み直す</li>
+        <li>直したい点は会話で修正できる：「1スライドの箇条書きは5個までというルールを SKILL.md に追記して」</li>
+      </ul>
+      <h4>使ってみる</h4>
+      <p>スキルは起動時に読み込まれるので、<code class="inline">claude</code> をいちど終了して再起動してから呼び出す。別の記事で同じデザインの資料ができれば成功。</p>
+      <div class="prompt-box">
+        <span class="label">あなたの指示</span>
+        <p>/slide-deck https://claude.com/blog/getting-started-with-loops の記事を loops-guide-2.html にまとめて</p>
+      </div>
+      <ul>
+        <li>スキルのしくみ（SKILL.md の書き方・配布方法）は Section 2 の3章で詳しく扱う</li>
+      </ul>
       <div class="callout tip">
         <strong>💡 ポイント</strong>
-        ここまでコードは1行も書いていない。元ネタ（URL・画像）を渡して、欲しい成果物を日本語で伝えるだけで、調査 → 資料化 → デザイン調整 → 配布用の PDF 化まで Claude Code に任せられる。
+        ここまでコードは1行も書いていない。元ネタ（URL・画像）を渡して、欲しい成果物を日本語で伝えるだけで、調査 → 資料化 → デザイン調整 → 配布用の PDF 化、さらにその手順のスキル化まで Claude Code に任せられる。
       </div>
     </section>
 
