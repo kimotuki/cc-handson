@@ -1028,6 +1028,10 @@ $ claude</pre>
         <li><strong>共有タスクリスト</strong>：pending → in progress → completed の状態を持つ作業項目。依存関係も管理され、前提タスクが終わると次が自動的に解放される。リードが割り当てるほか、手が空いたチームメイトが <strong>自分で次のタスクを取る</strong>（self-claim）</li>
         <li><strong>メッセージ</strong>：チームメイト同士・リードとの間で直接やりとりできる。「〇〇担当に△△も確認するよう伝えて」とリードに頼めば届く</li>
       </ul>
+      <figure class="shot">
+        <img src="Image/subagent-vs-teams.svg" alt="SubAgent と Agent Teams の違い — サブエージェントは親に結果を返すだけ、チームメイトは共有タスクリストとメッセージで相互に協調する">
+        <figcaption>SubAgent は「頼んで結果を受け取る」一方向、Agent Teams は独立したチームメイトが共有タスクリストとメッセージで協調する</figcaption>
+      </figure>
       <table>
         <tr><th>観点</th><th>SubAgent（6章）</th><th>Agent Teams</th></tr>
         <tr><td>動く場所</td><td>1つのセッションの中</td><td>複数の独立したセッション</td></tr>

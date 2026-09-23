@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 400" font-family="-apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#78716c"/>
+    </marker>
+  </defs>
+
+  <rect x="1" y="1" width="818" height="398" fill="#f5f3ee"/>
+  <line x1="400" y1="48" x2="400" y2="392" stroke="#e4dfd5" stroke-width="1.5" stroke-dasharray="6 5"/>
+
+  <!-- ===== 左：SubAgent ===== -->
+  <text x="200" y="34" font-size="15" font-weight="700" fill="#a84e32" text-anchor="middle">SubAgent（6章）</text>
+
+  <rect x="60" y="56" width="280" height="72" rx="12" fill="#fbf3ec" stroke="#d97757" stroke-width="2"/>
+  <text x="200" y="86" font-size="13" font-weight="700" fill="#292524" text-anchor="middle">メインセッション（Claude Code）</text>
+  <text x="200" y="108" font-size="10.5" fill="#78716c" text-anchor="middle">会話のコンテキストはここに1つ</text>
+
+  <line x1="160" y1="128" x2="160" y2="204" stroke="#78716c" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="150" y="170" font-size="10.5" fill="#78716c" text-anchor="end">依頼</text>
+  <line x1="240" y1="204" x2="240" y2="128" stroke="#78716c" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="250" y="170" font-size="10.5" fill="#78716c">結果の要約だけ</text>
+
+  <rect x="60" y="206" width="280" height="72" rx="12" fill="#f7e4d8" stroke="#d97757" stroke-width="1.5"/>
+  <text x="200" y="236" font-size="13" font-weight="700" fill="#292524" text-anchor="middle">サブエージェント</text>
+  <text x="200" y="258" font-size="10.5" fill="#78716c" text-anchor="middle">別コンテキストで調査・レビュー</text>
+
+  <text x="200" y="362" font-size="11" fill="#78716c" text-anchor="middle">一方向：親が頼み、結果だけを受け取る</text>
+  <text x="200" y="380" font-size="11" fill="#78716c" text-anchor="middle">サブエージェント同士は会話しない</text>
+
+  <!-- ===== 右：Agent Teams ===== -->
+  <text x="610" y="34" font-size="15" font-weight="700" fill="#a84e32" text-anchor="middle">Agent Teams</text>
+
+  <rect x="470" y="56" width="280" height="64" rx="12" fill="#fbf3ec" stroke="#d97757" stroke-width="2"/>
+  <text x="610" y="84" font-size="13" font-weight="700" fill="#292524" text-anchor="middle">リード（自分のセッション）</text>
+  <text x="610" y="104" font-size="10.5" fill="#78716c" text-anchor="middle">仕事を分割・割り当て・統合</text>
+
+  <line x1="610" y1="122" x2="610" y2="148" stroke="#78716c" stroke-width="1.6" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+
+  <rect x="440" y="150" width="340" height="40" rx="10" fill="#f0c9b4" stroke="#a84e32" stroke-width="1.5"/>
+  <text x="610" y="175" font-size="12" font-weight="700" fill="#292524" text-anchor="middle">共有タスクリスト（割り当て／自己クレーム）</text>
+
+  <line x1="490" y1="192" x2="490" y2="228" stroke="#78716c" stroke-width="1.6" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <line x1="610" y1="192" x2="610" y2="228" stroke="#78716c" stroke-width="1.6" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <line x1="730" y1="192" x2="730" y2="228" stroke="#78716c" stroke-width="1.6" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+
+  <rect x="440" y="230" width="100" height="70" rx="10" fill="#f7e4d8" stroke="#d97757" stroke-width="1.5"/>
+  <text x="490" y="258" font-size="12" font-weight="700" fill="#292524" text-anchor="middle">チームメイト A</text>
+  <text x="490" y="278" font-size="10" fill="#78716c" text-anchor="middle">独立コンテキスト</text>
+
+  <rect x="560" y="230" width="100" height="70" rx="10" fill="#f7e4d8" stroke="#d97757" stroke-width="1.5"/>
+  <text x="610" y="258" font-size="12" font-weight="700" fill="#292524" text-anchor="middle">チームメイト B</text>
+  <text x="610" y="278" font-size="10" fill="#78716c" text-anchor="middle">独立コンテキスト</text>
+
+  <rect x="680" y="230" width="100" height="70" rx="10" fill="#f7e4d8" stroke="#d97757" stroke-width="1.5"/>
+  <text x="730" y="258" font-size="12" font-weight="700" fill="#292524" text-anchor="middle">チームメイト C</text>
+  <text x="730" y="278" font-size="10" fill="#78716c" text-anchor="middle">独立コンテキスト</text>
+
+  <line x1="490" y1="300" x2="490" y2="324" stroke="#78716c" stroke-width="1.4"/>
+  <line x1="610" y1="300" x2="610" y2="324" stroke="#78716c" stroke-width="1.4"/>
+  <line x1="730" y1="300" x2="730" y2="324" stroke="#78716c" stroke-width="1.4"/>
+  <line x1="484" y1="324" x2="736" y2="324" stroke="#78716c" stroke-width="1.6" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <text x="610" y="344" font-size="10.5" fill="#78716c" text-anchor="middle">メッセージで相互にやりとり</text>
+
+  <text x="610" y="380" font-size="11" fill="#78716c" text-anchor="middle">双方向：チームメイト同士が会話し、タスクを自律的に分担する</text>
+</svg>
