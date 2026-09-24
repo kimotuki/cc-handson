@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 440" font-family="-apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#78716c"/>
+    </marker>
+  </defs>
+
+  <rect x="1" y="1" width="818" height="438" fill="#f5f3ee"/>
+
+  <!-- ===== あなた ===== -->
+  <rect x="36" y="42" width="150" height="72" rx="12" fill="#fbf3ec" stroke="#d97757" stroke-width="1.5"/>
+  <text x="111" y="72" font-size="13" font-weight="700" fill="#292524" text-anchor="middle">あなた</text>
+  <text x="111" y="94" font-size="10.5" fill="#78716c" text-anchor="middle">1つの会話で依頼する</text>
+
+  <line x1="186" y1="64" x2="244" y2="64" stroke="#78716c" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="215" y="56" font-size="10" fill="#78716c" text-anchor="middle">依頼</text>
+  <line x1="244" y1="94" x2="186" y2="94" stroke="#78716c" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="215" y="110" font-size="10" fill="#78716c" text-anchor="middle">成果の報告</text>
+
+  <!-- ===== コーディネーター（司令塔） ===== -->
+  <rect x="246" y="30" width="538" height="96" rx="12" fill="#fbf3ec" stroke="#d97757" stroke-width="2"/>
+  <text x="515" y="58" font-size="14" font-weight="700" fill="#292524" text-anchor="middle">コーディネーター（プロジェクト会話）＝ 司令塔</text>
+  <text x="515" y="82" font-size="11" fill="#292524" text-anchor="middle">仕事を分解 → スレッド候補を提示 → 割り振り → 進行を調整・出力を確認 → 成果をまとめる</text>
+  <text x="515" y="104" font-size="10.5" fill="#78716c" text-anchor="middle">どのセッションに何を任せるか・成果をどう統合するかも Claude が担う</text>
+
+  <!-- ===== 司令塔 → スレッド（バス） ===== -->
+  <line x1="410" y1="126" x2="410" y2="152" stroke="#78716c" stroke-width="1.6"/>
+  <line x1="150" y1="152" x2="670" y2="152" stroke="#78716c" stroke-width="1.6"/>
+  <line x1="150" y1="152" x2="150" y2="204" stroke="#78716c" stroke-width="1.6" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <line x1="410" y1="152" x2="410" y2="204" stroke="#78716c" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="670" y1="152" x2="670" y2="204" stroke="#78716c" stroke-width="1.6" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <text x="682" y="145" font-size="10" fill="#78716c">↓ 割り振り</text>
+  <text x="682" y="164" font-size="10" fill="#78716c">↑ 出力の確認</text>
+
+  <!-- ===== クラウド（並列実行） ===== -->
+  <rect x="36" y="172" width="748" height="128" rx="14" fill="none" stroke="#d97757" stroke-width="1.2" stroke-dasharray="6 5"/>
+  <text x="166" y="191" font-size="10" font-weight="700" fill="#a84e32">クラウド上で並列実行 — PC を閉じても動き続ける</text>
+
+  <rect x="50" y="206" width="200" height="78" rx="12" fill="#f7e4d8" stroke="#d97757" stroke-width="1.5"/>
+  <text x="150" y="232" font-size="13" font-weight="700" fill="#292524" text-anchor="middle">スレッド 1：タスク A</text>
+  <text x="150" y="252" font-size="10.5" fill="#78716c" text-anchor="middle">独立した Claude Code セッション</text>
+  <text x="150" y="271" font-size="10.5" fill="#78716c" text-anchor="middle">実装 → テスト → PR 作成</text>
+
+  <rect x="310" y="206" width="200" height="78" rx="12" fill="#f7e4d8" stroke="#d97757" stroke-width="1.5"/>
+  <text x="410" y="232" font-size="13" font-weight="700" fill="#292524" text-anchor="middle">スレッド 2：タスク B</text>
+  <text x="410" y="252" font-size="10.5" fill="#78716c" text-anchor="middle">独立した Claude Code セッション</text>
+  <text x="410" y="271" font-size="10.5" fill="#78716c" text-anchor="middle">実装 → テスト → PR 作成</text>
+
+  <rect x="570" y="206" width="200" height="78" rx="12" fill="#f7e4d8" stroke="#d97757" stroke-width="1.5"/>
+  <text x="670" y="232" font-size="13" font-weight="700" fill="#292524" text-anchor="middle">スレッド 3：タスク C</text>
+  <text x="670" y="252" font-size="10.5" fill="#78716c" text-anchor="middle">独立した Claude Code セッション</text>
+  <text x="670" y="271" font-size="10.5" fill="#78716c" text-anchor="middle">実装 → テスト → PR 作成</text>
+
+  <!-- ===== スレッド ↔ 共有 ===== -->
+  <line x1="150" y1="284" x2="150" y2="322" stroke="#78716c" stroke-width="1.6" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <line x1="410" y1="284" x2="410" y2="322" stroke="#78716c" stroke-width="1.6" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <line x1="670" y1="284" x2="670" y2="322" stroke="#78716c" stroke-width="1.6" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+
+  <rect x="50" y="324" width="720" height="58" rx="10" fill="#f0c9b4" stroke="#a84e32" stroke-width="1.5"/>
+  <text x="410" y="348" font-size="12.5" font-weight="700" fill="#292524" text-anchor="middle">Project で共有：ファイル・リポジトリ・プロジェクト指示・共有メモリ・Library</text>
+  <text x="410" y="369" font-size="10.5" fill="#292524" text-anchor="middle">あるスレッドで得た情報や成果物を、別のスレッドも引き継いで使える</text>
+
+  <!-- ===== 注記 ===== -->
+  <text x="410" y="408" font-size="11" fill="#78716c" text-anchor="middle">従来の Projects（資料・会話をまとめる作業空間）から、Claude Code セッションを並列指揮する「司令塔」へ</text>
+  <text x="410" y="426" font-size="11" fill="#78716c" text-anchor="middle">Overview でスレッドの状態を一覧し、Pull requests タブで各スレッドの PR をまとめて確認する</text>
+</svg>
