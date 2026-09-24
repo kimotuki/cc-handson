@@ -23,7 +23,7 @@
 
 * Git / GitHub の基本操作
 * ターミナル操作
-* JavaScript / TypeScript または Python の基本
+* ソフトウェア開発の基本知識
 * VS Code 等のエディタ利用経験
 
 ### 前提環境
