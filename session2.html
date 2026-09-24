@@ -695,7 +695,16 @@ allowed-tools: Read, Edit, Bash
       <ul>
         <li><strong>サブエージェント</strong> ＝ メイン会話とは <strong>別の独立したコンテキスト</strong> で動く AI アシスタント。専用の <strong>システムプロンプト・ツール権限・モデル</strong> を持てる</li>
         <li>大量の出力が出る作業（全文検索・全テスト実行・複数ファイルのレビュー・ログ調査など）を任せても、<strong>メイン会話にはサマリーだけ返る</strong> — コンテキストを汚さない</li>
-        <li>組み込みのサブエージェントもある：<code class="inline">Explore</code>（高速・読み取り専用の探索）/ <code class="inline">Plan</code>（計画用）/ <code class="inline">general-purpose</code>（調査＋修正の汎用）</li>
+        <li>組み込みのサブエージェントは次の3種類。Claude が状況に応じて自動で使い分ける（同じ名前で <code class="inline">.claude/agents/</code> に定義すると上書きもできる）</li>
+      </ul>
+      <table>
+        <tr><th>組み込みサブエージェント</th><th>用途</th><th>ツール</th><th>Claude が自動で使う場面</th></tr>
+        <tr><td><code class="inline">Explore</code></td><td>高速なコードベースの検索・分析。探索結果をメイン会話から隔離する</td><td>読み取り専用（編集不可）</td><td>「どこに実装があるか」「関連ファイルを洗い出して」など、広く読む必要があるとき</td></tr>
+        <tr><td><code class="inline">Plan</code></td><td>編集前の計画づくりのための調査</td><td>読み取り専用（編集不可）</td><td>Plan Mode で計画を立てるときの調査</td></tr>
+        <tr><td><code class="inline">general-purpose</code></td><td>調査と修正の両方を含む、複数ステップの複雑なタスク</td><td>すべてのツール</td><td>種類を指定せずにサブエージェントを起動したとき（既定）。モデルはメイン会話を継承（<code class="inline">CLAUDE_CODE_SUBAGENT_MODEL</code> で固定も可）</td></tr>
+      </table>
+      <ul>
+        <li>動いているサブエージェントは <code class="inline">/tasks</code> で一覧・確認・停止できる。特定のサブエージェントを確実に使わせたいときは <code class="inline">@"shell-code-reviewer (agent)"</code> のように @ で指名するか、<code class="inline">claude --agent shell-code-reviewer</code> でセッション全体に適用する</li>
       </ul>
       <div class="callout tip">
         <strong>💡 スキル / プラグイン との違い</strong>
