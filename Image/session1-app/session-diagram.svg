@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 340" font-family="-apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#78716c"/>
+    </marker>
+  </defs>
+
+  <rect x="1" y="1" width="818" height="338" fill="#f5f3ee"/>
+
+  <!-- セッション A -->
+  <rect x="20" y="50" width="300" height="150" rx="14" fill="#fbf3ec" stroke="#d97757" stroke-width="2"/>
+  <text x="40" y="78" font-size="14" font-weight="700" fill="#a84e32">セッション A</text>
+  <text x="40" y="97" font-size="10" fill="#78716c">起動から終了までの1つの対話単位</text>
+
+  <rect x="40" y="120" width="72" height="50" rx="9" fill="#f7e4d8" stroke="#d97757" stroke-width="1"/>
+  <text x="76" y="141" font-size="12.5" font-weight="600" fill="#292524" text-anchor="middle">開始</text>
+  <text x="76" y="158" font-size="9.5" fill="#78716c" text-anchor="middle">＋ 新規</text>
+
+  <line x1="112" y1="145" x2="128" y2="145" stroke="#78716c" stroke-width="1.4" marker-end="url(#arrow)"/>
+
+  <rect x="130" y="120" width="104" height="50" rx="9" fill="#f7e4d8" stroke="#d97757" stroke-width="1"/>
+  <text x="182" y="141" font-size="12.5" font-weight="600" fill="#292524" text-anchor="middle">会話</text>
+  <text x="182" y="158" font-size="9.5" fill="#78716c" text-anchor="middle">コンテキスト蓄積</text>
+
+  <line x1="234" y1="145" x2="250" y2="145" stroke="#78716c" stroke-width="1.4" marker-end="url(#arrow)"/>
+
+  <rect x="252" y="120" width="52" height="50" rx="9" fill="#f7e4d8" stroke="#d97757" stroke-width="1"/>
+  <text x="278" y="141" font-size="12.5" font-weight="600" fill="#292524" text-anchor="middle">終了</text>
+  <text x="278" y="158" font-size="9.5" fill="#78716c" text-anchor="middle">閉じる</text>
+
+  <!-- 分岐 -->
+  <line x1="320" y1="110" x2="464" y2="90" stroke="#78716c" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="392" y="84" font-size="9.5" fill="#78716c" text-anchor="middle">サイドバーの一覧から選んで再開</text>
+
+  <line x1="320" y1="160" x2="464" y2="238" stroke="#78716c" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="392" y="214" font-size="9.5" fill="#78716c" text-anchor="middle">＋ 新規</text>
+
+  <!-- 再開 -->
+  <rect x="470" y="52" width="220" height="76" rx="12" fill="#f7e4d8" stroke="#d97757" stroke-width="1.5"/>
+  <text x="580" y="76" font-size="12" font-weight="700" fill="#292524" text-anchor="middle">再開：セッション A の続き</text>
+  <text x="580" y="96" font-size="9.5" fill="#78716c" text-anchor="middle">終了しても履歴は残っていて、</text>
+  <text x="580" y="112" font-size="9.5" fill="#78716c" text-anchor="middle">コンテキストごと復元される</text>
+
+  <!-- 新規 -->
+  <rect x="470" y="200" width="220" height="76" rx="12" fill="#ffffff" stroke="#d97757" stroke-width="1.5"/>
+  <text x="580" y="224" font-size="12" font-weight="700" fill="#292524" text-anchor="middle">新規：セッション B を開始</text>
+  <text x="580" y="244" font-size="9.5" fill="#78716c" text-anchor="middle">コンテキストはまっさら</text>
+  <text x="580" y="260" font-size="9.5" fill="#78716c" text-anchor="middle">（A の履歴は引き継がない）</text>
+
+  <text x="410" y="326" font-size="11.5" fill="#78716c" text-anchor="middle">使い方の基本は <tspan font-weight="700" fill="#a84e32">1タスク1セッション</tspan> — 新しいタスクは新しいセッションで始める</text>
+</svg>
