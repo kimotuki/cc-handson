@@ -1019,6 +1019,14 @@ $ claude</pre>
 <pre>/goal bats tests/ がすべて成功し、shellcheck scripts/*.sh が警告なしで終わる。または10ターンで止める
 /goal
 /goal clear</pre>
+      <h4>ゴールを解除する — <code class="inline">/goal clear</code></h4>
+      <ul>
+        <li><code class="inline">/goal clear</code> を実行すると、設定中のゴールが <strong>その場で解除</strong> され、次のターンから自動継続が止まる。画面には <code class="inline">Goal cleared:</code> に続けて解除した条件が表示される（何も設定していなければ <code class="inline">No goal set</code>）</li>
+        <li><code class="inline">/goal stop</code> <code class="inline">/goal reset</code> <code class="inline">/goal cancel</code> <code class="inline">/goal off</code> はすべて同じ動作の別名</li>
+        <li><strong>使う場面</strong>：条件の書き方を間違えた／方針を変えたい／Claude が同じ修正を繰り返して進まない／今日はここで切り上げたい。ゴールを切り替えるだけなら clear せずに <code class="inline">/goal &lt;新しい条件&gt;</code> を実行すれば上書きされる</li>
+        <li>解除しても <strong>それまでの変更はファイルに残る</strong>。<code class="inline">git diff</code> で確認し、不要なら <code class="inline">git checkout -- .</code> で戻す</li>
+        <li>条件を達成したときと「達成不可能」と判定されたときは <strong>自動で解除</strong> されるので、手動の clear は不要</li>
+      </ul>
       <h4>演習</h4>
       <p><code class="inline">agmsg</code> のディレクトリで、まず完了条件を設定してから機能追加を依頼する:</p>
       <div class="prompt-box">
