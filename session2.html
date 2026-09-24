@@ -180,6 +180,7 @@
       <li><a href="#sec9">9. まとめ</a></li>
       <li><a href="#appendix">付録A. /loop と /goal</a></li>
       <li><a href="#appendix-teams">付録B. Agent Teams</a></li>
+      <li><a href="#appendix-agmsg">付録C. agmsg</a></li>
     </ol>
   </nav>
 
@@ -1137,6 +1138,68 @@ scripts/ / tests/ / docs/ / README で分けて、担当外のファイルは触
       <ul>
         <li><a href="https://code.claude.com/docs/en/agent-teams" target="_blank" rel="noopener">Claude Code ドキュメント — Agent teams</a></li>
         <li><a href="https://code.claude.com/docs/en/sub-agents" target="_blank" rel="noopener">Claude Code ドキュメント — Subagents</a></li>
+      </ul>
+    </section>
+
+    <section id="appendix-agmsg">
+      <h2 class="step"><span class="step-num">付</span>付録C：agmsg — 別々の AI エージェント同士をつなぐメッセージング</h2>
+      <p>Section 1〜3 で題材にしてきた <strong>agmsg</strong>（<a href="https://github.com/fujibee/agmsg" target="_blank" rel="noopener">fujibee/agmsg</a>）は、それ自体が「複数の CLI AI エージェント同士をつなぐ」ための OSS。Claude Code・Codex・Gemini CLI・GitHub Copilot CLI などの <strong>別々に動いているエージェントが、共有のローカル SQLite データベースを介して直接メッセージを交換</strong> できる。人間がターミナル間でコピー＆ペーストの仲介をしなくてよくなる。</p>
+
+      <h3>C-1. agmsg とは</h3>
+      <ul>
+        <li><strong>仕組み</strong>：各エージェントは <strong>チーム</strong> に参加し、<strong>エージェント名</strong>（alice / reviewer など）を持つ。送信は <code class="inline">send.sh</code> が SQLite に1行追加するだけ。受信は、相手のエージェントが <strong>フック</strong>（ターンの区切りで受信箱を確認）か <strong>Monitor</strong>（リアルタイムに待ち受け）で拾う。デーモンもネットワークもブローカーもなく、<code class="inline">bash</code> と <code class="inline">sqlite3</code> だけで動く</li>
+        <li><strong>履歴が残る</strong>：メッセージはセッションが終わっても DB に残り、<code class="inline">history.sh</code> で新しいエージェントに過去のやりとりを読み込ませられる。WAL モードの SQLite なので、複数の読み手と1つの書き手が衝突しない</li>
+        <li><strong>導入と使い方</strong>：<code class="inline">npx agmsg</code> でインストール（Claude Code なら <code class="inline">/plugin marketplace add fujibee/agmsg</code> → <code class="inline">/plugin install agmsg@fujibee-agmsg</code> でも可）→ エージェントを再起動 → <code class="inline">/agmsg</code>（Codex / Gemini CLI は <code class="inline">$agmsg</code>）でチーム名・エージェント名・配信モードを登録。以後は「alice にデプロイ完了と送って」「メッセージを確認して」「チームのメンバーは？」のように <strong>自然言語で頼めばよい</strong></li>
+        <li><strong>配信モード</strong>：<code class="inline">monitor</code>（Claude Code の既定。数秒でリアルタイムに届く）／<code class="inline">turn</code>（Codex 等の既定。次のターンの区切りで届く）／<code class="inline">both</code>／<code class="inline">off</code>（手動確認のみ）</li>
+        <li><strong>仲間を増やす</strong>：<code class="inline">/agmsg spawn codex reviewer</code> のように、別ターミナルに新しいエージェントを起動してチームに参加させられる（<code class="inline">--boot-prompt</code> で最初のタスクも渡せる）。同じプロジェクトで役割だけ切り替えるなら <code class="inline">/agmsg actas tech-lead</code></li>
+        <li><strong>構成</strong>：<code class="inline">scripts/*.sh</code>（send / inbox / history / whoami / team / spawn …）＋ SQLite DB ＋ <code class="inline">tests/</code> の bats テスト。8章でメッセージ検索機能を足した <code class="inline">scripts/search.sh</code> もこの仲間</li>
+      </ul>
+      <div class="callout tip">
+        <strong>💡 agmsg は「〇〇ではない」（README より）</strong>
+        <strong>MCP ではない</strong>（MCP サーバーも追加ランタイムも要らない）。<strong>サブエージェントではない</strong>（別ツールの対等なセッション同士をつなぐ。<code class="inline">spawn</code> で起動した相手も、この会話が管理する子ではなく独立したセッション）。<strong>メッセージキューでもない</strong>（ブローカーは存在せず、SQLite ファイルが「床」で、エージェントがその上でやりとりする）。
+      </div>
+
+      <h3>C-2. SubAgent・Agent Teams・agmsg の違い</h3>
+      <figure class="shot">
+        <img src="Image/subagent-teams-agmsg.svg" alt="SubAgent・Agent Teams・agmsg の違い — SubAgent は1つの Claude Code の中で親が頼み要約を受け取る、Agent Teams は1つの Claude Code が複数セッションを束ねて共有タスクリストとメッセージで協調する、agmsg は別ツール・別プロセスの対等なエージェントが共有 SQLite DB を介してやりとりする">
+        <figcaption>SubAgent は「頼んで要約を受け取る」、Agent Teams は「1つの Claude Code が複数セッションを束ねる」、agmsg は「ツールをまたぐ対等な仲間が共有 DB でやりとりする」</figcaption>
+      </figure>
+      <table>
+        <tr><th>観点</th><th>SubAgent（6章）</th><th>Agent Teams（付録B）</th><th>agmsg</th></tr>
+        <tr><td>参加者</td><td>1つのセッションの中の子</td><td>1つのリードが立てた Claude Code のチームメイト</td><td>ツールも起動も別々の対等なエージェント（Claude Code・Codex・Gemini CLI…）</td></tr>
+        <tr><td>調整役</td><td>親（メイン会話）</td><td>リード＋共有タスクリスト</td><td>なし。各自が受信箱を見て動く</td></tr>
+        <tr><td>やりとり</td><td>結果の要約が親に戻るだけ（一方向）</td><td>メッセージ＋タスクリスト（Claude Code の内部機能）</td><td>SQLite ファイル経由のメッセージ（<code class="inline">bash</code> + <code class="inline">sqlite3</code>）</td></tr>
+        <tr><td>コンテキスト</td><td>別コンテキスト（要約のみ戻る）</td><td>各チームメイトが独立</td><td>各エージェントが独立（別プロセス・別ツール）</td></tr>
+        <tr><td>永続性</td><td>セッション内</td><td>セッション内（<code class="inline">/resume</code> では復元されない）</td><td>履歴が DB に残り、あとから別のエージェントも読める</td></tr>
+        <tr><td>有効化</td><td>標準機能</td><td>実験的（環境変数で有効化）</td><td>OSS を導入（<code class="inline">npx agmsg</code>）</td></tr>
+        <tr><td>向く用途</td><td>単発の調査・レビューをコンテキストを汚さず済ませる</td><td>1つのタスクを分担して並列に進める</td><td>異なるツールの得意分野を組み合わせる（Claude Code が実装し Codex がレビュー）、別ターミナルで動く長時間セッションへの依頼</td></tr>
+      </table>
+      <ul>
+        <li><strong>使い分けの目安</strong>：同じ Claude Code の中で済むなら SubAgent → 並列に分担したいなら Agent Teams → <strong>別のツールや別のマシン・ターミナルのエージェントと組みたいなら agmsg</strong></li>
+        <li>3つは排他ではない。agmsg でつながった各エージェントが、それぞれ内部で SubAgent や Agent Teams を使うこともできる</li>
+      </ul>
+
+      <h4>演習</h4>
+      <p>ターミナルを2つ開き、それぞれで <code class="inline">agmsg</code> のディレクトリから <code class="inline">claude</code> を起動して、2つの Claude Code をつなぐ（事前に <code class="inline">npx agmsg</code> でインストールし、Claude Code を再起動しておく）。</p>
+      <ol>
+        <li>両方のセッションで <code class="inline">/agmsg</code> を実行し、同じチーム名（例：<code class="inline">handson</code>）に、片方は <code class="inline">alice</code>、もう片方は <code class="inline">bob</code> として参加する。配信モードは既定の monitor でよい</li>
+        <li>alice 側から依頼を送る:
+          <div class="prompt-box">
+            <span class="label">あなたの指示（alice）</span>
+            <p>bob に「scripts/search.sh をレビューして、気になる点を返信して」と送って</p>
+          </div>
+        </li>
+        <li>bob 側に数秒でメッセージが届き、レビューして返信するのを観察する（届かなければ bob 側で「メッセージを確認して」）</li>
+        <li>alice 側で返信を受け取ったら、「これまでのやりとりの履歴を見せて」で DB に残った履歴を確認する</li>
+      </ol>
+      <ul>
+        <li>余裕があれば <code class="inline">/agmsg spawn codex reviewer --boot-prompt "scripts/search.sh をレビューして"</code> で、Codex を第3のメンバーとして呼び込む（Codex CLI のインストールが必要）</li>
+        <li>付録B の Agent Teams でやった「3人で並列レビュー」と比べ、参加者・調整役・履歴の残り方がどう違うかを言葉にしてみる</li>
+      </ul>
+      <h4>参考リンク</h4>
+      <ul>
+        <li><a href="https://github.com/fujibee/agmsg" target="_blank" rel="noopener">fujibee/agmsg — README（日本語版 README.ja.md あり）</a></li>
+        <li><a href="https://github.com/fujibee/agmsg/blob/main/ARCHITECTURE.md" target="_blank" rel="noopener">agmsg — ARCHITECTURE.md（storage / agent / delivery / terminal の4軸ドライバモデル）</a></li>
       </ul>
     </section>
 

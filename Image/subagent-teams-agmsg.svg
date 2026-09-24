@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 410" font-family="-apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#78716c"/>
+    </marker>
+  </defs>
+
+  <rect x="1" y="1" width="818" height="408" fill="#f5f3ee"/>
+  <line x1="277" y1="48" x2="277" y2="400" stroke="#e4dfd5" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <line x1="542" y1="48" x2="542" y2="400" stroke="#e4dfd5" stroke-width="1.5" stroke-dasharray="6 5"/>
+
+  <!-- ===== 左：SubAgent ===== -->
+  <text x="145" y="34" font-size="14" font-weight="700" fill="#a84e32" text-anchor="middle">SubAgent（6章）</text>
+
+  <rect x="45" y="60" width="200" height="60" rx="12" fill="#fbf3ec" stroke="#d97757" stroke-width="2"/>
+  <text x="145" y="86" font-size="12" font-weight="700" fill="#292524" text-anchor="middle">メインセッション</text>
+  <text x="145" y="106" font-size="10" fill="#78716c" text-anchor="middle">Claude Code</text>
+
+  <line x1="115" y1="120" x2="115" y2="178" stroke="#78716c" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="106" y="153" font-size="10" fill="#78716c" text-anchor="end">依頼</text>
+  <line x1="175" y1="178" x2="175" y2="120" stroke="#78716c" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="184" y="153" font-size="10" fill="#78716c">要約だけ</text>
+
+  <rect x="45" y="180" width="200" height="60" rx="12" fill="#f7e4d8" stroke="#d97757" stroke-width="1.5"/>
+  <text x="145" y="206" font-size="12" font-weight="700" fill="#292524" text-anchor="middle">サブエージェント</text>
+  <text x="145" y="226" font-size="10" fill="#78716c" text-anchor="middle">別コンテキスト</text>
+
+  <text x="145" y="366" font-size="10.5" fill="#78716c" text-anchor="middle">1つの Claude Code の中</text>
+  <text x="145" y="384" font-size="10.5" fill="#78716c" text-anchor="middle">親が頼み、結果だけを受け取る</text>
+
+  <!-- ===== 中：Agent Teams ===== -->
+  <text x="410" y="34" font-size="14" font-weight="700" fill="#a84e32" text-anchor="middle">Agent Teams（付録B）</text>
+
+  <rect x="300" y="60" width="220" height="52" rx="12" fill="#fbf3ec" stroke="#d97757" stroke-width="2"/>
+  <text x="410" y="83" font-size="12" font-weight="700" fill="#292524" text-anchor="middle">リード（自分のセッション）</text>
+  <text x="410" y="101" font-size="10" fill="#78716c" text-anchor="middle">Claude Code</text>
+
+  <line x1="410" y1="114" x2="410" y2="136" stroke="#78716c" stroke-width="1.6" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+
+  <rect x="300" y="138" width="220" height="34" rx="10" fill="#f0c9b4" stroke="#a84e32" stroke-width="1.5"/>
+  <text x="410" y="160" font-size="11" font-weight="700" fill="#292524" text-anchor="middle">共有タスクリスト</text>
+
+  <line x1="350" y1="174" x2="350" y2="200" stroke="#78716c" stroke-width="1.6" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <line x1="470" y1="174" x2="470" y2="200" stroke="#78716c" stroke-width="1.6" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+
+  <rect x="300" y="202" width="100" height="56" rx="10" fill="#f7e4d8" stroke="#d97757" stroke-width="1.5"/>
+  <text x="350" y="226" font-size="11" font-weight="700" fill="#292524" text-anchor="middle">チームメイト A</text>
+  <text x="350" y="244" font-size="9.5" fill="#78716c" text-anchor="middle">独立コンテキスト</text>
+
+  <rect x="420" y="202" width="100" height="56" rx="10" fill="#f7e4d8" stroke="#d97757" stroke-width="1.5"/>
+  <text x="470" y="226" font-size="11" font-weight="700" fill="#292524" text-anchor="middle">チームメイト B</text>
+  <text x="470" y="244" font-size="9.5" fill="#78716c" text-anchor="middle">独立コンテキスト</text>
+
+  <line x1="350" y1="258" x2="350" y2="282" stroke="#78716c" stroke-width="1.4"/>
+  <line x1="470" y1="258" x2="470" y2="282" stroke="#78716c" stroke-width="1.4"/>
+  <line x1="344" y1="282" x2="476" y2="282" stroke="#78716c" stroke-width="1.6" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <text x="410" y="300" font-size="10" fill="#78716c" text-anchor="middle">メッセージで相互にやりとり</text>
+
+  <text x="410" y="366" font-size="10.5" fill="#78716c" text-anchor="middle">1つの Claude Code が複数セッションを束ねる</text>
+  <text x="410" y="384" font-size="10.5" fill="#78716c" text-anchor="middle">リードが分担し、チームメイト同士も会話する</text>
+
+  <!-- ===== 右：agmsg ===== -->
+  <text x="675" y="34" font-size="14" font-weight="700" fill="#a84e32" text-anchor="middle">agmsg</text>
+
+  <rect x="553" y="60" width="76" height="56" rx="10" fill="#fbf3ec" stroke="#d97757" stroke-width="2"/>
+  <text x="591" y="84" font-size="10.5" font-weight="700" fill="#292524" text-anchor="middle">Claude Code</text>
+  <text x="591" y="102" font-size="9" fill="#78716c" text-anchor="middle">別プロセス</text>
+
+  <rect x="637" y="60" width="76" height="56" rx="10" fill="#fbf3ec" stroke="#d97757" stroke-width="2"/>
+  <text x="675" y="84" font-size="10.5" font-weight="700" fill="#292524" text-anchor="middle">Codex</text>
+  <text x="675" y="102" font-size="9" fill="#78716c" text-anchor="middle">別プロセス</text>
+
+  <rect x="721" y="60" width="76" height="56" rx="10" fill="#fbf3ec" stroke="#d97757" stroke-width="2"/>
+  <text x="759" y="84" font-size="10.5" font-weight="700" fill="#292524" text-anchor="middle">Gemini CLI</text>
+  <text x="759" y="102" font-size="9" fill="#78716c" text-anchor="middle">別プロセス</text>
+
+  <line x1="591" y1="118" x2="591" y2="176" stroke="#78716c" stroke-width="1.6" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <line x1="675" y1="118" x2="675" y2="176" stroke="#78716c" stroke-width="1.6" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <line x1="759" y1="118" x2="759" y2="176" stroke="#78716c" stroke-width="1.6" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+
+  <rect x="560" y="178" width="230" height="64" rx="12" fill="#f0c9b4" stroke="#a84e32" stroke-width="1.5"/>
+  <text x="675" y="204" font-size="11.5" font-weight="700" fill="#292524" text-anchor="middle">共有 SQLite DB（ローカルファイル）</text>
+  <text x="675" y="224" font-size="9.5" fill="#78716c" text-anchor="middle">send.sh で書き込み、フック / Monitor で受信</text>
+
+  <text x="675" y="268" font-size="10" fill="#78716c" text-anchor="middle">デーモンもネットワークもなし</text>
+  <text x="675" y="286" font-size="10" fill="#78716c" text-anchor="middle">履歴は DB に残り、あとから読み返せる</text>
+
+  <text x="675" y="366" font-size="10.5" fill="#78716c" text-anchor="middle">ツールをまたぐ対等な仲間</text>
+  <text x="675" y="384" font-size="10.5" fill="#78716c" text-anchor="middle">調整役はなく、各自が受信箱を見て動く</text>
+</svg>
