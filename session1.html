@@ -527,7 +527,7 @@
       </div>
       <div class="callout warn">
         <strong>⚠️ TIPS：音声入力のときはモードを変えて安全に</strong>
-        音声（Voice）で指示すると、聞き取りミスや言い間違いが <strong>そのまま指示になる</strong>。「消して」「戻して」が誤認識されれば、Auto や Accept Edits では確認なしにファイル削除や <code class="inline">git reset</code> が走りうる。音声で操作するときは <code class="inline">Shift + Tab</code> で <strong>Default（都度確認）か Plan Mode に切り替え</strong>、文字起こしされた指示と承認ダイアログを目で確認してから許可する。長めの依頼は Plan Mode で計画だけ出させ、内容を確認してから解除して実行するのが安全。
+        Claude Code の音声入力は <code class="inline">/voice</code> で有効化できる（claude.ai アカウントでのログインが必要）。既定では <code class="inline">Space</code> を押している間だけ録音され、文字起こしが入力欄に入ってから <code class="inline">Enter</code> で送信する。<code class="inline">/voice tap</code> や autoSubmit 設定では3語以上で <strong>自動送信</strong> されるので特に注意。音声（Voice）で指示すると、聞き取りミスや言い間違いが <strong>そのまま指示になる</strong>。「消して」「戻して」が誤認識されれば、Auto や Accept Edits では確認なしにファイル削除や <code class="inline">git reset</code> が走りうる。音声で操作するときは <code class="inline">Shift + Tab</code> で <strong>Default（都度確認）か Plan Mode に切り替え</strong>、文字起こしされた指示と承認ダイアログを目で確認してから許可する。長めの依頼は Plan Mode で計画だけ出させ、内容を確認してから解除して実行するのが安全。
       </div>
       <div class="exercise">
         <span class="ex-title">✏️ 演習2</span>
