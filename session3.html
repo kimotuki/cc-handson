@@ -700,41 +700,11 @@ paths:
         <li>すでに動かしているクラウドセッションから <strong>Continue as a project</strong> で始めたり、<strong>Move to project</strong> で既存プロジェクトに取り込んだりもできる</li>
       </ul>
 
-      <h4>提供状況と注意点</h4>
       <div class="callout tip">
         <strong>💡 提供状況</strong>
         Pro / Max プランのパブリックベータ（段階的に提供中）。Team / Enterprise プランではまだ使えないため、機能の紹介。
       </div>
-      <ul>
-        <li>Anthropic は今後、対象となる Claude Code ユーザーを拡大し、その後チャット・Cowork・Team・Enterprise にも展開する方針。Pro / Max の既存 Projects は当面これまで通り使え、展開に合わせて新バージョンへ移行する予定</li>
-        <li>各スレッドは 1つ 1つが完全な Claude Code セッションとして動くため、並列で多くのスレッドを実行すると、通常より早くプランの利用上限に達する可能性がある</li>
-        <li>現在、各スレッドはクラウド上で実行される。ユーザーの PC 上でローカルのツールやコード・社内ネットワークと組み合わせて実行する機能も近く対応予定</li>
-      </ul>
 
-      <h3>C-2. 演習：agmsg のタスクを Projects で並列に進める</h3>
-      <ol>
-        <li>claude.ai/code → <strong>Projects</strong> → <strong>New project</strong>。Name は「agmsg」、Context に <strong>5章で作成した自分の agmsg リポジトリ</strong> を追加して <strong>Create project</strong></li>
-        <li>Project settings → Memory → <strong>Project Instructions</strong> に次を設定する:
-          <div class="prompt-box">
-            <span class="label">Project Instructions</span>
-            <p>ブランチは main から切る。変更後は bats tests/ と shellcheck scripts/*.sh で確認する。PR を作る前に /code-review を実行し、妥当な指摘は修正する。</p>
-          </div>
-        </li>
-        <li>プロジェクト会話で、2つのタスクを続けて依頼する:
-          <div class="prompt-box">
-            <span class="label">あなたの指示</span>
-            <p>README に英語版のセットアップ手順を追記して</p>
-          </div>
-          <div class="prompt-box">
-            <span class="label">あなたの指示</span>
-            <p>scripts/search.sh に、表示件数を絞る --limit N オプションを追加してテストも足して</p>
-          </div>
-        </li>
-      </ol>
-      <ul>
-        <li><strong>Overview</strong> で2つのスレッドが並列に動くのを観察し、<strong>Ready for review</strong> になったら <strong>Pull requests</strong> タブから PR を開いて差分をレビューする</li>
-        <li>5章で手で回した「Issue → ブランチ → 実装 → レビュー → PR」を、コーディネーターがスレッド単位で肩代わりしていることを確認する</li>
-      </ul>
       <h4>参考リンク</h4>
       <ul>
         <li><a href="https://code.claude.com/docs/ja/claude-projects" target="_blank" rel="noopener">Claude Code ドキュメント — Projects</a></li>

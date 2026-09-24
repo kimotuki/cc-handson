@@ -2285,35 +2285,7 @@ Anthropic は 2026年9月17日（米国時間）、Claude の「Projects」を�
 * **プロジェクト指示** は Project settings → Memory → Project Instructions（最大16,000文字）に書く。対象ブランチ・確認方法・承認が必要な操作など、4章で CLAUDE.md に書いたルールと同じ考え方
 * すでに動かしているクラウドセッションから **Continue as a project** で始めたり、**Move to project** で既存プロジェクトに取り込んだりもできる
 
-##### 提供状況と注意点
-
 > 💡 Pro / Max プランのパブリックベータ（段階的に提供中）。Team / Enterprise プランではまだ使えないため、機能の紹介。
-
-* Anthropic は今後、対象となる Claude Code ユーザーを拡大し、その後チャット・Cowork・Team・Enterprise にも展開する方針。Pro / Max の既存 Projects は当面これまで通り使え、展開に合わせて新バージョンへ移行する予定
-* 各スレッドは 1つ 1つが完全な Claude Code セッションとして動くため、並列で多くのスレッドを実行すると、通常より早くプランの利用上限に達する可能性がある
-* 現在、各スレッドはクラウド上で実行される。ユーザーの PC 上でローカルのツールやコード・社内ネットワークと組み合わせて実行する機能も近く対応予定
-
-#### C-2. 演習：agmsg のタスクを Projects で並列に進める
-
-1. claude.ai/code → **Projects** → **New project**。Name は「agmsg」、Context に **5章で作成した自分の agmsg リポジトリ** を追加して **Create project**
-2. Project settings → Memory → **Project Instructions** に次を設定する:
-
-```
-ブランチは main から切る。変更後は bats tests/ と shellcheck scripts/*.sh で確認する。PR を作る前に /code-review を実行し、妥当な指摘は修正する。
-```
-
-3. プロジェクト会話で、2つのタスクを続けて依頼する:
-
-```
-README に英語版のセットアップ手順を追記して
-```
-
-```
-scripts/search.sh に、表示件数を絞る --limit N オプションを追加してテストも足して
-```
-
-* **Overview** で2つのスレッドが並列に動くのを観察し、**Ready for review** になったら **Pull requests** タブから PR を開いて差分をレビューする
-* 5章で手で回した「Issue → ブランチ → 実装 → レビュー → PR」を、コーディネーターがスレッド単位で肩代わりしていることを確認する
 
 ##### 参考リンク
 
