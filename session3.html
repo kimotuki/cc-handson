@@ -173,11 +173,12 @@
       <li><a href="#sec4">4. Skills の共有</a></li>
       <li><a href="#sec5">5. 実践：チーム開発フロー</a></li>
       <li><a href="#sec6">6. 実践：チーム開発フローの自動化</a></li>
-      <li><a href="#sec7">7. git worktree で並行開発</a></li>
       <li style="list-style:none;"><a href="#cleanup">＊ 後片付け：作成したリポジトリの削除</a></li>
-      <li value="8"><a href="#sec8">8. まとめ・コース総括</a></li>
+      <li value="7"><a href="#sec7">7. まとめ・コース総括</a></li>
+      <li><a href="#sec8">8. 予備（質疑応答・調整）</a></li>
       <li style="list-style:none;"><a href="#appendix-context">付録A. コンテキスト管理</a></li>
-      <li style="list-style:none;"><a href="#appendix">付録B. Claude の Projects</a></li>
+      <li style="list-style:none;"><a href="#appendix-worktree">付録B. git worktree で並行開発</a></li>
+      <li style="list-style:none;"><a href="#appendix">付録C. Claude の Projects</a></li>
     </ol>
   </nav>
 
@@ -189,7 +190,7 @@
         <span class="badge">120分</span>
         <span class="badge">CLAUDE.md 共有</span>
         <span class="badge">Skills 共有</span>
-        <span class="badge">git worktree</span>
+        <span class="badge">ナレッジ整理</span>
         <span class="badge">PR フロー</span>
       </div>
     </header>
@@ -200,7 +201,6 @@
       <ul>
         <li>CLAUDE.md / Skills / settings をチームで共有・運用できる</li>
         <li>プロジェクトの知識を「ルール・設計・手順」に仕分けて、CLAUDE.md・docs・Skills に配置できる</li>
-        <li><code class="inline">git worktree</code> で長めのタスクを別セッションに任せ、並行して開発を進められる</li>
         <li>Issue 起点のチーム開発フロー（Issue → ブランチ → fix → レビュー → PR → マージ）を Claude Code で回せる</li>
       </ul>
       <h3>時間配分（120分）</h3>
@@ -212,8 +212,8 @@
         <tr><td>4</td><td>Skills の共有</td><td>15分</td></tr>
         <tr><td>5</td><td>実践：チーム開発フロー</td><td>35分</td></tr>
         <tr><td>6</td><td>実践：チーム開発フローの自動化</td><td>15分</td></tr>
-        <tr><td>7</td><td>git worktree で並行開発</td><td>15分</td></tr>
-        <tr><td>8</td><td>まとめ・コース総括</td><td>8分</td></tr>
+        <tr><td>7</td><td>まとめ・コース総括</td><td>8分</td></tr>
+        <tr><td>8</td><td>予備（質疑応答・調整）</td><td>15分</td></tr>
       </table>
     </section>
 
@@ -512,50 +512,6 @@ paths:
     --allowedTools "Read,Edit,Bash(gh pr list:*),Bash(git tag:*),Bash(git log:*)"</pre>
     </section>
 
-    <section id="sec7">
-      <h2 class="step"><span class="step-num">7</span>git worktree で並行開発（15分）</h2>
-      <p><code class="inline">git worktree</code> は <strong>1つのリポジトリから複数の作業ディレクトリを切り出す</strong> Git の機能。ブランチごとに独立したディレクトリで作業できるので、「長めのタスクを別の Claude Code セッションに任せつつ、自分はメインの作業を続ける」という並行開発ができる。</p>
-      <figure class="shot">
-        <img src="Image/worktree-diagram.svg" alt="git worktree の概念図 — 1つのリポジトリ（.git 本体を持つメインの作業ディレクトリ）から、feature-a 用と bugfix-123 用の2つの worktree が切り出され、それぞれ別ターミナルの Claude Code セッションで動く">
-        <figcaption>git worktree — .git（履歴）は共有しつつ、作業ディレクトリとブランチは独立。変更が衝突しない</figcaption>
-      </figure>
-
-      <h3>7-1. 一般的な使い方（5分）</h3>
-      <p><code class="inline">--worktree</code> の一般的な使い方としては、複数のターミナルでそれぞれ別の worktree セッションを動かすパターンがある。</p>
-<pre><span class="comment"># Terminal 1: 機能 A の開発</span>
-<span class="prompt">$</span> claude --worktree feature-a
-
-<span class="comment"># Terminal 2: 同時にバグ修正</span>
-<span class="prompt">$</span> claude --worktree bugfix-123</pre>
-      <p>それぞれのセッションは <strong>別ブランチ・別ディレクトリ</strong> で動くので、変更が衝突しない。</p>
-      <p>手動で worktree を作ってから Claude Code を起動する方法もある。新しいブランチを作る場合は <code class="inline">-b</code> を付け、既存のブランチを使う場合はブランチ名をそのまま指定する:</p>
-<pre><span class="comment"># 新しいブランチ feature-a を作って worktree を作成</span>
-<span class="prompt">$</span> git worktree add ../project-feature-a -b feature-a
-
-<span class="comment"># 既存のブランチ bugfix-123 から worktree を作成</span>
-<span class="prompt">$</span> git worktree add ../project-bugfix bugfix-123
-
-<span class="comment"># 作成した worktree に移動して Claude Code を起動</span>
-<span class="prompt">$</span> cd ../project-feature-a &amp;&amp; claude</pre>
-      <p><code class="inline">--worktree</code> オプションは、この手順を自動化してくれるもの。</p>
-
-      <h3>7-2. 演習：長めのタスクを worktree に任せる（10分）</h3>
-      <p>5章で作成した自分の <code class="inline">agmsg</code> を題材に、長めのタスクを別 worktree の Claude Code に任せてみる。<strong>新しいターミナルを開いて</strong>、worktree セッションを起動する:</p>
-<pre><span class="prompt">$</span> cd agmsg
-<span class="prompt">$</span> claude --worktree feature-export</pre>
-      <div class="prompt-box">
-        <span class="label">あなたの指示（worktree セッション側）</span>
-        <p>メッセージ履歴を Markdown ファイルに書き出すエクスポート機能（scripts/export.sh）を追加して。bats テストも書いて、bats tests/ が通ることを確認して</p>
-      </div>
-      <ul>
-        <li>タスクが走っている間も、<strong>元のターミナルのセッションはそのまま使える</strong> — 6章のスキル改良や別の Issue 対応を並行して進める</li>
-        <li>worktree 側のタスクが終わったら、いつも通り「コミットして PR を作成して」まで任せられる</li>
-      </ul>
-      <p>worktree の状態確認と、マージ後の片付け:</p>
-<pre><span class="prompt">$</span> git worktree list             <span class="comment"># 作成された worktree の一覧</span>
-<span class="prompt">$</span> git worktree remove &lt;パス&gt;    <span class="comment"># 不要になった worktree を削除</span></pre>
-    </section>
-
     <section id="cleanup">
       <h2 class="step"><span class="step-num">＊</span>後片付け：作成したリポジトリの削除</h2>
       <p>5章で自分のアカウントに作成した <code class="inline">agmsg</code> はハンズオン用の練習リポジトリ。演習が終わったら、以下のコマンドを手動で実行して削除しておく。<code class="inline">gh repo delete</code> には追加の権限（<code class="inline">delete_repo</code> スコープ）が必要なので、先に <code class="inline">gh auth refresh</code> で付与してから実行する:</p>
@@ -571,12 +527,12 @@ paths:
       </ul>
     </section>
 
-    <section id="sec8">
+    <section id="sec7">
       <h2 class="step"><span class="step-num">✓</span>まとめ・コース総括（8分）</h2>
       <h3>Section 3 のまとめ</h3>
       <ul>
         <li>CLAUDE.md・Skills・settings は <strong>リポジトリにコミットしてチームの資産</strong> にする</li>
-        <li>長めのタスクは <code class="inline">git worktree</code> で別セッションに任せ、メインの作業と並行して進める</li>
+        <li>プロジェクトの知識は CLAUDE.md・rules・docs/INDEX.md に仕分けて置き、<strong>必要なものだけ読ませる</strong></li>
         <li>人間の仕事は <strong>計画のレビューと差分のレビュー</strong> に寄っていく</li>
       </ul>
       <h3>コース総括</h3>
@@ -584,12 +540,17 @@ paths:
         <tr><th>Section</th><th>身につけたこと</th></tr>
         <tr><td>Section 1</td><td>エージェントの仕組み・基本コマンド・ソースコード解析</td></tr>
         <tr><td>Section 2</td><td>CLAUDE.md / Skills / Hooks・安全なコード変更の進め方</td></tr>
-        <tr><td>Section 3</td><td>チームでの共有・PR ベースの開発フロー・worktree での並行開発</td></tr>
+        <tr><td>Section 3</td><td>チームでの共有・ナレッジの整理・PR ベースの開発フロー</td></tr>
       </table>
       <div class="callout ok">
         <strong>✅ ここから先</strong>
         日常業務で使い続けることが最良の学習。まずは「調査・解析タスク」から Claude Code に任せてみよう。
       </div>
+    </section>
+
+    <section id="sec8">
+      <h2 class="step"><span class="step-num">8</span>予備（質疑応答・調整）（15分）</h2>
+      <p>進行の遅れの吸収と質疑応答にあてる。時間が余ったら、付録B の <code class="inline">git worktree</code> で並行開発（発展課題）を扱う。</p>
     </section>
 
     <section id="appendix-context">
@@ -666,8 +627,53 @@ paths:
       </div>
     </section>
 
+    <section id="appendix-worktree">
+      <h2 class="step"><span class="step-num">付</span>付録B：git worktree で並行開発</h2>
+      <p>時間が余ったとき・早く終わった人向けの発展課題。</p>
+      <p><code class="inline">git worktree</code> は <strong>1つのリポジトリから複数の作業ディレクトリを切り出す</strong> Git の機能。ブランチごとに独立したディレクトリで作業できるので、「長めのタスクを別の Claude Code セッションに任せつつ、自分はメインの作業を続ける」という並行開発ができる。</p>
+      <figure class="shot">
+        <img src="Image/worktree-diagram.svg" alt="git worktree の概念図 — 1つのリポジトリ（.git 本体を持つメインの作業ディレクトリ）から、feature-a 用と bugfix-123 用の2つの worktree が切り出され、それぞれ別ターミナルの Claude Code セッションで動く">
+        <figcaption>git worktree — .git（履歴）は共有しつつ、作業ディレクトリとブランチは独立。変更が衝突しない</figcaption>
+      </figure>
+
+      <h3>B-1. 一般的な使い方</h3>
+      <p><code class="inline">--worktree</code> の一般的な使い方としては、複数のターミナルでそれぞれ別の worktree セッションを動かすパターンがある。</p>
+<pre><span class="comment"># Terminal 1: 機能 A の開発</span>
+<span class="prompt">$</span> claude --worktree feature-a
+
+<span class="comment"># Terminal 2: 同時にバグ修正</span>
+<span class="prompt">$</span> claude --worktree bugfix-123</pre>
+      <p>それぞれのセッションは <strong>別ブランチ・別ディレクトリ</strong> で動くので、変更が衝突しない。</p>
+      <p>手動で worktree を作ってから Claude Code を起動する方法もある。新しいブランチを作る場合は <code class="inline">-b</code> を付け、既存のブランチを使う場合はブランチ名をそのまま指定する:</p>
+<pre><span class="comment"># 新しいブランチ feature-a を作って worktree を作成</span>
+<span class="prompt">$</span> git worktree add ../project-feature-a -b feature-a
+
+<span class="comment"># 既存のブランチ bugfix-123 から worktree を作成</span>
+<span class="prompt">$</span> git worktree add ../project-bugfix bugfix-123
+
+<span class="comment"># 作成した worktree に移動して Claude Code を起動</span>
+<span class="prompt">$</span> cd ../project-feature-a &amp;&amp; claude</pre>
+      <p><code class="inline">--worktree</code> オプションは、この手順を自動化してくれるもの。</p>
+
+      <h3>B-2. 演習：長めのタスクを worktree に任せる</h3>
+      <p>5章で作成した自分の <code class="inline">agmsg</code> を題材に、長めのタスクを別 worktree の Claude Code に任せてみる。<strong>新しいターミナルを開いて</strong>、worktree セッションを起動する:</p>
+<pre><span class="prompt">$</span> cd agmsg
+<span class="prompt">$</span> claude --worktree feature-export</pre>
+      <div class="prompt-box">
+        <span class="label">あなたの指示（worktree セッション側）</span>
+        <p>メッセージ履歴を Markdown ファイルに書き出すエクスポート機能（scripts/export.sh）を追加して。bats テストも書いて、bats tests/ が通ることを確認して</p>
+      </div>
+      <ul>
+        <li>タスクが走っている間も、<strong>元のターミナルのセッションはそのまま使える</strong> — 6章のスキル改良や別の Issue 対応を並行して進める</li>
+        <li>worktree 側のタスクが終わったら、いつも通り「コミットして PR を作成して」まで任せられる</li>
+      </ul>
+      <p>worktree の状態確認と、マージ後の片付け:</p>
+<pre><span class="prompt">$</span> git worktree list             <span class="comment"># 作成された worktree の一覧</span>
+<span class="prompt">$</span> git worktree remove &lt;パス&gt;    <span class="comment"># 不要になった worktree を削除</span></pre>
+    </section>
+
     <section id="appendix">
-      <h2 class="step"><span class="step-num">付</span>付録B：Claude の Projects — チームの知識と作業をまとめる</h2>
+      <h2 class="step"><span class="step-num">付</span>付録C：Claude の Projects — チームの知識と作業をまとめる</h2>
       <p>「Projects」という名前の機能は現在2つある。どちらも <strong>チームで文脈を共有する</strong> ための入れ物だが、用途が異なる。</p>
       <table>
         <tr><th>観点</th><th>claude.ai の Projects</th><th>Claude Code の Projects</th></tr>
@@ -677,7 +683,7 @@ paths:
         <tr><td>利用条件</td><td>全プラン（Free は5件まで。共有は Team / Enterprise）</td><td>Pro / Max のパブリックベータ（Team / Enterprise は未提供）</td></tr>
       </table>
 
-      <h3>B-1. claude.ai の Projects — ナレッジと指示をチームで共有する</h3>
+      <h3>C-1. claude.ai の Projects — ナレッジと指示をチームで共有する</h3>
       <ul>
         <li><strong>プロジェクト</strong> ＝ チャット履歴と専用の <strong>ナレッジベース</strong>、<strong>カスタム指示</strong> をひとまとめにしたワークスペース。プロジェクト内のチャットはすべてナレッジと指示を前提に動く</li>
         <li>ナレッジには <strong>ファイル</strong>（PDF / DOCX / CSV / TXT / HTML / XLSX / 画像など）、<strong>テキスト</strong>、<strong>GitHub リポジトリのファイル・フォルダ</strong>、<strong>Google Drive のフォルダ</strong> を追加できる。容量がコンテキスト上限に近づくと <strong>RAG（関連部分だけを検索して読む）モード</strong> に自動で切り替わり、最大で約10倍まで入る</li>
@@ -706,7 +712,7 @@ paths:
         <li>Team / Enterprise の場合：ペアの相手に <strong>Can view</strong> で共有し、相手側から同じプロジェクトに質問してもらう</li>
       </ul>
 
-      <h3>B-2. Claude Code の Projects — 複数タスクを並列に回す</h3>
+      <h3>C-2. Claude Code の Projects — 複数タスクを並列に回す</h3>
       <ul>
         <li>claude.ai/code 上の <strong>プロジェクト会話（コーディネーター）</strong> が、タスクごとに <strong>スレッド</strong>（クラウドで動く Claude Code セッション）を立てて <strong>並列に実行</strong> する。スレッドは PC を閉じても動き続ける</li>
         <li>各スレッドはプロジェクトの <strong>リポジトリ・ファイル・Google Drive</strong>、<strong>プロジェクト指示</strong>、環境変数を共有した状態で開始する</li>
