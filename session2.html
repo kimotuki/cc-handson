@@ -692,7 +692,7 @@ allowed-tools: Read, Edit, Bash
         <img src="Image/subagent-diagram.svg" alt="SubAgent の概念図 — メインセッションからレビュー用・探索用・テスト実行用のサブエージェントへタスクを依頼し、それぞれ独立したコンテキストで並列に動いて、メインセッションにはサマリーだけを返す">
         <figcaption>SubAgent — タスクを別の独立したコンテキストに任せ、メインセッションにはサマリーだけが返る</figcaption>
       </figure>
-      <p><strong>サブエージェントは、明示的に指示しなくても Claude Code が自動的に起動して使う場合があります。</strong>「リポジトリ全体から〇〇を探して」のように広く読む必要がある依頼をすると、Claude は自分の判断で組み込みのサブエージェント（<code class="inline">Explore</code> など）を立ち上げ、探索を任せ、結果の要約だけを受け取って続きを進める。ツール実行ログに <code class="inline">Agent(Explore)</code> のような行が出ていたら、それが自動起動されたサブエージェント。</p>
+      <p><strong>サブエージェントは、明示的に指示しなくても Claude Code が自動的に起動して使うこともある。</strong>「リポジトリ全体から〇〇を探して」のように広く読む必要がある依頼をすると、Claude は自分の判断で組み込みのサブエージェント（<code class="inline">Explore</code> など）を立ち上げ、探索を任せ、結果の要約だけを受け取って続きを進める。ツール実行ログに <code class="inline">Agent(Explore)</code> のような行が出ていたら、それが自動起動されたサブエージェント。</p>
       <ul>
         <li><strong>サブエージェント</strong> ＝ メイン会話とは <strong>別の独立したコンテキスト</strong> で動く AI アシスタント。専用の <strong>システムプロンプト・ツール権限・モデル</strong> を持てる</li>
         <li>大量の出力が出る作業（全文検索・全テスト実行・複数ファイルのレビュー・ログ調査など）を任せても、<strong>メイン会話にはサマリーだけ返る</strong> — コンテキストを汚さない</li>
