@@ -178,7 +178,7 @@
       <li><a href="#sec8">8. Q&amp;A（質疑応答など）</a></li>
       <li style="list-style:none;"><a href="#appendix-context">付録A. コンテキスト管理</a></li>
       <li style="list-style:none;"><a href="#appendix-worktree">付録B. git worktree で並行開発</a></li>
-      <li style="list-style:none;"><a href="#appendix">付録C. Claude の Projects</a></li>
+      <li style="list-style:none;"><a href="#appendix">付録C. Claude Code の Projects</a></li>
     </ol>
   </nav>
 
@@ -315,7 +315,7 @@
         <tr><td>特定のファイルを触るときだけのルール</td><td><code class="inline">scripts/</code> 配下のシェル規約、テストの書き方</td><td><code class="inline">.claude/rules/*.md</code>（frontmatter の <code class="inline">paths:</code> で対象を指定）</td><td>該当ファイルを扱うときに遅延読み込み</td></tr>
         <tr><td>設計・背景の知識（長文）</td><td>アーキテクチャ、設計判断の記録、仕様書、用語集</td><td><code class="inline">docs/</code> に階層化して置き、<code class="inline">docs/INDEX.md</code> で一覧化。CLAUDE.md からは <strong>インデックスだけを指す</strong>（本文の <code class="inline">@import</code> は常時読み込みになるので、短い規約向け）</td><td>必要なときにインデックス経由で読む</td></tr>
         <tr><td>定型作業の手順</td><td>リリース手順、テスト生成の手順</td><td><code class="inline">.claude/skills/&lt;name&gt;/SKILL.md</code></td><td>呼び出し時・Claude が必要と判断した時</td></tr>
-        <tr><td>コード以外の資料</td><td>仕様書 PDF、議事録、顧客要件</td><td>claude.ai の Projects のナレッジ（付録C）</td><td>チャットで質問したとき</td></tr>
+        <tr><td>コード以外の資料</td><td>仕様書 PDF、議事録、顧客要件</td><td>claude.ai の Projects のナレッジ（付録C の TIPS 参照）</td><td>チャットで質問したとき</td></tr>
       </table>
       <ul>
         <li>判断基準は <strong>「これを消したら Claude が失敗するか？」</strong>。YES なら CLAUDE.md、NO なら docs/ やスキルへ。CLAUDE.md は <strong>200行未満</strong> が目安（長いほどコンテキストを消費し、指示が守られにくくなる）</li>
@@ -677,46 +677,13 @@ paths:
     </section>
 
     <section id="appendix">
-      <h2 class="step"><span class="step-num">付</span>付録C：Claude の Projects — チームの知識と作業をまとめる</h2>
-      <p>「Projects」という名前の機能は現在2つある。どちらも <strong>チームで文脈を共有する</strong> ための入れ物だが、用途が異なる。</p>
-      <table>
-        <tr><th>観点</th><th>claude.ai の Projects</th><th>Claude Code の Projects</th></tr>
-        <tr><td>場所</td><td>claude.ai（チャット）</td><td>claude.ai/code・デスクトップアプリの Code タブ</td></tr>
-        <tr><td>中身</td><td>ナレッジ（ファイル・テキスト）＋カスタム指示＋チャット</td><td>リポジトリ＋プロジェクト指示＋並列で動くクラウドスレッド</td></tr>
-        <tr><td>得意なこと</td><td>仕様書・設計書をチームで参照しながら相談する</td><td>複数タスクを Claude に並列実行させ、PR まで持っていく</td></tr>
-        <tr><td>利用条件</td><td>全プラン（Free は5件まで。共有は Team / Enterprise）</td><td>Pro / Max のパブリックベータ（Team / Enterprise は未提供）</td></tr>
-      </table>
+      <h2 class="step"><span class="step-num">付</span>付録C：Claude Code の Projects — 複数タスクを並列に回す</h2>
+      <div class="callout tip">
+        <strong>💡 TIPS：「Projects」は2つある — 名前が同じなので分けて考える</strong>
+        <strong>claude.ai の Projects</strong> は、チャットのためのワークスペース（ナレッジファイル＋カスタム指示＋チャット履歴をひとまとめにし、Team / Enterprise ではチームで共有できる。全プランで利用可）。一方、この付録で扱う <strong>Claude Code の Projects</strong> は、claude.ai/code やデスクトップアプリの Code タブで <strong>コーディネーターが複数のクラウドスレッドを並列に動かして PR まで進める</strong> ための機能（Pro / Max のパブリックベータ）。同じ「Projects」でも別物なので、会話や資料でどちらを指しているかを明確にする。仕様書や議事録などコード以外の資料をチームで参照したいだけなら前者、実装タスクを並列に回したいなら後者。
+      </div>
 
-      <h3>C-1. claude.ai の Projects — ナレッジと指示をチームで共有する</h3>
-      <ul>
-        <li><strong>プロジェクト</strong> ＝ チャット履歴と専用の <strong>ナレッジベース</strong>、<strong>カスタム指示</strong> をひとまとめにしたワークスペース。プロジェクト内のチャットはすべてナレッジと指示を前提に動く</li>
-        <li>ナレッジには <strong>ファイル</strong>（PDF / DOCX / CSV / TXT / HTML / XLSX / 画像など）、<strong>テキスト</strong>、<strong>GitHub リポジトリのファイル・フォルダ</strong>、<strong>Google Drive のフォルダ</strong> を追加できる。容量がコンテキスト上限に近づくと <strong>RAG（関連部分だけを検索して読む）モード</strong> に自動で切り替わり、最大で約10倍まで入る</li>
-        <li><strong>Team / Enterprise</strong> では、プロジェクトを <strong>組織全体に公開</strong> するか <strong>招待したメンバーだけ</strong> に共有できる。権限は <strong>Can view</strong>（閲覧・質問のみ）と <strong>Can edit</strong>（指示・ナレッジ・メンバーの編集）の2段階。プロジェクト内のチャットはデフォルトでは共有されない</li>
-        <li>CLAUDE.md との関係：<strong>CLAUDE.md は Claude Code（ターミナル）への指示</strong>、<strong>Projects の指示は claude.ai（チャット）への指示</strong>。同じ「チームの前提知識」を、コードを書く場と相談する場の両方に置く、と考えると整理しやすい</li>
-      </ul>
-      <h4>演習</h4>
-      <ol>
-        <li>claude.ai → <strong>Projects</strong> → <strong>New project</strong> で「agmsg チーム」を作成する</li>
-        <li><strong>カスタム指示</strong> に次を設定する:
-          <div class="prompt-box">
-            <span class="label">カスタム指示</span>
-            <p>日本語で答える。回答は必ずプロジェクトのナレッジ（agmsg のドキュメント）に基づき、根拠にしたファイル名を添える。ナレッジに無いことは「ドキュメントに記載なし」と答える。</p>
-          </div>
-        </li>
-        <li><strong>ナレッジ</strong> に agmsg の <code class="inline">README.md</code> と <code class="inline">ARCHITECTURE.md</code>（GitHub から追加、またはアップロード）と、Section 2 で整えた <code class="inline">CLAUDE.md</code> を追加する</li>
-        <li>プロジェクト内で質問する:
-          <div class="prompt-box">
-            <span class="label">あなたの指示</span>
-            <p>新しくチームに入ったメンバー向けに、agmsg のセットアップから最初のメッセージ送信までを3ステップでまとめて</p>
-          </div>
-        </li>
-      </ol>
-      <ul>
-        <li>回答に <strong>根拠ファイル名が添えられている</strong> こと、ナレッジに無い質問（例：「Windows 版はある？」）に「記載なし」と答えることを確認する</li>
-        <li>Team / Enterprise の場合：ペアの相手に <strong>Can view</strong> で共有し、相手側から同じプロジェクトに質問してもらう</li>
-      </ul>
-
-      <h3>C-2. Claude Code の Projects — 複数タスクを並列に回す</h3>
+      <h3>C-1. Claude Code の Projects とは</h3>
       <ul>
         <li>claude.ai/code 上の <strong>プロジェクト会話（コーディネーター）</strong> が、タスクごとに <strong>スレッド</strong>（クラウドで動く Claude Code セッション）を立てて <strong>並列に実行</strong> する。スレッドは PC を閉じても動き続ける</li>
         <li>各スレッドはプロジェクトの <strong>リポジトリ・ファイル・Google Drive</strong>、<strong>プロジェクト指示</strong>、環境変数を共有した状態で開始する</li>
@@ -728,7 +695,8 @@ paths:
         <strong>💡 提供状況</strong>
         Pro / Max プランのパブリックベータ（段階的に提供中）。Team / Enterprise プランではまだ使えないため、利用できる人だけ試す。
       </div>
-      <h4>演習</h4>
+
+      <h3>C-2. 演習：agmsg のタスクを Projects で並列に進める</h3>
       <ol>
         <li>claude.ai/code → <strong>Projects</strong> → <strong>New project</strong>。Name は「agmsg」、Context に <strong>5章で作成した自分の agmsg リポジトリ</strong> を追加して <strong>Create project</strong></li>
         <li>Project settings → Memory → <strong>Project Instructions</strong> に次を設定する:
@@ -754,10 +722,8 @@ paths:
       </ul>
       <h4>参考リンク</h4>
       <ul>
-        <li><a href="https://support.claude.com/en/articles/9517075-what-are-projects" target="_blank" rel="noopener">Claude ヘルプセンター — What are projects?</a></li>
-        <li><a href="https://support.claude.com/en/articles/9519189-manage-project-visibility-and-sharing" target="_blank" rel="noopener">Claude ヘルプセンター — Manage project visibility and sharing</a></li>
-        <li><a href="https://support.claude.com/en/articles/11473015-retrieval-augmented-generation-rag-for-projects" target="_blank" rel="noopener">Claude ヘルプセンター — Retrieval augmented generation (RAG) for projects</a></li>
         <li><a href="https://code.claude.com/docs/ja/claude-projects" target="_blank" rel="noopener">Claude Code ドキュメント — Projects</a></li>
+        <li><a href="https://support.claude.com/en/articles/9517075-what-are-projects" target="_blank" rel="noopener">Claude ヘルプセンター — What are projects?（claude.ai の Projects）</a></li>
       </ul>
     </section>
 

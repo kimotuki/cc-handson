@@ -1929,7 +1929,7 @@ Claude Code のセッション内で以下を実行する:
 | 特定のファイルを触るときだけのルール | `scripts/` 配下のシェル規約、テストの書き方 | `.claude/rules/*.md`（frontmatter の `paths:` で対象を指定） | 該当ファイルを扱うときに遅延読み込み |
 | 設計・背景の知識（長文） | アーキテクチャ、設計判断の記録、仕様書、用語集 | `docs/` に階層化して置き、`docs/INDEX.md` で一覧化。CLAUDE.md からは **インデックスだけを指す**（本文の `@import` は常時読み込みになるので、短い規約向け） | 必要なときにインデックス経由で読む |
 | 定型作業の手順 | リリース手順、テスト生成の手順 | `.claude/skills/<name>/SKILL.md` | 呼び出し時・Claude が必要と判断した時 |
-| コード以外の資料 | 仕様書 PDF、議事録、顧客要件 | claude.ai の Projects のナレッジ（付録C） | チャットで質問したとき |
+| コード以外の資料 | 仕様書 PDF、議事録、顧客要件 | claude.ai の Projects のナレッジ（付録C の TIPS 参照） | チャットで質問したとき |
 
 * 判断基準は **「これを消したら Claude が失敗するか？」**。YES なら CLAUDE.md、NO なら docs/ やスキルへ。CLAUDE.md は **200行未満** が目安（長いほどコンテキストを消費し、指示が守られにくくなる）
 * CLAUDE.md は managed 設定 → `~/.claude/CLAUDE.md` → プロジェクトの `CLAUDE.md` → `CLAUDE.local.md` の順に **連結して** 読み込まれる（上書きではない）。サブディレクトリの CLAUDE.md は、そのディレクトリのファイルを扱うときに読み込まれる
@@ -2262,44 +2262,12 @@ git worktree list             # 作成された worktree の一覧
 git worktree remove <パス>    # 不要になった worktree を削除
 ```
 
-### 付録C：Claude の Projects — チームの知識と作業をまとめる
+### 付録C：Claude Code の Projects — 複数タスクを並列に回す
 
-「Projects」という名前の機能は現在2つある。どちらも **チームで文脈を共有する** ための入れ物だが、用途が異なる。
+> 💡 **TIPS：「Projects」は2つある — 名前が同じなので分けて考える**
+> **claude.ai の Projects** は、チャットのためのワークスペース（ナレッジファイル＋カスタム指示＋チャット履歴をひとまとめにし、Team / Enterprise ではチームで共有できる。全プランで利用可）。一方、この付録で扱う **Claude Code の Projects** は、claude.ai/code やデスクトップアプリの Code タブで **コーディネーターが複数のクラウドスレッドを並列に動かして PR まで進める** ための機能（Pro / Max のパブリックベータ）。同じ「Projects」でも別物なので、会話や資料でどちらを指しているかを明確にする。仕様書や議事録などコード以外の資料をチームで参照したいだけなら前者、実装タスクを並列に回したいなら後者。
 
-| 観点 | claude.ai の Projects | Claude Code の Projects |
-|------|----------------------|-------------------------|
-| 場所 | claude.ai（チャット） | claude.ai/code・デスクトップアプリの Code タブ |
-| 中身 | ナレッジ（ファイル・テキスト）＋カスタム指示＋チャット | リポジトリ＋プロジェクト指示＋並列で動くクラウドスレッド |
-| 得意なこと | 仕様書・設計書をチームで参照しながら相談する | 複数タスクを Claude に並列実行させ、PR まで持っていく |
-| 利用条件 | 全プラン（Free は5件まで。共有は Team / Enterprise） | Pro / Max のパブリックベータ（Team / Enterprise は未提供） |
-
-#### C-1. claude.ai の Projects — ナレッジと指示をチームで共有する
-
-* **プロジェクト** ＝ チャット履歴と専用の **ナレッジベース**、**カスタム指示** をひとまとめにしたワークスペース。プロジェクト内のチャットはすべてナレッジと指示を前提に動く
-* ナレッジには **ファイル**（PDF / DOCX / CSV / TXT / HTML / XLSX / 画像など）、**テキスト**、**GitHub リポジトリのファイル・フォルダ**、**Google Drive のフォルダ** を追加できる。容量がコンテキスト上限に近づくと **RAG（関連部分だけを検索して読む）モード** に自動で切り替わり、最大で約10倍まで入る
-* **Team / Enterprise** では、プロジェクトを **組織全体に公開** するか **招待したメンバーだけ** に共有できる。権限は **Can view**（閲覧・質問のみ）と **Can edit**（指示・ナレッジ・メンバーの編集）の2段階。プロジェクト内のチャットはデフォルトでは共有されない
-* CLAUDE.md との関係：**CLAUDE.md は Claude Code（ターミナル）への指示**、**Projects の指示は claude.ai（チャット）への指示**。同じ「チームの前提知識」を、コードを書く場と相談する場の両方に置く、と考えると整理しやすい
-
-##### 演習
-
-1. claude.ai → **Projects** → **New project** で「agmsg チーム」を作成する
-2. **カスタム指示** に次を設定する:
-
-```
-日本語で答える。回答は必ずプロジェクトのナレッジ（agmsg のドキュメント）に基づき、根拠にしたファイル名を添える。ナレッジに無いことは「ドキュメントに記載なし」と答える。
-```
-
-3. **ナレッジ** に agmsg の `README.md` と `ARCHITECTURE.md`（GitHub から追加、またはアップロード）と、Section 2 で整えた `CLAUDE.md` を追加する
-4. プロジェクト内で質問する:
-
-```
-新しくチームに入ったメンバー向けに、agmsg のセットアップから最初のメッセージ送信までを3ステップでまとめて
-```
-
-* 回答に **根拠ファイル名が添えられている** こと、ナレッジに無い質問（例：「Windows 版はある？」）に「記載なし」と答えることを確認する
-* Team / Enterprise の場合：ペアの相手に **Can view** で共有し、相手側から同じプロジェクトに質問してもらう
-
-#### C-2. Claude Code の Projects — 複数タスクを並列に回す
+#### C-1. Claude Code の Projects とは
 
 * claude.ai/code 上の **プロジェクト会話（コーディネーター）** が、タスクごとに **スレッド**（クラウドで動く Claude Code セッション）を立てて **並列に実行** する。スレッドは PC を閉じても動き続ける
 * 各スレッドはプロジェクトの **リポジトリ・ファイル・Google Drive**、**プロジェクト指示**、環境変数を共有した状態で開始する
@@ -2309,7 +2277,7 @@ git worktree remove <パス>    # 不要になった worktree を削除
 
 > 💡 Pro / Max プランのパブリックベータ（段階的に提供中）。Team / Enterprise プランではまだ使えないため、利用できる人だけ試す。
 
-##### 演習
+#### C-2. 演習：agmsg のタスクを Projects で並列に進める
 
 1. claude.ai/code → **Projects** → **New project**。Name は「agmsg」、Context に **5章で作成した自分の agmsg リポジトリ** を追加して **Create project**
 2. Project settings → Memory → **Project Instructions** に次を設定する:
@@ -2333,7 +2301,5 @@ scripts/search.sh に、表示件数を絞る --limit N オプションを追加
 
 ##### 参考リンク
 
-* [Claude ヘルプセンター — What are projects?](https://support.claude.com/en/articles/9517075-what-are-projects)
-* [Claude ヘルプセンター — Manage project visibility and sharing](https://support.claude.com/en/articles/9519189-manage-project-visibility-and-sharing)
-* [Claude ヘルプセンター — Retrieval augmented generation (RAG) for projects](https://support.claude.com/en/articles/11473015-retrieval-augmented-generation-rag-for-projects)
 * [Claude Code ドキュメント — Projects](https://code.claude.com/docs/ja/claude-projects)
+* [Claude ヘルプセンター — What are projects?（claude.ai の Projects）](https://support.claude.com/en/articles/9517075-what-are-projects)
