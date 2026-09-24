@@ -2275,7 +2275,7 @@ git worktree remove <パス>    # 不要になった worktree を削除
 * **プロジェクト指示** は Project settings → Memory → Project Instructions（最大16,000文字）に書く。対象ブランチ・確認方法・承認が必要な操作など、4章で CLAUDE.md に書いたルールと同じ考え方
 * すでに動かしているクラウドセッションから **Continue as a project** で始めたり、**Move to project** で既存プロジェクトに取り込んだりもできる
 
-> 💡 Pro / Max プランのパブリックベータ（段階的に提供中）。Team / Enterprise プランではまだ使えないため、利用できる人だけ試す。
+> 💡 Pro / Max プランのパブリックベータ（段階的に提供中）。Team / Enterprise プランではまだ使えないため、機能の紹介。
 
 #### C-2. 演習：agmsg のタスクを Projects で並列に進める
 
