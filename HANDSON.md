@@ -1851,7 +1851,7 @@ bob に「scripts/search.sh をレビューして、気になる点を返信し�
 |------------|----|----------|------------------------|
 | 常に守らせるルール | テストコマンド、コーディング規約、ブランチ運用 | `CLAUDE.md` | セッション開始時に常時 |
 | 特定のファイルを触るときだけのルール | `scripts/` 配下のシェル規約、テストの書き方 | `.claude/rules/*.md`（frontmatter の `paths:` で対象を指定） | 該当ファイルを扱うときに遅延読み込み |
-| 設計・背景の知識（長文） | アーキテクチャ、設計判断の記録、用語集 | `docs/*.md` に置き、CLAUDE.md から `@docs/architecture.md` で import、または「必要なとき docs/ を読む」と指示 | import は常時／参照指示なら必要時 |
+| 設計・背景の知識（長文） | アーキテクチャ、設計判断の記録、仕様書、用語集 | `docs/` に階層化して置き、`docs/INDEX.md` で一覧化。CLAUDE.md からは **インデックスだけを指す**（本文の `@import` は常時読み込みになるので、短い規約向け） | 必要なときにインデックス経由で読む |
 | 定型作業の手順 | リリース手順、テスト生成の手順 | `.claude/skills/<name>/SKILL.md` | 呼び出し時・Claude が必要と判断した時 |
 | コード以外の資料 | 仕様書 PDF、議事録、顧客要件 | claude.ai の Projects のナレッジ（付録B） | チャットで質問したとき |
 
@@ -1860,22 +1860,33 @@ bob に「scripts/search.sh をレビューして、気になる点を返信し�
 * `@path` による import は相対パス・絶対パス・`@~/...` が使え、import 先からさらに import できる（最大4段）。コードブロック内の `@` は無視される
 * 個人メモ（auto-memory）は **マシン単位で共有されない**。チームで共有したい知識は必ずリポジトリ内のファイルに置く
 
-#### 3-2. 既存ドキュメントを Markdown 化して投入する（5分）
+#### 3-2. 開発プロジェクトのドキュメントを Claude Code が参照できるようにする（5分）
 
-1. **集める**：Confluence / Notion / Word / PDF などの既存資料を Markdown にして `docs/` に置く。変換は Claude に頼める（「この PDF を docs/architecture.md として Markdown 化して」）
-2. **仕分ける**：Claude に読ませて、常に守るルールと参照用の知識に分けさせる
+Claude Code はテキストや Markdown だけでなく、PDF や画像もそのまま読める。大事なのは形式をそろえることより、**「どこに何があるか」を Claude が見つけられる状態** にすること。手順は「階層化して整理 → インデックスを作る → CLAUDE.md からインデックスを指す」。
+
+1. **棚卸しして階層化する**：既存ドキュメントを目的別に `docs/` 配下へ整理する（例：`docs/architecture/`・`docs/specs/`・`docs/adr/`・`docs/ops/`）。形式はそのままでよく、Markdown 化するのは頻繁に参照するものや差分管理したいものだけ（変換は Claude に頼める）。Confluence / Notion / Google Drive 上の資料は持ち込まず、コネクタ・MCP（Section 2 の4〜5章）で参照し、**置き場所だけをインデックスに書く**
+2. **インデックスを作る**：`docs/INDEX.md` に「パス／1行の説明／いつ読むか」を並べる。Claude に生成させる
 
 ```
-docs/ の内容を読んで、常に守るべき規約と、必要なときに参照する設計知識に分けて。規約は CLAUDE.md に5〜10行で追記し、設計知識は docs/ に残して CLAUDE.md から @docs/... で参照させて
+docs/ 配下のドキュメントを読んで、パス・1行の説明・どんなときに読むべきかをまとめた docs/INDEX.md を作って。社外の資料は「Confluence の Ops スペース」のように置き場所だけ書いて
 ```
 
-3. **つなぐ**：CLAUDE.md からの import と、パス別ルール（`.claude/rules/`）を置く
-4. **確かめる**：`/memory` で読み込まれているファイルの一覧を、`/context` で消費量を確認する（付録A）
+3. **CLAUDE.md からインデックスだけを指す**：資料の本文を `@import` で常時読み込ませない。特定ファイルを触るときのルールは `.claude/rules/` に置く
+4. **確かめる**：設計に関する質問をして、Claude がインデックス経由で該当ドキュメントを開くことを確認する。`/memory` で読み込まれているファイルを、`/context` で常時の消費が増えていないことを確認する（付録A）
 
 ```markdown
-# CLAUDE.md（抜粋）— ルールは短く、背景は import で
+# docs/INDEX.md（例）— パス / 1行の説明 / いつ読むか
+- docs/architecture/overview.md — 全体構成と主要コンポーネント。設計変更や新機能の前に読む
+- docs/adr/ — 設計判断の記録（1判断1ファイル）。「なぜこうなっているか」を知りたいときに読む
+- docs/specs/cli.md — CLI コマンドと引数の仕様。コマンドを追加・変更するときに読む
+- docs/specs/requirements-v3.pdf — 要件の原本（PDF のまま）。仕様の解釈で迷ったときに読む
+- 運用手順 — Confluence の Ops スペース（コネクタで参照）。リリース・障害対応のときに読む
+```
+
+```markdown
+# CLAUDE.md（抜粋）— ルールは短く、資料はインデックス経由で
 - テスト: `bats tests/`、静的解析: `shellcheck scripts/*.sh`
-- 設計の全体像は @docs/architecture.md を参照
+- 設計・仕様の資料は docs/INDEX.md を見て、必要なものだけ読むこと
 ```
 
 ```markdown
@@ -1888,24 +1899,28 @@ paths:
 - 変数展開は必ずダブルクォートで囲む
 ```
 
-> 💡 **CLAUDE.md の変更も PR で**：2章のとおり、CLAUDE.md・rules・docs の変更はチームの規約変更そのもの。PR でレビューしてからマージする。
+> 💡 **CLAUDE.md の変更も PR で**：2章のとおり、CLAUDE.md・rules・docs/INDEX.md の変更はチームの規約変更そのもの。PR でレビューしてからマージする。ドキュメントを追加・移動したときは INDEX.md も同じ PR で更新する。
 
-#### 3-3. 演習：agmsg のナレッジを投入する（5分）
+#### 3-3. 演習：agmsg のドキュメントを Claude Code から参照できるようにする（5分）
 
-Section 2 で使った `agmsg` のディレクトリで `claude` を起動し、既存ドキュメントを仕分けて投入する。
+Section 2 で使った `agmsg` のディレクトリで `claude` を起動する。agmsg には `docs/spec/`・`docs/adr/`・`docs/design.md` など既存のドキュメントがそろっているので、これを題材にインデックスを作る。
 
 ```
-ARCHITECTURE.md と README.md を読んで、開発時に常に守るべき規約を CLAUDE.md に5行以内で追記して。設計の説明は CLAUDE.md には書かず、@ARCHITECTURE.md の参照にして
+docs/ 配下（spec/ と adr/ を含む）と ARCHITECTURE.md を読んで、パス・1行の説明・どんなときに読むべきかをまとめた docs/INDEX.md を作って
+```
+
+```
+CLAUDE.md に、開発時に常に守るべき規約を5行以内で追記して。設計・仕様の資料については本文を書かず、「docs/INDEX.md を見て必要なものだけ読む」とだけ書いて
 ```
 
 ```
 scripts/ 配下の .sh を編集するときだけ適用されるルールを .claude/rules/shell.md に作って。set -euo pipefail と変数のダブルクォートを必須にして
 ```
 
-* `/memory` で CLAUDE.md と import 先が読み込まれていることを確認する
-* 「メッセージ送信の流れを説明して」と聞き、`ARCHITECTURE.md` を根拠に答えることを確認する
+* `!cat docs/INDEX.md` で内容を確認する。説明が1行に収まっているか、「いつ読むか」が書かれているかを見る
+* 「ストレージをドライバとして差し替えられるようにしたのはなぜ？」と質問し、`docs/adr/` の設計判断の記録を根拠に答えることを確認する（インデックス経由で該当ファイルを開くはず）
 * 「scripts/send.sh のエラーメッセージを分かりやすくして」と頼み、`.claude/rules/shell.md` の規約が守られることを確認する
-* できあがった CLAUDE.md・rules を `git diff` で確認する。5章で自分のリポジトリを作成したら同じ変更をコミットしておくと、以降の Issue 対応で Claude が規約を守るようになる
+* `/context` で常時の消費が増えていないことを確認し、できあがった INDEX.md・CLAUDE.md・rules を `git diff` で見る。5章で自分のリポジトリを作成したら同じ変更をコミットしておくと、以降の Issue 対応で Claude が規約とドキュメントを踏まえて動くようになる
 
 ### 4. Skills の共有（15分）
 
