@@ -691,6 +691,7 @@ allowed-tools: Read, Edit, Bash
         <img src="Image/subagent-diagram.svg" alt="SubAgent の概念図 — メインセッションからレビュー用・探索用・テスト実行用のサブエージェントへタスクを依頼し、それぞれ独立したコンテキストで並列に動いて、メインセッションにはサマリーだけを返す">
         <figcaption>SubAgent — タスクを別の独立したコンテキストに任せ、メインセッションにはサマリーだけが返る</figcaption>
       </figure>
+      <p><strong>まず知っておくこと：サブエージェントは、こちらが頼まなくても Claude が自動的に起動して使う。</strong>「リポジトリ全体から〇〇を探して」のように広く読む必要がある依頼をすると、Claude は自分の判断で組み込みのサブエージェント（<code class="inline">Explore</code> など）を立ち上げ、探索を任せ、結果の要約だけを受け取って続きを進める。ツール実行ログに <code class="inline">Agent(Explore)</code> のような行が出ていたら、それが自動起動されたサブエージェント。</p>
       <ul>
         <li><strong>サブエージェント</strong> ＝ メイン会話とは <strong>別の独立したコンテキスト</strong> で動く AI アシスタント。専用の <strong>システムプロンプト・ツール権限・モデル</strong> を持てる</li>
         <li>大量の出力が出る作業（全文検索・全テスト実行・複数ファイルのレビュー・ログ調査など）を任せても、<strong>メイン会話にはサマリーだけ返る</strong> — コンテキストを汚さない</li>
@@ -711,6 +712,19 @@ allowed-tools: Read, Edit, Bash
           <li><strong>安全性</strong>：ツール権限を絞れる（例：読み取り専用のレビュアーにして書き込みをさせない）</li>
         </ul>
       </div>
+      <h4>自動で使われる場合と、自分で作る場合の違い</h4>
+      <table>
+        <tr><th>観点</th><th>自動（組み込みサブエージェント）</th><th>自分で作る（カスタムサブエージェント）</th></tr>
+        <tr><td>起動のきっかけ</td><td>Claude が「広く探索する必要がある」と判断したとき。頼まなくても起動する</td><td>定義した <code class="inline">description</code> に合う依頼が来たとき Claude が委譲する、または「shell-code-reviewer でレビューして」と名前で指名する</td></tr>
+        <tr><td>定義</td><td>Claude Code 組み込み（<code class="inline">Explore</code> / <code class="inline">Plan</code> / <code class="inline">general-purpose</code>）。プロンプトやツールは固定</td><td><code class="inline">.claude/agents/&lt;name&gt;.md</code> に自分で書く。システムプロンプト・使えるツール・モデルを指定できる</td></tr>
+        <tr><td>得意なこと</td><td>その場限りの調査・探索・計画。コンテキスト節約が主目的</td><td>毎回同じ観点・同じ品質で繰り返す作業（レビュー、テスト観点の確認）。権限を絞った安全な実行。チームでの共有</td></tr>
+        <tr><td>見え方</td><td>ログに <code class="inline">Agent(Explore)</code> など</td><td>ログに <code class="inline">Agent(shell-code-reviewer)</code> など</td></tr>
+      </table>
+      <ul>
+        <li><strong>使い分け</strong>：一回きりで「広く調べてほしい」だけなら Claude の自動起動に任せてよい。「レビューの観点を固定したい」「書き込みをさせたくない」「チームで同じ基準を使いたい」なら自分で作る</li>
+        <li>自分で作ったサブエージェントも、<code class="inline">description</code> が依頼内容に合えば <strong>Claude が自動で委譲する</strong>。つまり自作とは「自動で使われる候補を、自分の観点で増やす」こと。description は「いつ使うか」が分かるように具体的に書く</li>
+        <li>自動起動でもトークンと時間は消費する。不要なときは「サブエージェントは使わず直接調べて」と指示できる。逆に明示的に使いたいときは「サブエージェントで調べて」と頼む</li>
+      </ul>
 
       <h3>6-2. サブエージェントの作成（4分）</h3>
       <p>作り方は2つ:</p>
