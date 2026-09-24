@@ -226,6 +226,10 @@
         <li>個人の好み（エディタ設定・出力スタイル等）は <code class="inline">CLAUDE.local.md</code> か <code class="inline">~/.claude/CLAUDE.md</code> へ</li>
         <li>CLAUDE.md の変更も <strong>PR でレビュー</strong> する — 「Claude への指示」はチームの規約そのもの</li>
       </ul>
+      <div class="callout tip">
+        <strong>💡 CLAUDE.md の変更も PR で</strong>
+        CLAUDE.md・rules・docs/INDEX.md（4章）の変更はチームの規約変更そのもの。PR でレビューしてからマージする。ドキュメントを追加・移動したときは INDEX.md も同じ PR で更新する。
+      </div>
 
       <h3>2-2. 運用のアンチパターン（6分）</h3>
       <table>
@@ -356,10 +360,6 @@ paths:
       <div class="callout tip">
         <strong>💡 TIPS：SSOT（Single Source of Truth：信頼できる唯一の情報源）を明確にする</strong>
         同じ情報が Wiki・古い仕様書・人が要約したメモなど複数の場所にあると、Claude はどれを信じてよいか分からず、古い方を根拠にすることがある。「この情報の正はここ」を決めて INDEX.md にも明記しておく。<strong>SSOT が明確であれば、Claude Code がそこを直接読み取って情報を抽出・整理できる</strong> ため、人間が事前に整理した要約を使うより正確なデータが得られる場合がある（要約は作った時点で古くなり、抜け漏れや解釈も混ざる）。派生資料（要約・図・議事録）には原本の場所を書き、整理そのものは「原本から〇〇の観点で整理して」と Claude に任せ、人は原本の鮮度と正しさを保つことと、あるべき状態を明確にすることに集中することが重要。
-      </div>
-      <div class="callout tip">
-        <strong>💡 CLAUDE.md の変更も PR で</strong>
-        2章のとおり、CLAUDE.md・rules・docs/INDEX.md の変更はチームの規約変更そのもの。PR でレビューしてからマージする。ドキュメントを追加・移動したときは INDEX.md も同じ PR で更新する。
       </div>
 
       <h3>4-3. 演習：agmsg のドキュメントを Claude Code から参照できるようにする（5分）</h3>
