@@ -30,7 +30,7 @@
 
 * Claudeサブスクリプションが各自に提供されている
 * macOS / Linux / Windows PC
-* Cursor / VSCodeが入っている
+* Cursor / VSCode が入っている（必要に応じて）
 * Claude Codeインストール済み
 * Gitコマンド、および、ghコマンドが入っている
 * sqlite3 が入っている（題材の agmsg で使用）
