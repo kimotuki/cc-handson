@@ -842,6 +842,10 @@ model: sonnet
         <strong>💡 フィードバックの仕組み</strong>
         フックが <strong>終了コード 2</strong> で終わると、その出力が Claude にフィードバックされる。PreToolUse ならツール実行がブロックされ、PostToolUse なら <strong>Claude が出力を読んで自分で修正</strong> する — これが品質向上ループの鍵。
       </div>
+      <div class="callout tip">
+        <strong>💡 3章で入れた security-guidance も Hooks で動いている</strong>
+        プラグインは <code class="inline">hooks/hooks.json</code> を同梱でき、インストールすると <code class="inline">settings.json</code> に書いたのと同じようにフックが登録される。<code class="inline">security-guidance</code> は ① <code class="inline">PostToolUse</code>（Edit / Write）で編集直後に約25種類の危険パターン（<code class="inline">yaml.load</code>・<code class="inline">innerHTML</code>・ハードコードされた秘密情報など）を正規表現で検査、② <code class="inline">Stop</code> で応答のたびに git diff を LLM に送ってレビュー、③ <code class="inline">PostToolUse</code>（Bash の <code class="inline">git commit</code> / <code class="inline">git push</code> のときだけ）でレビューエージェントが関連ファイルまで追跡、の3層。指摘は次のターンのコンテキストに差し込まれ、Claude が読んで自分で直す。つまり、この章で書くフックを配布できる形にパッケージしたものがプラグイン。
+      </div>
 
       <h3>7-2. 例：パッケージの install / update をブロック（PreToolUse）（4分）</h3>
       <p><code class="inline">npm</code> / <code class="inline">pnpm</code> / <code class="inline">bun</code> によるパッケージの追加・更新は、依存の増加やロックファイルの変更を伴う。レビューなしに走らせたくない操作を、<code class="inline">PreToolUse</code> で <strong>実行前に検知して止める</strong>。</p>

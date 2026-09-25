@@ -1386,6 +1386,8 @@ shell-code-reviewer エージェントで scripts/ の変更をレビューし�
 
 > 💡 フックが **終了コード 2** で終わると、その出力が Claude にフィードバックされる。PreToolUse ならツール実行がブロックされ、PostToolUse なら **Claude が出力を読んで自分で修正** する — これが品質向上ループの鍵。
 
+> 💡 **3章で入れた `security-guidance` も Hooks で動いている**：プラグインは `hooks/hooks.json` を同梱でき、インストールすると `settings.json` に書いたのと同じようにフックが登録される。`security-guidance` は ① `PostToolUse`（Edit / Write）で編集直後に約25種類の危険パターン（`yaml.load`・`innerHTML`・ハードコードされた秘密情報など）を正規表現で検査、② `Stop` で応答のたびに git diff を LLM に送ってレビュー、③ `PostToolUse`（Bash の `git commit` / `git push` のときだけ）でレビューエージェントが関連ファイルまで追跡、の3層。指摘は次のターンのコンテキストに差し込まれ、Claude が読んで自分で直す。つまり、この章で書くフックを配布できる形にパッケージしたものがプラグイン。
+
 #### 7-2. 例：パッケージの install / update をブロック（PreToolUse）（4分）
 
 `npm` / `pnpm` / `bun` によるパッケージの追加・更新は、依存の増加やロックファイルの変更を伴う。レビューなしに走らせたくない操作を、`PreToolUse` で **実行前に検知して止める**。
