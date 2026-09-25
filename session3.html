@@ -392,6 +392,27 @@ paths:
         <figcaption>Issue 起点の開発フロー — マージ時の「Closes #N」で Issue が自動クローズし、フローが一周する</figcaption>
       </figure>
 
+      <h3>Issue Driven Development（IDD）とは</h3>
+      <ul>
+        <li><strong>Issue Driven Development</strong> ＝ すべての作業を <strong>Issue から始める</strong> 開発スタイル。「何を・なぜ・どこまでやるか」を Issue に書いてから、ブランチを切って実装し、PR で Issue に紐づけて閉じる</li>
+        <li><strong>1 Issue ＝ 1 ブランチ ＝ 1 PR</strong> が基本。Issue 番号をブランチ名（<code class="inline">fix/123-readme-quickstart</code>）や PR 本文（<code class="inline">Closes #123</code>）に入れておくと、Issue → ブランチ → PR → コミットの経緯が自動でつながる</li>
+        <li>Claude Code との相性がよい：<strong>Issue 本文がそのまま Claude への指示（要件）になる</strong>。「#123 を対応して」と頼めば、Claude が <code class="inline">gh issue view</code> で Issue を読み、要件と受け入れ条件に沿って実装できる</li>
+      </ul>
+
+      <h3>Issue を作ってから開発するメリット</h3>
+      <table>
+        <tr><th>メリット</th><th>内容</th></tr>
+        <tr><td>要件が言語化される</td><td>着手前に「何を・なぜ・どこまで」を書くことで、チームで認識合わせができる。Claude への指示も Issue 番号を指すだけで済む</td></tr>
+        <tr><td>作業単位が小さくなる</td><td>1 Issue ＝ 1 PR で区切るので、レビューしやすく、戻しやすい。Claude Code に任せる粒度としてもちょうどよい</td></tr>
+        <tr><td>経緯が残る</td><td>「なぜこう変えたか」が Issue → PR → コミットにつながって残る。後から Claude に「#123 の経緯を説明して」と聞ける</td></tr>
+        <tr><td>並列に進めやすい</td><td>Issue ごとに担当（人でも Claude でも）を割り当てられる。worktree（付録B）や Projects（付録C）で作業を分ける単位になる</td></tr>
+        <tr><td>自動化の起点になる</td><td>Issue や PR のコメントで <code class="inline">@claude</code> にメンションすると GitHub Actions 上の Claude Code が動く（6章）。Issue 番号を引数にしたスキルも作れる</td></tr>
+      </table>
+      <div class="callout tip">
+        <strong>💡 Issue に書くこと</strong>
+        背景（なぜ）・やること（何を）・受け入れ条件（どうなれば完了か）・やらないこと（スコープ外）の4点。書き慣れないうちは、Claude に「この Issue を、背景・やること・受け入れ条件・スコープ外の形式に整えて」と頼んでもよい。
+      </div>
+
       <h3>5-1. 題材を clone して自分のリポジトリを作成（5分）</h3>
       <p>題材の <code class="inline">agmsg</code> を clone し、gh コマンドで <strong>自分のアカウントのリポジトリ</strong> として作成する。以降の Issue・PR はすべて自分のリポジトリ上で回す。</p>
 <pre><span class="prompt">$</span> git clone https://github.com/kimotuki/agmsg
