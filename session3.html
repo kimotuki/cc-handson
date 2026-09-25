@@ -173,9 +173,9 @@
       <li><a href="#sec4">4. プロジェクトナレッジの整理</a></li>
       <li><a href="#sec5">5. 実践：チーム開発フロー</a></li>
       <li><a href="#sec6">6. 実践：チーム開発フローの自動化</a></li>
-      <li style="list-style:none;"><a href="#cleanup">＊ 後片付け：作成したリポジトリの削除</a></li>
-      <li value="7"><a href="#sec7">7. まとめ・コース総括</a></li>
-      <li><a href="#sec8">8. Q&amp;A（質疑応答など）</a></li>
+      <li><a href="#sec7">7. 後片付け：作成したリポジトリの削除</a></li>
+      <li><a href="#sec8">8. まとめ・コース総括</a></li>
+      <li><a href="#sec9">9. Q&amp;A（質疑応答など）</a></li>
       <li style="list-style:none;"><a href="#appendix-context">付録A. コンテキスト管理</a></li>
       <li style="list-style:none;"><a href="#appendix-worktree">付録B. git worktree で並行開発</a></li>
       <li style="list-style:none;"><a href="#appendix">付録C. Claude Code の Projects</a></li>
@@ -212,8 +212,9 @@
         <tr><td>4</td><td>プロジェクトナレッジの整理</td><td>15分</td></tr>
         <tr><td>5</td><td>実践：チーム開発フロー</td><td>35分</td></tr>
         <tr><td>6</td><td>実践：チーム開発フローの自動化</td><td>15分</td></tr>
-        <tr><td>7</td><td>まとめ・コース総括</td><td>8分</td></tr>
-        <tr><td>8</td><td>Q&amp;A（質疑応答など）</td><td>15分</td></tr>
+        <tr><td>7</td><td>後片付け：作成したリポジトリの削除</td><td>2分</td></tr>
+        <tr><td>8</td><td>まとめ・コース総括</td><td>8分</td></tr>
+        <tr><td>9</td><td>Q&amp;A（質疑応答など）</td><td>13分</td></tr>
       </table>
     </section>
 
@@ -542,8 +543,8 @@ paths:
       </div>
     </section>
 
-    <section id="cleanup">
-      <h2 class="step"><span class="step-num">＊</span>後片付け：作成したリポジトリの削除</h2>
+    <section id="sec7">
+      <h2 class="step"><span class="step-num">7</span>後片付け：作成したリポジトリの削除（2分）</h2>
       <p>5章で自分のアカウントに作成した <code class="inline">agmsg</code> はハンズオン用の練習リポジトリ。演習が終わったら、以下のコマンドを手動で実行して削除しておく。<code class="inline">gh repo delete</code> には追加の権限（<code class="inline">delete_repo</code> スコープ）が必要なので、先に <code class="inline">gh auth refresh</code> で付与してから実行する:</p>
 <pre><span class="prompt">$</span> gh auth refresh -h github.com -s delete_repo
 <span class="prompt">$</span> gh repo delete &lt;自分のアカウント&gt;/agmsg --yes</pre>
@@ -557,7 +558,7 @@ paths:
       </ul>
     </section>
 
-    <section id="sec7">
+    <section id="sec8">
       <h2 class="step"><span class="step-num">✓</span>まとめ・コース総括（8分）</h2>
       <h3>Section 3 のまとめ</h3>
       <ul>
@@ -578,8 +579,8 @@ paths:
       </div>
     </section>
 
-    <section id="sec8">
-      <h2 class="step"><span class="step-num">8</span>Q&amp;A（質疑応答など）（15分）</h2>
+    <section id="sec9">
+      <h2 class="step"><span class="step-num">9</span>Q&amp;A（質疑応答など）（13分）</h2>
       <p>進行の遅れの吸収と質疑応答にあてる。時間が余ったら、付録B の <code class="inline">git worktree</code> で並行開発（発展課題）を扱う。</p>
     </section>
 
