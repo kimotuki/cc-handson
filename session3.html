@@ -352,6 +352,80 @@
         <strong>⚠️ プラグインは任意のコードを実行できる</strong>
         導入は信頼できるマーケットプレイス・作者のものに限ること。
       </div>
+
+      <h3>演習2</h3>
+      <div class="prompt-box">
+        <span class="label">やってみよう</span>
+        <p>自分のマーケットプレイスを GitHub に作り、test-gen スキルをプラグインとして公開して、隣の受講者に /plugin でインストールしてもらう</p>
+      </div>
+      <p>演習1 は「リポジトリを clone した人」にしか届かない。マーケットプレイスにすると、<strong>どのリポジトリで作業していても</strong> <code class="inline">/plugin install</code> 一発で導入でき、更新も <code class="inline">/plugin update</code> で配れる。マーケットプレイスの実体はただの GitHub リポジトリで、最小構成は次のとおり:</p>
+<pre>cc-plugins-&lt;自分の名前&gt;/
+├── .claude-plugin/
+│   └── marketplace.json      ← カタログ（必須）
+└── plugins/
+    └── dev-tools/            ← プラグイン（1つのディレクトリ）
+        └── skills/
+            └── test-gen/
+                └── SKILL.md  ← Section 2 で作ったスキルをそのまま置く</pre>
+<pre>{
+  <span class="str">"name"</span>: <span class="str">"&lt;自分の名前&gt;-plugins"</span>,
+  <span class="str">"owner"</span>: { <span class="str">"name"</span>: <span class="str">"&lt;自分の名前&gt;"</span> },
+  <span class="str">"plugins"</span>: [
+    {
+      <span class="str">"name"</span>: <span class="str">"dev-tools"</span>,
+      <span class="str">"source"</span>: <span class="str">"./plugins/dev-tools"</span>,
+      <span class="str">"description"</span>: <span class="str">"チーム用スキル（test-gen）"</span>
+    }
+  ]
+}</pre>
+      <ul>
+        <li><code class="inline">source</code> はマーケットプレイスのルート（<code class="inline">.claude-plugin/</code> がある場所）からの相対パス。プラグイン側の <code class="inline">.claude-plugin/plugin.json</code> は省略可（無ければ標準の配置 <code class="inline">skills/</code> 等がそのまま読まれる）</li>
+        <li>プラグインに入れたスキルは <strong><code class="inline">/&lt;プラグイン名&gt;:&lt;スキル名&gt;</code></strong>（ここでは <code class="inline">/dev-tools:test-gen</code>）で呼ぶ。名前空間が分かれるので、演習1 のように個人用の <code class="inline">test-gen</code> とぶつからない</li>
+      </ul>
+      <h4>共有する側（自分）</h4>
+      <ol>
+        <li>空のディレクトリを作って <code class="inline">claude</code> を起動する:
+<pre><span class="prompt">$</span> mkdir cc-plugins-&lt;自分の名前&gt; &amp;&amp; cd cc-plugins-&lt;自分の名前&gt;
+<span class="prompt">$</span> git init
+<span class="prompt">$</span> claude</pre>
+        </li>
+        <li>上の構成を Claude に作らせる:
+          <div class="prompt-box">
+            <span class="label">あなたの指示</span>
+            <p>このディレクトリを Claude Code のプラグインマーケットプレイスにして。.claude-plugin/marketplace.json は name を「&lt;自分の名前&gt;-plugins」、owner を自分にして、plugins に name「dev-tools」、source「./plugins/dev-tools」を登録して。~/.claude/skills/test-gen を plugins/dev-tools/skills/test-gen にコピーして</p>
+          </div>
+        </li>
+        <li>構成を検証する（JSON の必須項目・名前の整合性をチェックしてくれる）:
+<pre>!claude plugin validate .</pre>
+        </li>
+        <li>GitHub に public リポジトリとして push する:
+          <div class="prompt-box">
+            <span class="label">あなたの指示</span>
+            <p>gh でこのディレクトリを自分のアカウントの新しい public リポジトリ cc-plugins-&lt;自分の名前&gt; として作成して push して</p>
+          </div>
+        </li>
+        <li>隣の受講者に自分の GitHub アカウント名を伝える</li>
+      </ol>
+      <h4>インストールする側（隣の受講者）</h4>
+      <ol>
+        <li>自分の作業中の Claude Code（どのリポジトリでもよい。例: Section 2 の <code class="inline">agmsg</code>）で、相手のマーケットプレイスを登録してプラグインを入れる:
+<pre>/plugin marketplace add &lt;相手のアカウント&gt;/cc-plugins-&lt;相手の名前&gt;
+/plugin install dev-tools@&lt;相手の名前&gt;-plugins
+/reload-plugins</pre>
+        </li>
+        <li><code class="inline">/plugin</code> の Installed タブ、または <code class="inline">/skills</code> に <code class="inline">dev-tools:test-gen</code> が出ることを確認する</li>
+        <li>スキルを実行してテストを生成させる:
+          <div class="prompt-box">
+            <span class="label">あなたの指示</span>
+            <p>/dev-tools:test-gen scripts/send.sh</p>
+          </div>
+        </li>
+      </ol>
+      <ul>
+        <li><strong>更新の流れ</strong>：作成者がスキルを直して push → 利用者は <code class="inline">/plugin marketplace update &lt;相手の名前&gt;-plugins</code> → <code class="inline">/plugin update dev-tools@&lt;相手の名前&gt;-plugins</code>。clone し直す必要がない</li>
+        <li><strong>演習1 との違い</strong>：演習1（<code class="inline">.claude/skills/</code> をコミット）はそのリポジトリ専用、演習2（マーケットプレイス）は <strong>組織内のどのリポジトリでも使える共通スキル</strong> の配り方。リポジトリは private でもよい（clone できる人だけが使える）</li>
+        <li>チーム全員に強制したい場合は、各リポジトリの <code class="inline">.claude/settings.json</code> の <code class="inline">enabledPlugins</code> に <code class="inline">"dev-tools@&lt;名前&gt;-plugins": true</code> を書く（上の <code class="inline">security-guidance</code> と同じ）</li>
+      </ul>
     </section>
 
     <section id="sec4">

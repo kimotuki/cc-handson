@@ -1965,6 +1965,91 @@ Claude Code のセッション内で以下を実行する:
 
 > 💡 プラグインは **任意のコードを実行できる**。導入は信頼できるマーケットプレイス・作者のものに限ること。
 
+##### 演習2
+
+* 自分のマーケットプレイスを GitHub に作り、`test-gen` スキルをプラグインとして公開して、隣の受講者に `/plugin` でインストールしてもらう
+
+演習1 は「リポジトリを clone した人」にしか届かない。マーケットプレイスにすると、**どのリポジトリで作業していても** `/plugin install` 一発で導入でき、更新も `/plugin update` で配れる。マーケットプレイスの実体はただの GitHub リポジトリで、最小構成は次のとおり:
+
+```
+cc-plugins-<自分の名前>/
+├── .claude-plugin/
+│   └── marketplace.json      ← カタログ（必須）
+└── plugins/
+    └── dev-tools/            ← プラグイン（1つのディレクトリ）
+        └── skills/
+            └── test-gen/
+                └── SKILL.md  ← Section 2 で作ったスキルをそのまま置く
+```
+
+```json
+{
+  "name": "<自分の名前>-plugins",
+  "owner": { "name": "<自分の名前>" },
+  "plugins": [
+    {
+      "name": "dev-tools",
+      "source": "./plugins/dev-tools",
+      "description": "チーム用スキル（test-gen）"
+    }
+  ]
+}
+```
+
+* `source` はマーケットプレイスのルート（`.claude-plugin/` がある場所）からの相対パス。プラグイン側の `.claude-plugin/plugin.json` は省略可（無ければ標準の配置 `skills/` 等がそのまま読まれる）
+* プラグインに入れたスキルは **`/<プラグイン名>:<スキル名>`**（ここでは `/dev-tools:test-gen`）で呼ぶ。名前空間が分かれるので、演習1 のように個人用の `test-gen` とぶつからない
+
+**共有する側（自分）**
+
+1. 空のディレクトリを作って `claude` を起動する:
+
+```bash
+mkdir cc-plugins-<自分の名前> && cd cc-plugins-<自分の名前>
+git init
+claude
+```
+
+2. 上の構成を Claude に作らせる:
+
+```
+このディレクトリを Claude Code のプラグインマーケットプレイスにして。.claude-plugin/marketplace.json は name を「<自分の名前>-plugins」、owner を自分にして、plugins に name「dev-tools」、source「./plugins/dev-tools」を登録して。~/.claude/skills/test-gen を plugins/dev-tools/skills/test-gen にコピーして
+```
+
+3. 構成を検証する（JSON の必須項目・名前の整合性をチェックしてくれる）:
+
+```
+!claude plugin validate .
+```
+
+4. GitHub に public リポジトリとして push する:
+
+```
+gh でこのディレクトリを自分のアカウントの新しい public リポジトリ cc-plugins-<自分の名前> として作成して push して
+```
+
+5. 隣の受講者に自分の GitHub アカウント名を伝える
+
+**インストールする側（隣の受講者）**
+
+1. 自分の作業中の Claude Code（どのリポジトリでもよい。例: Section 2 の `agmsg`）で、相手のマーケットプレイスを登録してプラグインを入れる:
+
+```
+/plugin marketplace add <相手のアカウント>/cc-plugins-<相手の名前>
+/plugin install dev-tools@<相手の名前>-plugins
+/reload-plugins
+```
+
+2. `/plugin` の Installed タブ、または `/skills` に `dev-tools:test-gen` が出ることを確認する
+3. スキルを実行してテストを生成させる:
+
+```
+/dev-tools:test-gen scripts/send.sh
+```
+
+* **更新の流れ**：作成者がスキルを直して push → 利用者は `/plugin marketplace update <相手の名前>-plugins` → `/plugin update dev-tools@<相手の名前>-plugins`。clone し直す必要がない
+* **演習1 との違い**：演習1（`.claude/skills/` をコミット）はそのリポジトリ専用、演習2（マーケットプレイス）は **組織内のどのリポジトリでも使える共通スキル** の配り方。リポジトリは private でもよい（clone できる人だけが使える）
+* チーム全員に強制したい場合は、各リポジトリの `.claude/settings.json` の `enabledPlugins` に `"dev-tools@<名前>-plugins": true` を書く（上の `security-guidance` と同じ）
+
 ### 4. プロジェクトナレッジの整理（15分）
 
 プロジェクトに関するナレッジ（規約・設計の背景・作業手順・仕様書等）を全て CLAUDE.md に詰め込むと、コンテキストを圧迫して逆に忘れやすくなる。**ナレッジの種類ごとにファイルを分け**、常時読み込むものと必要なときだけ読むものを切り分けるのが重要。
