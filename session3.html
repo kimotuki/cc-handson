@@ -243,6 +243,15 @@
 
     <section id="sec3">
       <h2 class="step"><span class="step-num">3</span>Skills の共有（15分）</h2>
+      <p>Section 2 で作った自作スキルは <code class="inline">~/.claude/skills/</code> にあり、<strong>自分の PC でしか使えない</strong>。チームで共有する方法は2つある。この章では ① を 3-1〜3-2（演習1）で、② を 3-3（演習2）で扱う。</p>
+      <table>
+        <tr><th>方法</th><th>やること</th><th>届く範囲</th><th>向いている場面</th></tr>
+        <tr><td>① リポジトリにコミット</td><td>スキルをリポジトリの <code class="inline">.claude/skills/</code> に置いて commit / push する</td><td>そのリポジトリを clone した人（<code class="inline">git pull</code> で更新も届く）</td><td>そのプロジェクト専用の手順（テストの書き方・リリース手順など）</td></tr>
+        <tr><td>② プラグインとして配布</td><td>スキルをプラグインにまとめ、マーケットプレイス（GitHub リポジトリ）に登録する。利用者は <code class="inline">/plugin marketplace add</code> → <code class="inline">/plugin install</code></td><td>マーケットプレイスを登録した人なら、<strong>どのリポジトリで作業していても</strong> 使える</td><td>複数プロジェクトや組織全体で使い回す共通スキル。Hooks・SubAgent・MCP 接続もまとめて配れる</td></tr>
+      </table>
+      <ul>
+        <li>迷ったら <strong>まず ①</strong>。共有したいスキルが増え、複数のリポジトリで同じものを使うようになったら ② に移す</li>
+      </ul>
 
       <h3>3-1. 共有できるもの（6分）</h3>
       <table>
