@@ -266,6 +266,51 @@
         <span class="label">やってみよう</span>
         <p>Section 2 で作った test-gen スキルをコミットし、隣の受講者のリポジトリで動かしてもらう</p>
       </div>
+      <p>Section 2 で作った <code class="inline">test-gen</code> は個人用の <code class="inline">~/.claude/skills/</code> にあるので、自分の PC でしか使えない。これをリポジトリの <code class="inline">.claude/skills/</code> に移してコミットし、隣の受講者に clone して動かしてもらう。push 先は Section 2 の 8-7 で <code class="inline">gh pr create</code> が作った <strong>自分の fork</strong>（<code class="inline">&lt;自分のアカウント&gt;/agmsg</code>）を使う。</p>
+      <h4>共有する側（自分）</h4>
+      <ol>
+        <li>Section 2 で使った <code class="inline">agmsg</code> のディレクトリで <code class="inline">claude</code> を起動する</li>
+        <li>個人用スキルを、名前を変えてリポジトリにコピーする（隣の受講者も自分の <code class="inline">test-gen</code> を持っているため、名前を分ける）:
+          <div class="prompt-box">
+            <span class="label">あなたの指示</span>
+            <p>~/.claude/skills/test-gen を、このリポジトリの .claude/skills/test-gen-&lt;自分の名前&gt; としてコピーして。SKILL.md の name も合わせて直して</p>
+          </div>
+        </li>
+        <li><code class="inline">/skills</code> を実行し、<code class="inline">test-gen-&lt;自分の名前&gt;</code> が <strong>プロジェクト（.claude/skills）</strong> のスキルとして一覧に出ることを確認する</li>
+        <li>コミットして自分の fork に push する:
+          <div class="prompt-box">
+            <span class="label">あなたの指示</span>
+            <p>.claude/skills/test-gen-&lt;自分の名前&gt; をコミットして、自分の fork（&lt;自分のアカウント&gt;/agmsg）の main に push して</p>
+          </div>
+          <ul>
+            <li>fork がまだ無い場合は「kimotuki/agmsg を自分のアカウントに fork して remote に追加して」と頼む（<code class="inline">gh repo fork --remote</code> 相当）</li>
+          </ul>
+        </li>
+        <li>隣の受講者に自分の GitHub アカウント名を伝える</li>
+      </ol>
+      <h4>動かす側（隣の受講者）</h4>
+      <ol>
+        <li>別のディレクトリに相手の fork を clone して <code class="inline">claude</code> を起動する:
+<pre><span class="prompt">$</span> git clone https://github.com/&lt;相手のアカウント&gt;/agmsg agmsg-&lt;相手の名前&gt;
+<span class="prompt">$</span> cd agmsg-&lt;相手の名前&gt;
+<span class="prompt">$</span> claude</pre>
+        </li>
+        <li><code class="inline">/skills</code> で <code class="inline">test-gen-&lt;相手の名前&gt;</code> が一覧に出ることを確認する（自分では作っていないスキルが、clone しただけで使える）</li>
+        <li>スキルを実行してテストを生成させる:
+          <div class="prompt-box">
+            <span class="label">あなたの指示</span>
+            <p>/test-gen-&lt;相手の名前&gt; scripts/send.sh</p>
+          </div>
+        </li>
+        <li><code class="inline">tests/</code> にテストが追加され、<code class="inline">bats tests/</code> が通ることを確認する</li>
+      </ol>
+      <ul>
+        <li><strong>確認ポイント</strong>：<code class="inline">.claude/skills/</code> をコミットするだけで、clone した人全員が同じ手順のスキルを使える（3-1 の表のとおり）。個人用 <code class="inline">~/.claude/skills/</code> のスキルはどれだけ便利でも本人にしか届かない</li>
+      </ul>
+      <div class="callout tip">
+        <strong>💡 同名スキルの優先順位</strong>
+        同じ名前のスキルが複数の場所にあるときの優先順位は <strong>Enterprise ＞ 個人（~/.claude/skills）＞ プロジェクト（.claude/skills）＞ 組み込み</strong>。個人用に <code class="inline">test-gen</code> が残っていると、プロジェクト側の同名スキルは呼ばれない。この演習で名前を分けたのはそのため。チームで共有するスキルは、各自の個人用スキルと名前がぶつからないようにしておく。
+      </div>
 
       <h3>3-3. プラグイン（5分）</h3>
       <p>Skills / Hooks / 設定を <strong>まとめて配布できる単位</strong> が <strong>プラグイン</strong>。<code class="inline">.claude/</code> への手動コミットより、バージョン管理・更新が楽で、マーケットプレイス経由で導入できる。</p>

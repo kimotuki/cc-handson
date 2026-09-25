@@ -1865,6 +1865,51 @@ bob に「scripts/search.sh をレビューして、気になる点を返信し�
 
 * Section 2 で作った `test-gen` スキルをコミットし、隣の受講者のリポジトリで動かしてもらう
 
+Section 2 で作った `test-gen` は個人用の `~/.claude/skills/` にあるので、自分の PC でしか使えない。これをリポジトリの `.claude/skills/` に移してコミットし、隣の受講者に clone して動かしてもらう。push 先は Section 2 の 8-7 で `gh pr create` が作った **自分の fork**（`<自分のアカウント>/agmsg`）を使う。
+
+**共有する側（自分）**
+
+1. Section 2 で使った `agmsg` のディレクトリで `claude` を起動する
+2. 個人用スキルを、名前を変えてリポジトリにコピーする（隣の受講者も自分の `test-gen` を持っているため、名前を分ける）:
+
+```
+~/.claude/skills/test-gen を、このリポジトリの .claude/skills/test-gen-<自分の名前> としてコピーして。SKILL.md の name も合わせて直して
+```
+
+3. `/skills` を実行し、`test-gen-<自分の名前>` が **プロジェクト（.claude/skills）** のスキルとして一覧に出ることを確認する
+4. コミットして自分の fork に push する:
+
+```
+.claude/skills/test-gen-<自分の名前> をコミットして、自分の fork（<自分のアカウント>/agmsg）の main に push して
+```
+
+   * fork がまだ無い場合は「kimotuki/agmsg を自分のアカウントに fork して remote に追加して」と頼む（`gh repo fork --remote` 相当）
+
+5. 隣の受講者に自分の GitHub アカウント名を伝える
+
+**動かす側（隣の受講者）**
+
+1. 別のディレクトリに相手の fork を clone して `claude` を起動する:
+
+```bash
+git clone https://github.com/<相手のアカウント>/agmsg agmsg-<相手の名前>
+cd agmsg-<相手の名前>
+claude
+```
+
+2. `/skills` で `test-gen-<相手の名前>` が一覧に出ることを確認する（自分では作っていないスキルが、clone しただけで使える）
+3. スキルを実行してテストを生成させる:
+
+```
+/test-gen-<相手の名前> scripts/send.sh
+```
+
+4. `tests/` にテストが追加され、`bats tests/` が通ることを確認する
+
+* **確認ポイント**：`.claude/skills/` をコミットするだけで、clone した人全員が同じ手順のスキルを使える（3-1 の表のとおり）。個人用 `~/.claude/skills/` のスキルはどれだけ便利でも本人にしか届かない
+
+> 💡 **同名スキルの優先順位**：同じ名前のスキルが複数の場所にあるときの優先順位は **Enterprise ＞ 個人（~/.claude/skills）＞ プロジェクト（.claude/skills）＞ 組み込み**。個人用に `test-gen` が残っていると、プロジェクト側の同名スキルは呼ばれない。この演習で名前を分けたのはそのため。チームで共有するスキルは、各自の個人用スキルと名前がぶつからないようにしておく。
+
 #### 3-3. プラグイン（5分）
 
 Skills / Hooks / 設定を **まとめて配布できる単位** が **プラグイン**。`.claude/` への手動コミットより、バージョン管理・更新が楽で、マーケットプレイス経由で導入できる。
