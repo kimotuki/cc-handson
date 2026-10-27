@@ -366,13 +366,29 @@
       </figure>
 
       <h4>作業フォルダを開く</h4>
-      <p>Claude Code は「どのフォルダで作業するか」を決めてから使う。CLI では作業したいフォルダに <code class="inline">cd</code> してから <code class="inline">claude</code> を起動するが、アプリでは作業フォルダを画面から選ぶ。入力欄の上にあるフォルダのボタンをクリックすると、最近使ったフォルダの一覧と <strong>「フォルダを開く…」</strong> が表示される。</p>
+      <p>Claude Code は「どのフォルダで作業するか」を決めてから使う。CLI では作業したいフォルダに <code class="inline">cd</code> してから <code class="inline">claude</code> を起動するが、アプリでは作業フォルダを <strong>環境</strong> として登録し、画面から選ぶ。Claude Code の画面の中央に最近使った環境の一覧と <strong>「環境を選択」</strong> が表示されるので、「環境を選択」から <strong>「新しい環境」</strong> を選ぶ。</p>
       <figure class="shot">
-        <img src="Image/session1-app/folder-menu.png" alt="作業フォルダの選択メニュー" style="max-width: 480px">
+        <img src="Image/session1-app/env-menu.png" alt="「環境を選択」のメニューと「新しい環境」" style="max-width: 400px">
       </figure>
-      <p>「フォルダを開く…」を選ぶと、ファイル選択のダイアログが開く。作業したいフォルダを選んで <strong>「開く」</strong>。</p>
+      <p>「新しい環境」のダイアログが開く。<strong>「ローカル」</strong> タブのまま、フォルダの <strong>「＋ 追加」</strong> を押す。</p>
+      <figure class="shot">
+        <img src="Image/session1-app/env-new-dialog.png" alt="「新しい環境」ダイアログ" style="max-width: 520px">
+      </figure>
+      <p>最近使ったフォルダの一覧が表示される。一覧に無いフォルダを開くときは、一番下の <strong>「選択…」</strong> を押す。</p>
+      <figure class="shot">
+        <img src="Image/session1-app/env-folder-menu.png" alt="最近使ったフォルダの一覧と「選択…」" style="max-width: 520px">
+      </figure>
+      <p>ファイル選択のダイアログが開く。作業したいフォルダを選んで <strong>「開く」</strong>。</p>
       <figure class="shot">
         <img src="Image/session1-app/folder-dialog.png" alt="フォルダ選択ダイアログ">
+      </figure>
+      <p>ダイアログに戻ると、選んだフォルダが表示される。環境の <strong>名前</strong>（例: <code class="inline">handson 2</code>）を確認して <strong>「環境を作成」</strong> を押す。</p>
+      <figure class="shot">
+        <img src="Image/session1-app/env-create.png" alt="名前とフォルダを設定した「新しい環境」ダイアログ" style="max-width: 520px">
+      </figure>
+      <p>作成した環境は一覧に追加され、選択された状態になる。次回からは、この一覧から選ぶだけでよい。</p>
+      <figure class="shot">
+        <img src="Image/session1-app/env-selected.png" alt="作成した環境が選択された一覧" style="max-width: 400px">
       </figure>
       <p>初めて開くフォルダの場合、<strong>そのワークスペースを信頼するか</strong> の確認が表示される。</p>
       <ul>
@@ -383,9 +399,9 @@
       <figure class="shot">
         <img src="Image/session1-app/trust-workspace.png" alt="ワークスペースの信頼確認" style="max-width: 480px">
       </figure>
-      <p>信頼すると作業フォルダが設定され、入力欄の上に <strong>選択したフォルダ名</strong>（例: <code class="inline">handson</code>）が表示される。以降の依頼は、このフォルダを基準に実行される。</p>
+      <p>環境を選ぶと、入力欄の下に <strong>選択した環境の名前</strong>（例: <code class="inline">handson 2</code>）が表示される。以降の依頼は、この環境のフォルダを基準に実行される。</p>
       <figure class="shot">
-        <img src="Image/session1-app/folder-selected.png" alt="選択した作業フォルダ名が表示された状態" style="max-width: 420px">
+        <img src="Image/session1-app/folder-selected.png" alt="入力欄の下に選択した環境の名前が表示された状態" style="max-width: 300px">
       </figure>
       <ul>
         <li>開いたフォルダ配下に <strong>すべてアクセスできる</strong> → 機密ディレクトリは作業フォルダとして開かない（CLI の「機密ディレクトリでは起動しない」）</li>
@@ -399,7 +415,7 @@
       <p>セッション（2-4）の開始も再開も、左のサイドバーから行う。</p>
       <table>
         <tr><th>操作</th><th>アプリでの方法</th><th>CLI では（講師の説明）</th></tr>
-        <tr><td>起動</td><td>サイドバー上部の <code class="inline">+ 新規</code></td><td>プロジェクト直下で <code class="inline">claude</code></td></tr>
+        <tr><td>起動</td><td>サイドバー上部の <code class="inline">+ 新規作成</code></td><td>プロジェクト直下で <code class="inline">claude</code></td></tr>
         <tr><td>終了</td><td>ウィンドウを閉じる（履歴は残る）</td><td><code class="inline">Ctrl + C</code> を 2 回 / <code class="inline">/exit</code></td></tr>
         <tr><td><strong>直前の続きから再開</strong></td><td>サイドバーの一覧から直前のセッションを選ぶ</td><td><code class="inline">claude --continue</code></td></tr>
         <tr><td>過去のセッションを選んで再開</td><td>サイドバーの一覧から選ぶ</td><td><code class="inline">claude -r</code>（<code class="inline">--resume</code>）</td></tr>
@@ -407,9 +423,9 @@
         <tr><td>非対話で 1 問だけ</td><td>起動オプションのためアプリには無い</td><td><code class="inline">claude -p "..."</code></td></tr>
       </table>
       <figure class="shot">
-        <img src="Image/session1-app/new-session-code.png" alt="サイドバー上部の「+ 新規」" style="max-width: 280px">
+        <img src="Image/session1-app/new-session-code.png" alt="サイドバー上部の「+ 新規作成」" style="max-width: 280px">
       </figure>
-      <p>サイドバーには <strong>作業フォルダごと</strong> にセッションの一覧が表示される。開きたいセッションをクリックすると、そのときの会話（コンテキスト）を引き継いだ状態で再開する。</p>
+      <p>サイドバーには <strong>環境（作業フォルダ）ごと</strong> にセッションの一覧が表示される。開きたいセッションをクリックすると、そのときの会話（コンテキスト）を引き継いだ状態で再開する。</p>
       <figure class="shot">
         <img src="Image/session1-app/sidebar-sessions.png" alt="サイドバーのセッション一覧" style="max-width: 320px">
       </figure>
@@ -470,9 +486,9 @@
       </figure>
 
       <h4><code class="inline">/effort</code> — 思考の深さの調整</h4>
-      <p>「速さ ⇔ 賢さ」のトレードオフをスライダーで調整する（CLI では <code class="inline">low</code> 〜 <code class="inline">max</code> の5段階から選ぶ）。簡単な質問は低く（高速側）、難しい設計判断は高く（高精度側）。こちらも実行すると右下にパネルが開く。</p>
+      <p>「速さ ⇔ 賢さ」のトレードオフを段階で選ぶ（CLI では <code class="inline">low</code> 〜 <code class="inline">max</code> の5段階）。アプリでは、上のモデルの選択パネルの <strong>「エフォート」</strong> から <strong>低・中・高・超高・最大</strong> を選ぶ。簡単な質問は低く（高速側）、難しい設計判断は高く（高精度側）。</p>
       <figure class="shot">
-        <img src="Image/session1-app/effort-select.png" alt="エフォートの調整パネル" style="max-width: 420px">
+        <img src="Image/session1-app/effort-select.png" alt="モデルの選択パネルの「エフォート」" style="max-width: 560px">
       </figure>
 
       <h4><code class="inline">/init</code> — CLAUDE.md の生成</h4>
@@ -544,13 +560,9 @@
       </div>
       <div class="callout warn">
         <strong>⚠️ TIPS：音声入力のときはモードを変えて安全に</strong>
-        講師が説明する CLI の <code class="inline">/voice</code>（<code class="inline">Space</code> を押している間だけ録音）にあたるのが、入力欄の下の <strong>マイクボタン</strong>。<strong>長押しして録音</strong> でき、文字起こしは入力欄に入るので、内容を確認してから送信する。
+        講師が説明する CLI の <code class="inline">/voice</code>（<code class="inline">Space</code> を押している間だけ録音）にあたるのが、入力欄の右端の <strong>マイクボタン</strong>。<strong>長押しして録音</strong> でき、文字起こしは入力欄に入るので、内容を確認してから送信する。
         <figure class="shot" style="margin:12px 0 0;">
-          <img src="Image/session1-app/voice-button.png" alt="入力欄の下のマイクボタン（長押しして録音）" style="max-width: 320px">
-        </figure>
-        マイク横の <code class="inline">▾</code> では、使うマイクの選択と「長押しで録音」のオン／オフを切り替えられる。CLI の <code class="inline">/voice tap</code> や autoSubmit 設定による自動送信にあたる設定は、このメニューには無い。
-        <figure class="shot" style="margin:12px 0 0;">
-          <img src="Image/session1-app/voice-menu.png" alt="マイクの選択と「長押しで録音」の切り替えメニュー" style="max-width: 380px">
+          <img src="Image/session1-app/voice-button.png" alt="入力欄の右端のマイクボタン" style="max-width: 320px">
         </figure>
         音声（Voice）で指示すると、聞き取りミスや言い間違いが <strong>そのまま指示になる</strong>。「消して」「戻して」が誤認識されれば、「自動」（Auto）や「編集を受け入れる」（Accept Edits）では確認なしにファイル削除や <code class="inline">git reset</code> が走りうる。音声で操作するときは入力欄左下のモード表示から <strong>「手動」（Default）か「プラン」（Plan Mode）に切り替え</strong>、文字起こしされた指示と承認ダイアログを目で確認してから許可する。長めの依頼は「プラン」で計画だけ出させ、内容を確認してから解除して実行するのが安全。
       </div>
@@ -701,7 +713,7 @@ Hello world</pre>
         <strong>💡 この章はコードを読むだけ</strong>
         Bun のインストールは不要。実際に動かすのは Section 2 以降で、GitHub Codespaces 上で行う（手順は <a href="backlog-md.html">Backlog.md を GitHub Codespaces で動かす</a>）。
       </div>
-      <p>アプリでは、クローン先にしたいフォルダを作業フォルダとして開き（3-1）、画面右上の <strong>ターミナルボタン</strong> を押す。ターミナルは <strong>作業フォルダの場所で開く</strong> ので、<code class="inline">cd</code> で移動しなくてよい。</p>
+      <p>アプリでは、クローン先にしたいフォルダの環境を選び（3-1）、画面右上の <strong>ターミナルボタン</strong> を押す。ターミナルは <strong>作業フォルダの場所で開く</strong> ので、<code class="inline">cd</code> で移動しなくてよい。</p>
       <figure class="shot">
         <img src="Image/session1-app/terminal-button.png" alt="画面右上のターミナルボタン" style="max-width: 200px">
       </figure>
@@ -848,7 +860,7 @@ Hello world</pre>
         <li>直したい点は会話で修正できる：「1スライドの箇条書きは5個までというルールを SKILL.md に追記して」</li>
       </ul>
       <h4>使ってみる</h4>
-      <p>スキルはセッションの開始時に読み込まれるので、サイドバーの <code class="inline">+ 新規</code> で新しいセッションを開始してから呼び出す（3-2）。別の記事で同じデザインの資料ができれば成功。</p>
+      <p>スキルはセッションの開始時に読み込まれるので、サイドバーの <code class="inline">+ 新規作成</code> で新しいセッションを開始してから呼び出す（3-2）。別の記事で同じデザインの資料ができれば成功。</p>
       <div class="prompt-box">
         <span class="label">あなたの指示</span>
         <p>/slide-deck https://claude.com/blog/getting-started-with-loops の記事を loops-guide-2.html にまとめて</p>
