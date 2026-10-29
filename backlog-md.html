@@ -196,6 +196,18 @@
     <section id="intro">
       <h2 class="step"><span class="step-num">1</span>この資料について</h2>
       <p><a href="https://github.com/MrLesk/Backlog.md" target="_blank" rel="noopener">Backlog.md</a> は、タスクを Markdown ファイルとしてリポジトリ内に置き、CLI・ターミナルのかんばん・Web UI で管理する OSS（TypeScript / Bun 製、MIT ライセンス）。ハンズオンではこのソースコードを題材に、Claude Code で読み解き・改良する。</p>
+      <h3>Backlog.md とは — 何がうれしいのか</h3>
+      <figure class="shot">
+        <img src="Image/backlog-md/backlog-overview.png" alt="Backlog.md の全体像 — タスクは backlog/ 配下の Markdown ファイル。人は CLI・ターミナルのかんばん・Web UI で、AI エージェントは CLI か MCP で同じファイルを読み書きし、git で履歴が残る">
+        <figcaption>タスクは git リポジトリ内の Markdown ファイル。人と AI エージェントが同じファイルを、3つの見え方で読み書きする</figcaption>
+      </figure>
+      <ul>
+        <li><strong>タスクがコードと同じ場所にある</strong>：1タスク＝1つの Markdown ファイル（<code class="inline">backlog/tasks/</code>）。ブランチ・コミット・PR と一緒に履歴が残り、レビューもできる。Jira や Trello のような外部サービスとの往復が要らない</li>
+        <li><strong>人と AI エージェントが同じタスクを見る</strong>：人は CLI・かんばん・Web UI・エディタで、Claude Code などのエージェントは CLI か MCP で、同じファイルを読み書きする。「Claude に頼んだ作業が今どこまで進んだか」がかんばんに出る</li>
+        <li><strong>「どうなれば完了か」を先に書く</strong>：各タスクに受け入れ条件（Acceptance Criteria）と Definition of Done を持たせ、エージェントは実装計画（Implementation Plan）をタスクに書いてから実装する。人は着手前と完了後にその内容をレビューする、というスペック駆動の流れが型になっている</li>
+        <li><strong>導入が軽い</strong>：サーバーもアカウントも不要で、<code class="inline">backlog init</code> だけで始められる。テレメトリも無い</li>
+        <li><strong>ハンズオンの題材として</strong>：TypeScript 製で規模が手頃（CLI・コア・Web UI の層分けが明快）。しかも Backlog.md 自身が Backlog.md でタスク管理されているので、OSS の開発プロセスをそのまま覗ける</li>
+      </ul>
       <p>この資料では、<strong>ローカル PC では起動せずに</strong>、GitHub Codespaces 上で Backlog.md をソースコードのまま起動するまでの手順を、画面キャプチャつきで説明する。devcontainer の設定は不要で、Codespaces の既定イメージに Bun を手動で入れる最小構成とする。</p>
       <h3>前提</h3>
       <ul>
