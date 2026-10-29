@@ -40,7 +40,7 @@
 | Section | テーマ | 主な内容 | 実践 |
 |---|---|---|---|
 | Section 1 | Claude Code の基本 | Claude Code とは / 基本的な使い方 / コマンド | Claude Code を使ったソースコード解析 |
-| Section 2 | Claude Code を使ったソフトウェア開発 | 設定ファイル / Skills・プラグイン / skill-creator / コネクタ / MCP / SubAgent / Hooks | Claude Code を使ったコード変更 |
+| Section 2 | Claude Code を使ったソフトウェア開発 | 設定ファイル / Skills・プラグイン / コネクタ / MCP / SubAgent / Hooks | Claude Code を使ったコード変更 |
 | Section 3 | Claude Code を使ったチーム開発 | CLAUDE.md・Skills の共有 / プロジェクトナレッジの整理 | チーム開発フローの体験 |
 
 ---
@@ -728,7 +728,7 @@ loops-guide.html を A4 縦の PDF に変換して、loops-guide.pdf として�
 ## 到達目標
 
 * `CLAUDE.md`・メモリ・`settings.json` の仕組みを理解し、設定が効いているかを確認できる
-* プラグインで機能を追加し、skill-creator で自作スキルを作れる
+* プラグインで機能を追加し、プロンプトから自作スキルを作れる
 * コネクタ・MCP で外部サービス（Figma など）を接続し、デザインからコード生成の流れを理解する
 * 題材の OSS（Backlog.md）への機能追加からレビュー・PR 作成まで、Claude Code との会話で完遂できる
 
@@ -934,7 +934,7 @@ CLAUDE.md とは別に、**Claude が自分で書き溜めるプロジェクト�
 
 * **手順書をスキル化** して `/<スキル名>` で呼び出せる仕組み。実体は `.claude/skills/<スキル名>/SKILL.md`
 * 「毎回プロンプトで説明していた定型作業」をコマンド一発にできる
-* 自分で書くほかに、**プラグインで配布されたスキルを入れる**・**skill-creator に作ってもらう** という選択肢がある
+* 自分で書くほかに、**プラグインで配布されたスキルを入れる**・**Claude に作ってもらう** という選択肢がある
 * **プラグイン** ＝ スキル・サブエージェント・Hooks・MCP 接続などの拡張を **ひとまとめにして配布する入れ物**。`/plugin` で導入・管理する
 * **マーケットプレイス** ＝ プラグインの配布カタログ。Anthropic 公式の **claude-plugins-official** のほか、GitHub リポジトリをマーケットプレイスとして登録すればチーム独自の配布元も持てる（Section 3 で扱う）
 
@@ -956,41 +956,49 @@ CLAUDE.md とは別に、**Claude が自分で書き溜めるプロジェクト�
 
 * `security-guidance` を install → `/reload-plugins` → `/plugin` の **Installed** タブで入ったことを確認する
 
-#### 3-3. skill-creator でスキルを作る（4分）
+#### 3-3. プロンプトでスキルを作る（4分）
 
-手書きで `SKILL.md` を書いてもよいが、**skill-creator** プラグインを使うと **対話的にスキルを作れる**。
+スキルは `SKILL.md` を置くだけで作れる。ここでは Claude に頼んで、**独自のレビュー観点でレビューする `custom-review` スキル** を、4章で改修する自分の fork の中に **プロジェクトスコープ**（`.claude/skills/`）で作る。
 
-```
-/plugin install skill-creator@claude-plugins-official
-/reload-plugins
-```
-
-`/skill-creator` を呼び出し、作りたいスキルを言葉で伝える:
+まず 4章で使う自分の fork を clone して `claude` を起動する（fork の作り方は [backlog-md.html](backlog-md.html) の手順1）:
 
 ```
-テストを生成する test-gen というスキルを作って。
-対象のファイルを引数で受け取り、リポジトリの既存テスト形式（src/test/ の bun test）に合わせて
-正常系・異常系のテストを作成する手順にして。テストの実行は Codespace で行うので、
-最後に実行コマンド（bun test --timeout=10000 <テストファイル>）を案内して。
+$ gh repo clone <自分のアカウント>/Backlog.md-handson
+$ cd Backlog.md-handson
+$ rm CLAUDE.md AGENTS.md   # 上流の運用ルールを一度削除する（4-1 の注意を参照）
+$ claude
 ```
 
-* skill-creator が `SKILL.md` と必要な補助ファイルを生成してくれる
-* **Create / Eval / Improve / Benchmark** の4モードがあり、作成だけでなく評価・改善まで支援する
-
-作成された `test-gen` の中身を確認する:
+作りたいスキルを言葉で伝える:
 
 ```
-!ls ~/.claude/skills/test-gen/
-!cat ~/.claude/skills/test-gen/SKILL.md
+.claude/skills/custom-review/SKILL.md として、独自の観点でコードレビューするスキル custom-review を作って。
+対象は引数で受け取ったファイルかディレクトリ（省略時は git diff の変更分）。観点は次の2つ:
+① エラーメッセージの親切さ — 原因と「次に何をすればよいか」が書かれているか、人とエージェントの両方が読めるか
+② 多言語対応の漏れ — ハードコードされた英語文言が残っていないか、日本語訳が自然か
+指摘ごとに「観点 / 該当ファイル・行 / 問題のコード / 理由 / 修正案」を示す手順にして。
 ```
 
-* どんなファイルが生成され、`SKILL.md` に何が書かれたかを眺めておく（構成の意味は次の 3-4 で扱う）
+* Claude が `.claude/skills/custom-review/SKILL.md` を生成する。`description` に「いつ使うか」が書かれていることを確認する（Claude が自動起動を判断する鍵。3-4 で扱う）
+* 観点は、自分のチームが「レビューで毎回言っていること」に置き換えるとよい（例：後方互換、テスト不足、ログに個人情報を出さない）
 
-> 💡 **スキルの置き場所**：自作スキル（`/test-gen` 等）は `~/.claude/skills/` に置いておくと **どのプロジェクトでも呼び出せる**（リポジトリ内の `.claude/skills/` はそのプロジェクト専用）。
+作成されたスキルの中身を確認し、試しに呼び出す:
+
+```
+!cat .claude/skills/custom-review/SKILL.md
+```
+
+```
+/custom-review src/core/search-service.ts
+```
+
+* `/skills` で `custom-review` が **プロジェクト（.claude/skills）** のスキルとして一覧に出ることを確認する
+
+> 💡 **スキルの置き場所**：リポジトリ内の `.claude/skills/` に置くと **そのプロジェクト専用** になり、コミットすればチーム全員で共有できる（Section 3）。どのプロジェクトでも使いたい個人用スキルは `~/.claude/skills/` に置く。
 
 #### 3-4. スキルのフォルダ構成（4分）
 
-スキルは「**1ディレクトリ＝1スキル**」。エントリは `SKILL.md`（必須）で、**ディレクトリ名がそのままコマンド名**になる（`test-gen/` → `/test-gen`）。
+スキルは「**1ディレクトリ＝1スキル**」。エントリは `SKILL.md`（必須）で、**ディレクトリ名がそのままコマンド名**になる（`custom-review/` → `/custom-review`）。
 
 | 配置場所 | スコープ |
 |----------|----------|
@@ -1001,9 +1009,9 @@ CLAUDE.md とは別に、**Claude が自分で書き溜めるプロジェクト�
 
 ```markdown
 ---
-name: test-gen
-description: 指定したファイルのテストを生成する。テスト追加を頼まれたときに使う。
-allowed-tools: Read, Edit, Bash
+name: custom-review
+description: エラーメッセージの親切さと多言語対応の漏れの観点でコードレビューする。レビューを頼まれたときや変更後に使う。
+allowed-tools: Read, Grep, Glob, Bash
 ---
 
 （ここに手順を Markdown で書く）
@@ -1013,7 +1021,7 @@ allowed-tools: Read, Edit, Bash
 * 補助ファイルを同梱できる:
 
 ```
-test-gen/
+custom-review/
 ├── SKILL.md        ← 必須・エントリ
 ├── reference.md    ← 詳細リファレンス
 ├── templates/      ← 雛形
@@ -1084,11 +1092,11 @@ test-gen/
 
 ### 4. 実践：アプリ開発の一連フロー（28分）
 
-**個人開発のフロー** を最初から最後まで回す。自分の fork（Backlog.md）をクローン → 機能追加（マルチ言語対応） → レビュー → 修正 → テスト生成 → セキュリティレビュー → fork 元リポジトリへの PR 作成まで、すべて Claude Code との会話で進める。
+**個人開発のフロー** を最初から最後まで回す。自分の fork（Backlog.md）をクローン → 機能追加（マルチ言語対応） → レビュー → 修正 → 独自観点のレビュー → セキュリティレビュー → fork 元リポジトリへの PR 作成まで、すべて Claude Code との会話で進める。
 
 #### 4-1. 題材（Backlog.md）を clone（2分）
 
-改修の題材は **Backlog.md**（Section 1 のソースコード解析で使った、Markdown ベースのタスク管理ツール）。[Backlog.md を GitHub Codespaces で動かす](backlog-md.html) の手順1 で作った **自分の fork** を、ローカルに clone して準備する（fork がまだなら先に作る）:
+改修の題材は **Backlog.md**（Section 1 のソースコード解析で使った、Markdown ベースのタスク管理ツール）。**3-3 で clone した自分の fork をそのまま使う**。まだなら、[Backlog.md を GitHub Codespaces で動かす](backlog-md.html) の手順1 で fork を作ってから clone する:
 
 ```
 $ gh repo clone <自分のアカウント>/Backlog.md-handson
@@ -1109,6 +1117,7 @@ $ claude
 この Backlog.md に、CLI の表示言語を英語と日本語で切り替えられるマルチ言語対応を追加してください。
 まずは backlog --help のコマンド説明と、backlog task list の見出し・ステータス表示を対象にして。
 環境変数 BACKLOG_LANG=ja（既定は en）で切り替え、文言は src/i18n/ にまとめて。
+対応するテストも src/test/ に追加して。
 ```
 
 実装が終わったら、どのような変更が入ったかを `git diff` で **人の目で確認する**:
@@ -1145,16 +1154,16 @@ $ claude
 
 * 直した内容が新たな指摘を生んでいないか、必要なら再度 `/code-review` をかける
 
-#### 4-5. 自作スキルでテストを生成してレビュー（3分）
+#### 4-5. 自作スキルで独自観点のレビュー（3分）
 
-3-3 で作った自作スキル `/test-gen` で、追加したマルチ言語対応のテストを生成する。
+3-3 で作った自作スキル `/custom-review` で、追加したマルチ言語対応を独自の観点（エラーメッセージの親切さ・多言語対応の漏れ）でレビューする。
 
 ```
-/test-gen src/i18n/index.ts
+/custom-review src/i18n/
 ```
 
-* 正常系・異常系のテストが `src/test/` に生成される（Backlog.md のテストは `bun test` 形式）。引数のファイル名は Claude が作った i18n のファイルに合わせる。テストの実行は 4-7 で push したあと Codespace で行う
-* レビューは組み込みスキル、テスト生成は自作 `/test-gen` のように、**組み込みスキルでカバーされない定型作業は自作スキルで作っていく**
+* 4-3 の `/code-review`（バグ・エッジケース）とは違う観点の指摘が返る。妥当な指摘があれば「指摘の○番を直して」と依頼し、差分を確認する
+* 汎用のレビューは組み込みスキル、チーム独自の観点は自作 `/custom-review` のように、**組み込みスキルでカバーされない定型作業は自作スキルで作っていく**
 
 #### 4-6. 組み込みスキルでセキュリティレビュー（4分）
 
@@ -1565,7 +1574,7 @@ exit 0
 ### 9. まとめ（8分）
 
 * `CLAUDE.md` は **Claude への引き継ぎ書** — 簡潔・宣言的に保つ。`settings.json` は **ハーネスの強制設定**（`/config` `/permissions` `/hooks` で確認）
-* **プラグイン** で機能を足し、**skill-creator** で自作スキルを作り、**Hooks** で品質担保を自動化する
+* **プラグイン** で機能を足し、**プロンプト** で自作スキルを作り、**Hooks** で品質担保を自動化する
 * **コネクタ・MCP** で外部サービス（Figma など）を接続すると、Claude の作業範囲が広がる
 * **SubAgent** で重い調査・レビューを別コンテキストに逃がし、メイン会話を汚さない
 * コード変更は **Plan Mode で計画 → 承認 → 小さく実装 → テスト** のリズムで
@@ -1873,36 +1882,34 @@ Section 2 で作った自作スキルは `~/.claude/skills/` にあり、**自�
 
 #### 3-2. チームでの活用例（4分）
 
-* テスト生成の手順を `/test-gen` スキルとして共有 → **テスト観点の平準化**
+* 独自のレビュー観点を `/custom-review` スキルとして共有 → **レビュー観点の平準化**
 * `PostToolUse` でリンタを強制 → **「Claude が書いてもチーム標準のコード」を担保**
 * Section 2 で作った `ts-code-reviewer` サブエージェントをコミット → **レビュー観点の統一**（誰が回しても同じ基準でレビューされる）
 * 新メンバーのオンボーディング：`claude` を起動して「このプロジェクトの開発の流れを教えて」
 
 ##### 演習1
 
-* Section 2 で作った `test-gen` スキルをコミットし、隣の受講者のリポジトリで動かしてもらう
+* Section 2 で作った `custom-review` スキルをコミットし、隣の受講者のリポジトリで動かしてもらう
 
-Section 2 で作った `test-gen` は個人用の `~/.claude/skills/` にあるので、自分の PC でしか使えない。これをリポジトリの `.claude/skills/` に移してコミットし、隣の受講者に clone して動かしてもらう。push 先は Section 2 でも使った **自分の fork**（`<自分のアカウント>/Backlog.md-handson`）を使う。
+Section 2 で作った `custom-review` は、自分の fork の `.claude/skills/`（プロジェクトスコープ）にある。ただし手元の clone に置いただけなので、まだ誰にも届いていない。これを fork の main にコミットして push し、隣の受講者に clone して動かしてもらう。
 
 **共有する側（自分）**
 
-1. Section 2 で使った `Backlog.md-handson` のディレクトリで `claude` を起動する
-2. 個人用スキルを、名前を変えてリポジトリにコピーする（隣の受講者も自分の `test-gen` を持っているため、名前を分ける）:
+1. Section 2 で使った `Backlog.md-handson` のディレクトリで、main ブランチに戻って `claude` を起動する:
 
-```
-~/.claude/skills/test-gen を、このリポジトリの .claude/skills/test-gen-<自分の名前> としてコピーして。SKILL.md の name も合わせて直して
-```
-
-3. `/skills` を実行し、`test-gen-<自分の名前>` が **プロジェクト（.claude/skills）** のスキルとして一覧に出ることを確認する
-4. コミットして自分の fork に push する:
-
-```
-.claude/skills/test-gen-<自分の名前> をコミットして、自分の fork（<自分のアカウント>/Backlog.md-handson）の main に push して
+```bash
+git switch main
+claude
 ```
 
-   * fork がまだ無い場合は「cl-y-arai/Backlog.md-handson を自分のアカウントに fork して remote に追加して」と頼む（`gh repo fork --remote` 相当）
+2. `/skills` を実行し、`custom-review` が **プロジェクト（.claude/skills）** のスキルとして一覧に出ることを確認する
+3. コミットして自分の fork に push する:
 
-5. 隣の受講者に自分の GitHub アカウント名を伝える
+```
+.claude/skills/custom-review をコミットして、自分の fork（<自分のアカウント>/Backlog.md-handson）の main に push して
+```
+
+4. 隣の受講者に自分の GitHub アカウント名を伝える
 
 **動かす側（隣の受講者）**
 
@@ -1914,18 +1921,18 @@ cd backlog-<相手の名前>
 claude
 ```
 
-2. `/skills` で `test-gen-<相手の名前>` が一覧に出ることを確認する（自分では作っていないスキルが、clone しただけで使える）
-3. スキルを実行してテストを生成させる:
+2. `/skills` で `custom-review` が一覧に出ることを確認する（自分では作っていないスキルが、clone しただけで使える）
+3. スキルを実行してレビューさせる:
 
 ```
-/test-gen-<相手の名前> src/core/search-service.ts
+/custom-review src/core/search-service.ts
 ```
 
-4. `src/test/` にテストが追加されることを確認する（実行は Codespace で `bun run test`）
+4. 指摘が **相手の観点**（エラーメッセージの親切さ・多言語対応の漏れ）で返ってくることを確認する。自分の fork で作った `custom-review` とは別物が動いている
 
 * **確認ポイント**：`.claude/skills/` をコミットするだけで、clone した人全員が同じ手順のスキルを使える（3-1 の表のとおり）。個人用 `~/.claude/skills/` のスキルはどれだけ便利でも本人にしか届かない
 
-> 💡 **同名スキルの優先順位**：同じ名前のスキルが複数の場所にあるときの優先順位は **Enterprise ＞ 個人（~/.claude/skills）＞ プロジェクト（.claude/skills）＞ 組み込み**。個人用に `test-gen` が残っていると、プロジェクト側の同名スキルは呼ばれない。この演習で名前を分けたのはそのため。チームで共有するスキルは、各自の個人用スキルと名前がぶつからないようにしておく。
+> 💡 **同名スキルの優先順位**：同じ名前のスキルが複数の場所にあるときの優先順位は **Enterprise ＞ 個人（~/.claude/skills）＞ プロジェクト（.claude/skills）＞ 組み込み**。個人用 `~/.claude/skills/` に同名の `custom-review` を置いていると、プロジェクト側は呼ばれない。チームで共有するスキルは、各自の個人用スキルと名前がぶつからないようにしておく。
 
 #### 3-3. プラグイン（5分）
 
@@ -1984,7 +1991,7 @@ Claude Code のセッション内で以下を実行する:
 
 ##### 演習2
 
-* 自分のマーケットプレイスを GitHub に作り、`test-gen` スキルをプラグインとして公開して、隣の受講者に `/plugin` でインストールしてもらう
+* 自分のマーケットプレイスを GitHub に作り、`custom-review` スキルをプラグインとして公開して、隣の受講者に `/plugin` でインストールしてもらう
 
 演習1 は「リポジトリを clone した人」にしか届かない。マーケットプレイスにすると、**どのリポジトリで作業していても** `/plugin install` 一発で導入でき、更新も `/plugin update` で配れる。マーケットプレイスの実体はただの GitHub リポジトリで、最小構成は次のとおり:
 
@@ -1995,7 +2002,7 @@ cc-plugins-<自分の名前>/
 └── plugins/
     └── dev-tools/            ← プラグイン（1つのディレクトリ）
         └── skills/
-            └── test-gen/
+            └── custom-review/
                 └── SKILL.md  ← Section 2 で作ったスキルをそのまま置く
 ```
 
@@ -2007,14 +2014,14 @@ cc-plugins-<自分の名前>/
     {
       "name": "dev-tools",
       "source": "./plugins/dev-tools",
-      "description": "チーム用スキル（test-gen）"
+      "description": "チーム用スキル（custom-review）"
     }
   ]
 }
 ```
 
 * `source` はマーケットプレイスのルート（`.claude-plugin/` がある場所）からの相対パス。プラグイン側の `.claude-plugin/plugin.json` は省略可（無ければ標準の配置 `skills/` 等がそのまま読まれる）
-* プラグインに入れたスキルは **`/<プラグイン名>:<スキル名>`**（ここでは `/dev-tools:test-gen`）で呼ぶ。名前空間が分かれるので、演習1 のように個人用の `test-gen` とぶつからない
+* プラグインに入れたスキルは **`/<プラグイン名>:<スキル名>`**（ここでは `/dev-tools:custom-review`）で呼ぶ。名前空間が分かれるので、プロジェクトの `custom-review` とぶつからない
 
 **共有する側（自分）**
 
@@ -2029,7 +2036,7 @@ claude
 2. 上の構成を Claude に作らせる:
 
 ```
-このディレクトリを Claude Code のプラグインマーケットプレイスにして。.claude-plugin/marketplace.json は name を「<自分の名前>-plugins」、owner を自分にして、plugins に name「dev-tools」、source「./plugins/dev-tools」を登録して。~/.claude/skills/test-gen を plugins/dev-tools/skills/test-gen にコピーして
+このディレクトリを Claude Code のプラグインマーケットプレイスにして。.claude-plugin/marketplace.json は name を「<自分の名前>-plugins」、owner を自分にして、plugins に name「dev-tools」、source「./plugins/dev-tools」を登録して。<Backlog.md-handson のパス>/.claude/skills/custom-review を plugins/dev-tools/skills/custom-review にコピーして
 ```
 
 3. 構成を検証する（JSON の必須項目・名前の整合性をチェックしてくれる）:
@@ -2056,11 +2063,11 @@ gh でこのディレクトリを自分のアカウントの新しい public リ
 /reload-plugins
 ```
 
-2. `/plugin` の Installed タブ、または `/skills` に `dev-tools:test-gen` が出ることを確認する
-3. スキルを実行してテストを生成させる:
+2. `/plugin` の Installed タブ、または `/skills` に `dev-tools:custom-review` が出ることを確認する
+3. スキルを実行してレビューさせる:
 
 ```
-/dev-tools:test-gen src/core/search-service.ts
+/dev-tools:custom-review src/core/search-service.ts
 ```
 
 * **更新の流れ**：作成者がスキルを直して push → 利用者は `/plugin marketplace update <相手の名前>-plugins` → `/plugin update dev-tools@<相手の名前>-plugins`。clone し直す必要がない
