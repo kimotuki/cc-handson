@@ -591,19 +591,11 @@ backlog task create でタスクを作成したとき、どのコードが実行
 
 #### 7-4. サマリ取得（3分）
 
-* Plan Mode の解除（書き込み許可）を承認すると、Claude がシーケンス図を Markdown ファイルとして保存できるようになる
-
 最後に、解析結果をドキュメントとして残せる形で出力させる。
 
 ```
 backlog task create を実行してから、タスクの Markdown ファイルが
 保存されるまでの流れを Mermaid のシーケンス図で出力して。
-```
-
-続けて、生成した図をファイルとして残す。Plan Mode は解除しておく:
-
-```
-シーケンス図をファイルに保存して
 ```
 
 > 💡 エディタに Mermaid 形式のビューアが入っていない場合は、**Mermaid エディター**（`https://rakkokeyword.com/techo/tool-mermaid-editor/`）に出力を貼り付けて図を確認できる。
