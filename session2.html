@@ -556,7 +556,10 @@ $ claude</pre>
       <h3>4-2. 「マルチ言語対応（英語・日本語）」機能を追加（8分）</h3>
       <div class="prompt-box">
         <span class="label">あなたの指示</span>
-        <p>この Backlog.md に、CLI の表示言語を英語と日本語で切り替えられるマルチ言語対応を追加してください。まずは backlog --help のコマンド説明と、backlog task list の見出し・ステータス表示を対象にして。環境変数 BACKLOG_LANG=ja（既定は en）で切り替え、文言は src/i18n/ にまとめて。対応するテストも src/test/ に追加して。</p>
+        <p>この Backlog.md に、CLI の表示言語を英語と日本語で切り替えられるマルチ言語対応を追加してください。<br>
+まずは backlog --help のコマンド説明と、backlog task list の見出し・ステータス表示を対象にして。<br>
+環境変数 BACKLOG_LANG=ja（既定は en）で切り替え、文言は src/i18n/ にまとめて。<br>
+対応するテストも src/test/ に追加して。</p>
       </div>
       <p>実装が終わったら、どのような変更が入ったかを <code class="inline">git diff</code> で <strong>人の目で確認する</strong>:</p>
 <pre>!git status
