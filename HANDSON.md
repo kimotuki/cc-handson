@@ -750,6 +750,8 @@ loops-guide.html を A4 縦の PDF に変換して、loops-guide.pdf として�
 
 ### 2. 設定ファイルとメモリ：CLAUDE.md・settings.json・MEMORY.md（18分）
 
+![CLAUDE.md・settings.json・MEMORY.md の役割 — 人が書く指示（CLAUDE.md）と動作設定（settings.json）、Claude が書き溜める記憶（MEMORY.md）を、セッション開始時に Claude Code が読み込む](Image/config-memory-roles.png)
+
 #### 2-1. CLAUDE.md とは（4分）
 
 * セッション開始時に **自動で読み込まれる** プロジェクトの説明書
