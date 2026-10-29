@@ -172,11 +172,11 @@
       <li><a href="#goal">1. 到達目標・時間配分</a></li>
       <li><a href="#sec2">2. 設定ファイルとメモリ（CLAUDE.md・settings.json・MEMORY.md）</a></li>
       <li><a href="#sec3">3. Skills とプラグイン</a></li>
-      <li><a href="#sec4">4. コネクタ</a></li>
-      <li><a href="#sec5">5. MCP</a></li>
-      <li><a href="#sec6">6. SubAgent（サブエージェント）</a></li>
-      <li><a href="#sec7">7. Hooks</a></li>
-      <li><a href="#sec8">8. 実践：アプリ開発の一連フロー</a></li>
+      <li><a href="#sec4">4. 実践：アプリ開発の一連フロー</a></li>
+      <li><a href="#sec5">5. コネクタ</a></li>
+      <li><a href="#sec6">6. MCP</a></li>
+      <li><a href="#sec7">7. SubAgent（サブエージェント）</a></li>
+      <li><a href="#sec8">8. Hooks</a></li>
       <li><a href="#sec9">9. まとめ</a></li>
       <li><a href="#appendix">付録A. /loop と /goal</a></li>
       <li><a href="#appendix-teams">付録B. Agent Teams</a></li>
@@ -212,11 +212,11 @@
         <tr><td>1</td><td>オープニング（到達目標・時間配分の説明）</td><td>6分</td></tr>
         <tr><td>2</td><td>設定ファイルとメモリ（CLAUDE.md・settings.json・MEMORY.md）</td><td>18分</td></tr>
         <tr><td>3</td><td>Skills とプラグイン</td><td>18分</td></tr>
-        <tr><td>4</td><td>コネクタ</td><td>6分</td></tr>
-        <tr><td>5</td><td>MCP</td><td>12分</td></tr>
-        <tr><td>6</td><td>SubAgent（サブエージェント）</td><td>12分</td></tr>
-        <tr><td>7</td><td>Hooks</td><td>12分</td></tr>
-        <tr><td>8</td><td>実践：アプリ開発の一連フロー</td><td>28分</td></tr>
+        <tr><td>4</td><td>実践：アプリ開発の一連フロー</td><td>28分</td></tr>
+        <tr><td>5</td><td>コネクタ</td><td>6分</td></tr>
+        <tr><td>6</td><td>MCP</td><td>12分</td></tr>
+        <tr><td>7</td><td>SubAgent（サブエージェント）</td><td>12分</td></tr>
+        <tr><td>8</td><td>Hooks</td><td>12分</td></tr>
         <tr><td>9</td><td>まとめ</td><td>8分</td></tr>
       </table>
     </section>
@@ -305,7 +305,7 @@
       <table>
         <tr><th>キー</th><th>役割</th></tr>
         <tr><td><code class="inline">permissions</code></td><td>ツール実行の許可/拒否/確認（<code class="inline">allow</code> / <code class="inline">deny</code> / <code class="inline">ask</code>）</td></tr>
-        <tr><td><code class="inline">hooks</code></td><td>ツール実行の前後に差し込むコマンド（7章）</td></tr>
+        <tr><td><code class="inline">hooks</code></td><td>ツール実行の前後に差し込むコマンド（8章）</td></tr>
         <tr><td><code class="inline">env</code></td><td>セッションに渡す環境変数</td></tr>
         <tr><td><code class="inline">model</code></td><td>既定モデル</td></tr>
         <tr><td><code class="inline">outputStyle</code></td><td>応答スタイル</td></tr>
@@ -527,12 +527,106 @@ allowed-tools: Read, Edit, Bash
     </section>
 
     <section id="sec4">
-      <h2 class="step"><span class="step-num">4</span>コネクタ（6分）</h2>
+      <h2 class="step"><span class="step-num">4</span>実践：アプリ開発の一連フロー（28分）</h2>
+      <p><strong>個人開発のフロー</strong> を最初から最後まで回す。自分の fork（Backlog.md）をクローン → 機能追加（マルチ言語対応） → レビュー → 修正 → テスト生成 → セキュリティレビュー → fork 元リポジトリへの PR 作成まで、すべて Claude Code との会話で進める。</p>
 
-      <h3>4-1. コネクタとは（3分）</h3>
+      <h3>4-1. 題材（Backlog.md）を clone（2分）</h3>
+      <p>改修の題材は <strong>Backlog.md</strong>（Section 1 のソースコード解析で使った、Markdown ベースのタスク管理ツール）。<a href="backlog-md.html">Backlog.md を GitHub Codespaces で動かす</a> の手順1 で作った <strong>自分の fork</strong> を、ローカルに clone して準備する（fork がまだなら先に作る）:</p>
+<pre>$ gh repo clone &lt;自分のアカウント&gt;/Backlog.md-handson
+$ cd Backlog.md-handson
+$ rm CLAUDE.md AGENTS.md   <span class="comment"># 上流の運用ルール（下の注意を参照）を一度削除する</span>
+$ claude</pre>
+      <ul>
+        <li><code class="inline">gh repo clone</code> で fork を clone すると、<code class="inline">origin</code> が自分の fork、<code class="inline">upstream</code> が fork 元（<code class="inline">cl-y-arai/Backlog.md-handson</code>）に自動で設定される</li>
+        <li>以降のステップ（機能追加・レビュー・修正）は、この <strong>ローカルの clone を対象</strong> に Claude Code で進める。<strong>ローカルでは Bun を動かさない</strong>。動作確認とテストは 4-7 で push したあと、Codespace で行う</li>
+        <li>Section 1 の「ソースコード解析」と同じ題材なので、構造を把握済みならスムーズに改修へ入れる</li>
+      </ul>
+      <div class="callout warn">
+        <strong>⚠️ リポジトリ付属の CLAUDE.md に注意</strong>
+        リポジトリに <code class="inline">CLAUDE.md</code> / <code class="inline">AGENTS.md</code> が付属している場合は、まずは最初に中身を確認する。今回の Backlog.md の <code class="inline">CLAUDE.md</code> / <code class="inline">AGENTS.md</code> には、Backlog.md 開発チーム向けの運用ルール（MANIFESTO.md を先に読む、判断に迷ったら作者に聞く、など）が書かれている。この clone したフォルダで Claude Code を動かすと、それらのファイルを参照して動作する。今回のハンズオンの演習では、<code class="inline">CLAUDE.md</code> / <code class="inline">AGENTS.md</code> は一度削除する。
+      </div>
+
+      <h3>4-2. 「マルチ言語対応（英語・日本語）」機能を追加（8分）</h3>
+      <div class="prompt-box">
+        <span class="label">あなたの指示（Plan Mode で）</span>
+        <p>この Backlog.md に、CLI の表示言語を英語と日本語で切り替えられるマルチ言語対応を追加してください。まずは backlog --help のコマンド説明と、backlog task list の見出し・ステータス表示を対象にして。環境変数 BACKLOG_LANG=ja（既定は en）で切り替え、文言は src/i18n/ にまとめて。</p>
+      </div>
+      <p>実装が終わったら、どのような変更が入ったかを <code class="inline">git diff</code> で <strong>人の目で確認する</strong>:</p>
+<pre>!git status
+!git diff</pre>
+      <ul>
+        <li>新規ファイルの一覧は <code class="inline">git status</code>、既存ファイルの差分は <code class="inline">git diff</code> で見る。意図しない変更が混ざっていないかを確認する</li>
+      </ul>
+
+      <h3>4-3. 組み込みスキルでレビュー（4分）</h3>
+      <p>3-5 で紹介した組み込みスキル <code class="inline">/code-review</code> でレビューする。</p>
+<pre>/code-review</pre>
+      <ul>
+        <li><code class="inline">/code-review</code> を実行する — 未コミットの差分に対して、バグ・エッジケース・改善点のレビューが返ってくる</li>
+        <li>妥当な指摘があれば「指摘の1番を修正して」と依頼し、修正された差分を確認する</li>
+      </ul>
+
+      <h3>4-4. レビュー内容を修正（3分）</h3>
+      <div class="prompt-box">
+        <span class="label">あなたの指示</span>
+        <p>レビュー指摘のうち、○番と○番を直して</p>
+      </div>
+      <p>修正が終わったら、変更内容を <code class="inline">git diff</code> で <strong>人の目で確認する</strong>:</p>
+<pre>!git diff</pre>
+      <ul>
+        <li>直した内容が新たな指摘を生んでいないか、必要なら再度 <code class="inline">/code-review</code> をかける</li>
+      </ul>
+
+      <h3>4-5. 自作スキルでテストを生成してレビュー（3分）</h3>
+      <p>3-3 で作った自作スキル <code class="inline">/test-gen</code> で、追加したマルチ言語対応のテストを生成する。</p>
+<pre>/test-gen src/i18n/index.ts</pre>
+      <ul>
+        <li>正常系・異常系のテストが <code class="inline">src/test/</code> に生成される（Backlog.md のテストは <code class="inline">bun test</code> 形式）。引数のファイル名は Claude が作った i18n のファイルに合わせる。テストの実行は 4-7 で push したあと Codespace で行う</li>
+        <li>レビューは組み込みスキル、テスト生成は自作 <code class="inline">/test-gen</code> のように、<strong>組み込みスキルでカバーされない定型作業は自作スキルで作っていく</strong></li>
+      </ul>
+
+      <h3>4-6. 組み込みスキルでセキュリティレビュー（4分）</h3>
+      <p>組み込みスキル <code class="inline">/security-review</code> で、現在のブランチの変更にセキュリティ上の問題がないかをレビューする。</p>
+<pre>/security-review</pre>
+      <ul>
+        <li>SQL インジェクション・XSS・認証/認可漏れ・機密情報のハードコードなど、<strong>脆弱性の観点</strong> でレビューしてくれる</li>
+        <li><code class="inline">/code-review</code>（バグ・改善点）と <code class="inline">/security-review</code>（セキュリティ）は <strong>観点が違う</strong> — 両方かけると安心</li>
+        <li>3章で <code class="inline">security-guidance</code> プラグインを入れていれば、編集のたびに <strong>自動でも</strong> 同様のチェックが走る</li>
+      </ul>
+
+      <h3>4-7. リポジトリへコミット、PR 作成（4分）</h3>
+      <p>修正をコミットして自分の fork に push し、fork 元（<code class="inline">cl-y-arai/Backlog.md-handson</code>）へ PR を作成する:</p>
+<pre>!git checkout -b feature/i18n-[自分の名前]
+!git add -A && git commit -m "CLI のマルチ言語対応（英語・日本語）by [自分の名前]"
+!git push -u origin HEAD
+<span class="comment"># fork 元 (cl-y-arai/Backlog.md-handson) に向けた PR を作成</span>
+!gh pr create --fill</pre>
+      <ul>
+        <li><code class="inline">gh pr create</code> が base リポジトリを聞いてきたら <strong>fork 元の <code class="inline">cl-y-arai/Backlog.md-handson</code></strong> を選ぶ（初回のみ <code class="inline">gh auth login</code>）。自分の fork 宛てにしてしまった場合は、GitHub の PR 画面で base を変更できる</li>
+        <li><code class="inline">--fill</code> はコミットメッセージから PR のタイトル・本文を自動生成する</li>
+        <li>ブランチ名・コミットメッセージ・PR 本文は Claude に任せてもよい（「fork 元に PR を作って」）</li>
+      </ul>
+      <p><strong>Codespace で動作確認</strong>：push したブランチを Codespace で動かして確認する（<a href="backlog-md.html">backlog-md.html</a> で作った Codespace を開く）:</p>
+<pre><span class="prompt">$</span> git fetch origin &amp;&amp; git checkout feature/i18n-[自分の名前]
+<span class="prompt">$</span> bun run test
+<span class="prompt">$</span> BACKLOG_LANG=ja bun run cli --help</pre>
+      <ul>
+        <li>テストが失敗したら、エラー出力をローカルの Claude Code に貼り付けて直し、再度 push → Codespace で <code class="inline">git pull</code> して確認する</li>
+      </ul>
+
+      <h3>4-8. オプション課題</h3>
+      <ul>
+        <li>余裕があれば Web UI（<code class="inline">src/web/</code>）の表示言語も <code class="inline">BACKLOG_LANG</code> で切り替えられるようにする — 「Web UI のかんばんの列名とボタンも日本語化して」</li>
+      </ul>
+    </section>
+
+    <section id="sec5">
+      <h2 class="step"><span class="step-num">5</span>コネクタ（6分）</h2>
+
+      <h3>5-1. コネクタとは（3分）</h3>
       <ul>
         <li><strong>コネクタ</strong> ＝ claude.ai で接続する外部サービス連携（Gmail / Google Calendar / Google Drive / Slack / Notion / Figma / Asana / Linear / Jira など）。実体は <strong>Anthropic が用意・ホストする MCP 接続</strong> で、<a href="https://claude.ai/customize/connectors" target="_blank" rel="noopener">claude.ai/customize/connectors</a> で「Add」して OAuth 認証するだけで使える</li>
-        <li>claude.ai アカウントで Claude Code にログインしていれば、接続済みのコネクタは <strong>Claude Code のセッションにも自動で流れてくる</strong>。<code class="inline">/mcp</code> を開くと「claude.ai」セクションに一覧表示される（次章 5-2 のスクリーンショット参照）</li>
+        <li>claude.ai アカウントで Claude Code にログインしていれば、接続済みのコネクタは <strong>Claude Code のセッションにも自動で流れてくる</strong>。<code class="inline">/mcp</code> を開くと「claude.ai」セクションに一覧表示される（次章 6-2 のスクリーンショット参照）</li>
         <li>MCP との関係：<strong>コネクタ＝Anthropic が管理する MCP</strong>、<strong><code class="inline">claude mcp add</code>＝自分で設定する MCP</strong>。同じサービスを両方で入れた場合はローカル設定が優先され、コネクタ側は <code class="inline">hidden — same URL as your server</code> と表示される</li>
         <li>操作できる範囲は、<strong>自分がそのサービスで持つ権限</strong> と同じ。ツール定義は必要になるまで読み込まれない（Tool Search）ので、接続しているだけでコンテキストを大きく消費することはない</li>
       </ul>
@@ -548,7 +642,7 @@ allowed-tools: Read, Edit, Bash
         管理者が Organization settings → Connectors で <strong>組織として許可するコネクタや操作範囲（読み取りのみ等）を制御</strong> できる。Okta などの ID プロバイダ連携で、メンバーの認証をまとめて済ませることもできる。
       </div>
 
-      <h3>4-2. 確認と制御（3分）</h3>
+      <h3>5-2. 確認と制御（3分）</h3>
       <ul>
         <li><strong>claude.ai 側</strong>：Settings → Connectors（<code class="inline">claude.ai/customize/connectors</code>）で追加・認証・解除</li>
         <li><strong>Claude Code 側</strong>：<code class="inline">/mcp</code> → 「claude.ai」セクション。<code class="inline">needs auth</code> のものは選んで <strong>Authenticate</strong></li>
@@ -580,10 +674,10 @@ allowed-tools: Read, Edit, Bash
       </ul>
     </section>
 
-    <section id="sec5">
-      <h2 class="step"><span class="step-num">5</span>MCP（12分）</h2>
+    <section id="sec6">
+      <h2 class="step"><span class="step-num">6</span>MCP（12分）</h2>
 
-      <h3>5-1. MCP とは（4分）</h3>
+      <h3>6-1. MCP とは（4分）</h3>
       <figure class="shot">
         <img src="Image/mcp-diagram.svg" alt="MCP の概念図 — Claude Code が MCP という標準プロトコルを介して GitHub・Slack・Figma・DB などの MCP サーバーに接続し、各サービスの操作をツールとして使う">
         <figcaption>MCP — 1つの標準プロトコルで様々な外部サービスに接続し、その操作を「ツール」として使えるようにする</figcaption>
@@ -601,11 +695,11 @@ allowed-tools: Read, Edit, Bash
       <table>
         <tr><th>構成要素</th><th>役割</th><th>例</th></tr>
         <tr><td><strong>AI ホスト</strong>（＋MCP クライアント）</td><td>モデルを動かしているアプリ。内部の <strong>MCP クライアント</strong> がモデルの「〇〇を読みたい・実行したい」という要求を MCP の標準形式に変換してサーバーへ送り、返ってきた結果をモデルに渡す。どのサーバーにも同じ手順で話せるのがポイント</td><td>Claude Code、Claude.ai（コネクタ）、Cursor などの IDE</td></tr>
-        <tr><td><strong>MCP サーバー</strong></td><td>データソースごとの <strong>アダプタ</strong>。「できること」をツールとして公開し、ホストからの要求を受けて実際にデータソースへアクセス・実行し、結果を MCP の形式で返す。ローカルで動くもの（コマンド起動）と、リモートで動くもの（URL に接続、OAuth 認証）がある</td><td>GitHub MCP、Slack MCP、Figma MCP（5-2 で接続）、DB 用 MCP</td></tr>
+        <tr><td><strong>MCP サーバー</strong></td><td>データソースごとの <strong>アダプタ</strong>。「できること」をツールとして公開し、ホストからの要求を受けて実際にデータソースへアクセス・実行し、結果を MCP の形式で返す。ローカルで動くもの（コマンド起動）と、リモートで動くもの（URL に接続、OAuth 認証）がある</td><td>GitHub MCP、Slack MCP、Figma MCP（6-2 で接続）、DB 用 MCP</td></tr>
         <tr><td><strong>データソース</strong></td><td>MCP サーバーの向こう側にある実体。ホストやモデルは直接触らず、必ず MCP サーバーを経由する</td><td>ファイル、データベース、SaaS の API（Issue・メッセージ・デザインデータ）</td></tr>
       </table>
       <ul>
-        <li>4章の <strong>コネクタ</strong> は「Anthropic がホストしている MCP サーバー」に claude.ai 経由で接続するもの。図の MCP サーバーがクラウド側にある形</li>
+        <li>5章の <strong>コネクタ</strong> は「Anthropic がホストしている MCP サーバー」に claude.ai 経由で接続するもの。図の MCP サーバーがクラウド側にある形</li>
         <li>役割が分かれているので、<strong>新しいデータソースを使いたいときは MCP サーバーを足すだけ</strong> でよく、ホスト側（Claude Code）を変える必要がない</li>
       </ul>
       <h4><code class="inline">/mcp</code> コマンド</h4>
@@ -622,7 +716,7 @@ allowed-tools: Read, Edit, Bash
         起動画面の「MCP servers: ◯ need auth」表示や <code class="inline">/status</code> からも状態が分かる。うまく動かないときは <strong>まず <code class="inline">/mcp</code> で <code class="inline">connected</code> になっているか</strong> を確認する。
       </div>
 
-      <h3>5-2. Figma MCP を接続する（4分）</h3>
+      <h3>6-2. Figma MCP を接続する（4分）</h3>
       <p>Figma 公式の MCP（リモート）を、3章で学んだ <strong>プラグイン機構</strong> で導入する:</p>
 <pre>/plugin install figma@claude-plugins-official
 /reload-plugins</pre>
@@ -654,7 +748,7 @@ allowed-tools: Read, Edit, Bash
         ローカル（デスクトップ）方式は Figma デスクトップアプリ＋Dev 席（有料プラン）が必要。
       </div>
 
-      <h3>5-3. ハンズオン：サンプルデザイン（AI Chat）をコードにする（4分）</h3>
+      <h3>6-3. ハンズオン：サンプルデザイン（AI Chat）をコードにする（4分）</h3>
       <p>自分でデザインを用意しなくても試せるよう、Figma 標準ライブラリ <strong>Simple Design System</strong> のサンプル画面（Examples/AI Chat）を使う。</p>
       <p>まず Figma で <strong>新規デザインファイル</strong> を作成し（ドラフト・無料プランで OK）、左サイドバーの <strong>アセット</strong> タブから <strong>Simple Design System / Examples</strong> を開く。About / AI Chat / Article / Contact Us などのサンプル画面が並んでいる:</p>
       <figure class="shot">
@@ -699,10 +793,10 @@ allowed-tools: Read, Edit, Bash
       </div>
     </section>
 
-    <section id="sec6">
-      <h2 class="step"><span class="step-num">6</span>SubAgent（サブエージェント）（12分）</h2>
+    <section id="sec7">
+      <h2 class="step"><span class="step-num">7</span>SubAgent（サブエージェント）（12分）</h2>
 
-      <h3>6-1. SubAgent とは（4分）</h3>
+      <h3>7-1. SubAgent とは（4分）</h3>
       <figure class="shot">
         <img src="Image/subagent-diagram.svg" alt="SubAgent の概念図 — メインセッションからレビュー用・探索用・テスト実行用のサブエージェントへタスクを依頼し、それぞれ独立したコンテキストで並列に動いて、メインセッションにはサマリーだけを返す">
         <figcaption>SubAgent — タスクを別の独立したコンテキストに任せ、メインセッションにはサマリーだけが返る</figcaption>
@@ -751,7 +845,7 @@ allowed-tools: Read, Edit, Bash
         <li>自動起動でもトークンと時間は消費する。不要なときは「サブエージェントは使わず直接調べて」と指示できる。逆に明示的に使いたいときは「サブエージェントで調べて」と頼む</li>
       </ul>
 
-      <h3>6-2. サブエージェントの作成（4分）</h3>
+      <h3>7-2. サブエージェントの作成（4分）</h3>
       <p>作り方は2つ:</p>
       <ul>
         <li>① <strong>Claude に自然言語で頼む</strong>（「TypeScript のコードレビューをするサブエージェントを作って」のように依頼）</li>
@@ -791,7 +885,7 @@ model: sonnet
         <li>frontmatter：<code class="inline">name</code>・<code class="inline">description</code>（委譲判断の鍵）は必須。<code class="inline">tools</code>（省略時は全ツール継承）・<code class="inline">model</code>（省略時は <code class="inline">inherit</code>）は任意</li>
       </ul>
 
-      <h3>6-3. ハンズオン：レビュー専用サブエージェントを使う（4分）</h3>
+      <h3>7-3. ハンズオン：レビュー専用サブエージェントを使う（4分）</h3>
       <p>上の <code class="inline">ts-code-reviewer</code> を作成し（または Claude に「TypeScript のコードレビュー用サブエージェントを作って」と頼んで生成し）、呼び出してみる。</p>
       <div class="prompt-box">
         <span class="label">あなたの指示</span>
@@ -811,10 +905,10 @@ model: sonnet
       </ul>
     </section>
 
-    <section id="sec7">
-      <h2 class="step"><span class="step-num">7</span>Hooks（12分）</h2>
+    <section id="sec8">
+      <h2 class="step"><span class="step-num">8</span>Hooks（12分）</h2>
 
-      <h3>7-1. Hooks とは（4分）</h3>
+      <h3>8-1. Hooks とは（4分）</h3>
       <figure class="shot">
         <img src="Image/hooks-diagram.svg" alt="Hooks の概念図 — Claude のツール実行の流れに PreToolUse（直前・ブロック）、PostToolUse（直後・フォーマッタ）、Stop（応答終了時・テスト実行）のフックが差し込まれ、終了コード 2 の出力は Claude にフィードバックされる">
         <figcaption>Hooks — ツール実行の流れに自動でコマンドが差し込まれ、終了コード 2 の出力は Claude にフィードバックされる</figcaption>
@@ -832,7 +926,7 @@ model: sonnet
       <h4>主なユースケース</h4>
       <ul>
         <li><strong>危険な操作のブロック</strong>：<code class="inline">rm -rf</code>・<code class="inline">git push --force</code>・本番環境への操作などを <code class="inline">PreToolUse</code> で検知して止める</li>
-        <li><strong>依存パッケージの追加を制限</strong>：<code class="inline">npm install</code> などを検知し、人間の承認なしに依存を増やさせない（7-2 で実装する例）</li>
+        <li><strong>依存パッケージの追加を制限</strong>：<code class="inline">npm install</code> などを検知し、人間の承認なしに依存を増やさせない（8-2 で実装する例）</li>
         <li><strong>特定ファイルの保護</strong>：<code class="inline">.env</code> やマイグレーションなど触ってほしくないファイルへの書き込みを <code class="inline">PreToolUse</code> でブロック</li>
         <li><strong>コード整形・静的解析の自動実行</strong>：ファイル編集後に <code class="inline">PostToolUse</code> で Biome / Prettier / ESLint などを走らせる</li>
         <li><strong>テストの自動実行</strong>：<code class="inline">Stop</code> で応答が終わるたびにテストスイートを回し、壊れていれば Claude に差し戻す</li>
@@ -847,7 +941,7 @@ model: sonnet
         プラグインは <code class="inline">hooks/hooks.json</code> を同梱でき、インストールすると <code class="inline">settings.json</code> に書いたのと同じようにフックが登録される。<code class="inline">security-guidance</code> は ① <code class="inline">PostToolUse</code>（Edit / Write）で編集直後に約25種類の危険パターン（<code class="inline">yaml.load</code>・<code class="inline">innerHTML</code>・ハードコードされた秘密情報など）を正規表現で検査、② <code class="inline">Stop</code> で応答のたびに git diff を LLM に送ってレビュー、③ <code class="inline">PostToolUse</code>（Bash の <code class="inline">git commit</code> / <code class="inline">git push</code> のときだけ）でレビューエージェントが関連ファイルまで追跡、の3層。指摘は次のターンのコンテキストに差し込まれ、Claude が読んで自分で直す。つまり、この章で書くフックを配布できる形にパッケージしたものがプラグイン。
       </div>
 
-      <h3>7-2. 例：パッケージの install / update をブロック（PreToolUse）（4分）</h3>
+      <h3>8-2. 例：パッケージの install / update をブロック（PreToolUse）（4分）</h3>
       <p><code class="inline">npm</code> / <code class="inline">pnpm</code> / <code class="inline">bun</code> によるパッケージの追加・更新は、依存の増加やロックファイルの変更を伴う。レビューなしに走らせたくない操作を、<code class="inline">PreToolUse</code> で <strong>実行前に検知して止める</strong>。</p>
       <p><code class="inline">.claude/settings.json</code>：</p>
 <pre>{
@@ -878,7 +972,7 @@ exit 0</pre>
         <li>「何を入れる・何を上げるか」は人間が握る、というガバナンスを <strong>機械的に担保</strong> するのが Hooks の本質</li>
       </ul>
 
-      <h3>7-3. コード品質を高める Hooks 実例（4分）</h3>
+      <h3>8-3. コード品質を高める Hooks 実例（4分）</h3>
       <h4>危険なコマンドのブロック（PreToolUse）</h4>
 <pre>{
   <span class="str">"hooks"</span>: {
@@ -907,100 +1001,6 @@ exit 0</pre>
         <strong>💡 Backlog.md では Codespace 側で実行する</strong>
         Bun を Codespace 側にだけ入れているため、上の整形・静的解析・テストを手元のフックで動かすには Bun のローカル導入が必要。本ハンズオンでは「こう書ける」という例として読み、テストと静的解析は Codespace のターミナルで手動実行する。
       </div>
-    </section>
-
-    <section id="sec8">
-      <h2 class="step"><span class="step-num">8</span>実践：アプリ開発の一連フロー（28分）</h2>
-      <p><strong>個人開発のフロー</strong> を最初から最後まで回す。自分の fork（Backlog.md）をクローン → 機能追加（マルチ言語対応） → レビュー → 修正 → テスト生成 → セキュリティレビュー → fork 元リポジトリへの PR 作成まで、すべて Claude Code との会話で進める。</p>
-
-      <h3>8-1. 題材（Backlog.md）を clone（2分）</h3>
-      <p>改修の題材は <strong>Backlog.md</strong>（Section 1 のソースコード解析で使った、Markdown ベースのタスク管理ツール）。<a href="backlog-md.html">Backlog.md を GitHub Codespaces で動かす</a> の手順1 で作った <strong>自分の fork</strong> を、ローカルに clone して準備する（fork がまだなら先に作る）:</p>
-<pre>$ gh repo clone &lt;自分のアカウント&gt;/Backlog.md-handson
-$ cd Backlog.md-handson
-$ rm CLAUDE.md AGENTS.md   <span class="comment"># 上流の運用ルール（下の注意を参照）を一度削除する</span>
-$ claude</pre>
-      <ul>
-        <li><code class="inline">gh repo clone</code> で fork を clone すると、<code class="inline">origin</code> が自分の fork、<code class="inline">upstream</code> が fork 元（<code class="inline">cl-y-arai/Backlog.md-handson</code>）に自動で設定される</li>
-        <li>以降のステップ（機能追加・レビュー・修正）は、この <strong>ローカルの clone を対象</strong> に Claude Code で進める。<strong>ローカルでは Bun を動かさない</strong>。動作確認とテストは 8-7 で push したあと、Codespace で行う</li>
-        <li>Section 1 の「ソースコード解析」と同じ題材なので、構造を把握済みならスムーズに改修へ入れる</li>
-      </ul>
-      <div class="callout warn">
-        <strong>⚠️ リポジトリ付属の CLAUDE.md に注意</strong>
-        リポジトリに <code class="inline">CLAUDE.md</code> / <code class="inline">AGENTS.md</code> が付属している場合は、まずは最初に中身を確認する。今回の Backlog.md の <code class="inline">CLAUDE.md</code> / <code class="inline">AGENTS.md</code> には、Backlog.md 開発チーム向けの運用ルール（MANIFESTO.md を先に読む、判断に迷ったら作者に聞く、など）が書かれている。この clone したフォルダで Claude Code を動かすと、それらのファイルを参照して動作する。今回のハンズオンの演習では、<code class="inline">CLAUDE.md</code> / <code class="inline">AGENTS.md</code> は一度削除する。
-      </div>
-
-      <h3>8-2. 「マルチ言語対応（英語・日本語）」機能を追加（8分）</h3>
-      <div class="prompt-box">
-        <span class="label">あなたの指示（Plan Mode で）</span>
-        <p>この Backlog.md に、CLI の表示言語を英語と日本語で切り替えられるマルチ言語対応を追加してください。まずは backlog --help のコマンド説明と、backlog task list の見出し・ステータス表示を対象にして。環境変数 BACKLOG_LANG=ja（既定は en）で切り替え、文言は src/i18n/ にまとめて。</p>
-      </div>
-      <p>実装が終わったら、どのような変更が入ったかを <code class="inline">git diff</code> で <strong>人の目で確認する</strong>:</p>
-<pre>!git status
-!git diff</pre>
-      <ul>
-        <li>新規ファイルの一覧は <code class="inline">git status</code>、既存ファイルの差分は <code class="inline">git diff</code> で見る。意図しない変更が混ざっていないかを確認する</li>
-      </ul>
-
-      <h3>8-3. 組み込みスキルでレビュー（4分）</h3>
-      <p>3-5 で紹介した組み込みスキル <code class="inline">/code-review</code> でレビューする。</p>
-<pre>/code-review</pre>
-      <ul>
-        <li><code class="inline">/code-review</code> を実行する — 未コミットの差分に対して、バグ・エッジケース・改善点のレビューが返ってくる</li>
-        <li>妥当な指摘があれば「指摘の1番を修正して」と依頼し、修正された差分を確認する</li>
-      </ul>
-
-      <h3>8-4. レビュー内容を修正（3分）</h3>
-      <div class="prompt-box">
-        <span class="label">あなたの指示</span>
-        <p>レビュー指摘のうち、○番と○番を直して</p>
-      </div>
-      <p>修正が終わったら、変更内容を <code class="inline">git diff</code> で <strong>人の目で確認する</strong>:</p>
-<pre>!git diff</pre>
-      <ul>
-        <li>直した内容が新たな指摘を生んでいないか、必要なら再度 <code class="inline">/code-review</code> をかける</li>
-      </ul>
-
-      <h3>8-5. 自作スキルでテストを生成してレビュー（3分）</h3>
-      <p>3-3 で作った自作スキル <code class="inline">/test-gen</code> で、追加したマルチ言語対応のテストを生成する。</p>
-<pre>/test-gen src/i18n/index.ts</pre>
-      <ul>
-        <li>正常系・異常系のテストが <code class="inline">src/test/</code> に生成される（Backlog.md のテストは <code class="inline">bun test</code> 形式）。引数のファイル名は Claude が作った i18n のファイルに合わせる。テストの実行は 8-7 で push したあと Codespace で行う</li>
-        <li>レビューは組み込みスキル、テスト生成は自作 <code class="inline">/test-gen</code> のように、<strong>組み込みスキルでカバーされない定型作業は自作スキルで作っていく</strong></li>
-      </ul>
-
-      <h3>8-6. 組み込みスキルでセキュリティレビュー（4分）</h3>
-      <p>組み込みスキル <code class="inline">/security-review</code> で、現在のブランチの変更にセキュリティ上の問題がないかをレビューする。</p>
-<pre>/security-review</pre>
-      <ul>
-        <li>SQL インジェクション・XSS・認証/認可漏れ・機密情報のハードコードなど、<strong>脆弱性の観点</strong> でレビューしてくれる</li>
-        <li><code class="inline">/code-review</code>（バグ・改善点）と <code class="inline">/security-review</code>（セキュリティ）は <strong>観点が違う</strong> — 両方かけると安心</li>
-        <li>3章で <code class="inline">security-guidance</code> プラグインを入れていれば、編集のたびに <strong>自動でも</strong> 同様のチェックが走る</li>
-      </ul>
-
-      <h3>8-7. リポジトリへコミット、PR 作成（4分）</h3>
-      <p>修正をコミットして自分の fork に push し、fork 元（<code class="inline">cl-y-arai/Backlog.md-handson</code>）へ PR を作成する:</p>
-<pre>!git checkout -b feature/i18n-[自分の名前]
-!git add -A && git commit -m "CLI のマルチ言語対応（英語・日本語）by [自分の名前]"
-!git push -u origin HEAD
-<span class="comment"># fork 元 (cl-y-arai/Backlog.md-handson) に向けた PR を作成</span>
-!gh pr create --fill</pre>
-      <ul>
-        <li><code class="inline">gh pr create</code> が base リポジトリを聞いてきたら <strong>fork 元の <code class="inline">cl-y-arai/Backlog.md-handson</code></strong> を選ぶ（初回のみ <code class="inline">gh auth login</code>）。自分の fork 宛てにしてしまった場合は、GitHub の PR 画面で base を変更できる</li>
-        <li><code class="inline">--fill</code> はコミットメッセージから PR のタイトル・本文を自動生成する</li>
-        <li>ブランチ名・コミットメッセージ・PR 本文は Claude に任せてもよい（「fork 元に PR を作って」）</li>
-      </ul>
-      <p><strong>Codespace で動作確認</strong>：push したブランチを Codespace で動かして確認する（<a href="backlog-md.html">backlog-md.html</a> で作った Codespace を開く）:</p>
-<pre><span class="prompt">$</span> git fetch origin &amp;&amp; git checkout feature/i18n-[自分の名前]
-<span class="prompt">$</span> bun run test
-<span class="prompt">$</span> BACKLOG_LANG=ja bun run cli --help</pre>
-      <ul>
-        <li>テストが失敗したら、エラー出力をローカルの Claude Code に貼り付けて直し、再度 push → Codespace で <code class="inline">git pull</code> して確認する</li>
-      </ul>
-
-      <h3>8-8. オプション課題</h3>
-      <ul>
-        <li>余裕があれば Web UI（<code class="inline">src/web/</code>）の表示言語も <code class="inline">BACKLOG_LANG</code> で切り替えられるようにする — 「Web UI のかんばんの列名とボタンも日本語化して」</li>
-      </ul>
     </section>
 
     <section id="sec9">
@@ -1036,7 +1036,7 @@ $ claude</pre>
 /loop 20m /code-review
 /loop CI が通ってレビューコメントが無くなるまで確認を続けて</pre>
       <h4>演習</h4>
-      <p>8-7 で作成した PR（<code class="inline">cl-y-arai/Backlog.md-handson</code> 向け）を題材に、CI とレビューコメントの変化を定期的に確認させる。<code class="inline">Backlog.md-handson</code> のディレクトリで <code class="inline">claude</code> を起動し:</p>
+      <p>4-7 で作成した PR（<code class="inline">cl-y-arai/Backlog.md-handson</code> 向け）を題材に、CI とレビューコメントの変化を定期的に確認させる。<code class="inline">Backlog.md-handson</code> のディレクトリで <code class="inline">claude</code> を起動し:</p>
       <div class="prompt-box">
         <span class="label">あなたの指示</span>
         <p>/loop 2m gh で自分の PR の CI ステータスとレビューコメントを確認して、前回から変化があれば教えて</p>
@@ -1090,7 +1090,7 @@ $ claude</pre>
 
     <section id="appendix-teams">
       <h2 class="step"><span class="step-num">付</span>付録B：Agent Teams — 複数の Claude Code を協調させる</h2>
-      <p>6章のサブエージェントが「調べて結果を持ち帰る部下」だとすると、<strong>Agent Teams は「並列で動く同僚」</strong>。自分のセッションが <strong>リード</strong> となり、独立した Claude Code セッションである <strong>チームメイト</strong> を複数立てて、共有タスクリストとメッセージで協調させる。実験的機能（要有効化）で、トークン消費も大きいが、複数の観点を同時に動かしたいときに強い。</p>
+      <p>7章のサブエージェントが「調べて結果を持ち帰る部下」だとすると、<strong>Agent Teams は「並列で動く同僚」</strong>。自分のセッションが <strong>リード</strong> となり、独立した Claude Code セッションである <strong>チームメイト</strong> を複数立てて、共有タスクリストとメッセージで協調させる。実験的機能（要有効化）で、トークン消費も大きいが、複数の観点を同時に動かしたいときに強い。</p>
 
       <h3>B-1. Agent Teams とは</h3>
       <ul>
@@ -1103,7 +1103,7 @@ $ claude</pre>
         <figcaption>SubAgent は「頼んで結果を受け取る」一方向、Agent Teams は独立したチームメイトが共有タスクリストとメッセージで協調する</figcaption>
       </figure>
       <table>
-        <tr><th>観点</th><th>SubAgent（6章）</th><th>Agent Teams</th></tr>
+        <tr><th>観点</th><th>SubAgent（7章）</th><th>Agent Teams</th></tr>
         <tr><td>動く場所</td><td>1つのセッションの中</td><td>複数の独立したセッション</td></tr>
         <tr><td>コンテキスト</td><td>結果の要約だけが親に戻る</td><td>各チームメイトが独立したコンテキストを持つ</td></tr>
         <tr><td>やりとり</td><td>親に結果を返すだけ（一方向）</td><td>チームメイト同士がメッセージで会話し、タスクリストで自律的に調整</td></tr>
@@ -1169,7 +1169,7 @@ src/cli.ts / src/core/ / src/web/ / README で分けて、担当外のファイ�
         </li>
       </ol>
       <ul>
-        <li>6章で <code class="inline">ts-code-reviewer</code> サブエージェント1体に頼んだときと、観点の広がり・所要時間・<code class="inline">/usage</code> のトークン消費を比べてみる</li>
+        <li>7章で <code class="inline">ts-code-reviewer</code> サブエージェント1体に頼んだときと、観点の広がり・所要時間・<code class="inline">/usage</code> のトークン消費を比べてみる</li>
         <li>終わったら <code class="inline">review-report.md</code> は <code class="inline">git status</code> で確認し、リポジトリに入れないなら削除する</li>
       </ul>
       <h4>参考リンク</h4>
@@ -1203,7 +1203,7 @@ src/cli.ts / src/core/ / src/web/ / README で分けて、担当外のファイ�
         <figcaption>SubAgent は「頼んで要約を受け取る」、Agent Teams は「1つの Claude Code が複数セッションを束ねる」、agmsg は「ツールをまたぐ対等な仲間が共有 DB でやりとりする」</figcaption>
       </figure>
       <table>
-        <tr><th>観点</th><th>SubAgent（6章）</th><th>Agent Teams（付録B）</th><th>agmsg</th></tr>
+        <tr><th>観点</th><th>SubAgent（7章）</th><th>Agent Teams（付録B）</th><th>agmsg</th></tr>
         <tr><td>参加者</td><td>1つのセッションの中の子</td><td>1つのリードが立てた Claude Code のチームメイト</td><td>ツールも起動も別々の対等なエージェント（Claude Code・Codex・Gemini CLI…）</td></tr>
         <tr><td>調整役</td><td>親（メイン会話）</td><td>リード＋共有タスクリスト</td><td>なし。各自が受信箱を見て動く</td></tr>
         <tr><td>やりとり</td><td>結果の要約が親に戻るだけ（一方向）</td><td>メッセージ＋タスクリスト（Claude Code の内部機能）</td><td>SQLite ファイル経由のメッセージ（<code class="inline">bash</code> + <code class="inline">sqlite3</code>）</td></tr>

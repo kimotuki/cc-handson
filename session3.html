@@ -750,12 +750,12 @@ paths:
       </div>
 
       <h3>A-4. SubAgent でコンテキストを分離する</h3>
-      <p><code class="inline">/compact</code> や <code class="inline">/clear</code> は「溜まってから減らす」対処。<strong>最初からメイン会話に入れない</strong> のが Section 2 の6章で扱った <strong>SubAgent</strong>。サブエージェントは <strong>別のコンテキストウィンドウ</strong> で動き、何十個ファイルを読んでも、テスト出力が何千行あっても、メイン会話に戻るのは <strong>結果の要約だけ</strong>。</p>
+      <p><code class="inline">/compact</code> や <code class="inline">/clear</code> は「溜まってから減らす」対処。<strong>最初からメイン会話に入れない</strong> のが Section 2 の7章で扱った <strong>SubAgent</strong>。サブエージェントは <strong>別のコンテキストウィンドウ</strong> で動き、何十個ファイルを読んでも、テスト出力が何千行あっても、メイン会話に戻るのは <strong>結果の要約だけ</strong>。</p>
       <table>
         <tr><th>向いている作業</th><th>例</th></tr>
         <tr><td>広く読む調査</td><td>「src/ 配下で process.env を直接参照している箇所を全部洗い出して」</td></tr>
         <tr><td>長い出力の分析</td><td>「bun run test の出力ログを読んで、失敗したテストの原因だけ要約して」</td></tr>
-        <tr><td>観点を絞ったレビュー</td><td>6章で作った <code class="inline">ts-code-reviewer</code> にレビューを任せる</td></tr>
+        <tr><td>観点を絞ったレビュー</td><td>Section 2 の7章で作った <code class="inline">ts-code-reviewer</code> にレビューを任せる</td></tr>
         <tr><td>メイン会話と無関係な脇道</td><td>「この依存ライブラリの最新版の変更点を調べて」</td></tr>
       </table>
       <ul>
