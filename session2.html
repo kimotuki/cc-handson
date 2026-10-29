@@ -576,8 +576,8 @@ $ claude</pre>
       </ul>
 
       <h3>4-5. 自作スキルで独自観点のレビュー（3分）</h3>
-      <p>3-3 で作った自作スキル <code class="inline">/custom-review</code> で、追加したマルチ言語対応を独自の観点（エラーメッセージの親切さ・多言語対応の漏れ）でレビューする。</p>
-<pre>/custom-review src/i18n/</pre>
+      <p>3-3 で作った自作スキル <code class="inline">/custom-review</code> で、追加したマルチ言語対応を独自の観点（エラーメッセージの親切さ・多言語対応の漏れ）でレビューする。引数を省略すると、3-3 で決めたとおり <strong>git diff の変更分</strong>（4-2 で追加・変更したファイル）が対象になる。</p>
+<pre>/custom-review</pre>
       <ul>
         <li>4-3 の <code class="inline">/code-review</code>（バグ・エッジケース）とは違う観点の指摘が返る。妥当な指摘があれば「指摘の○番を直して」と依頼し、差分を確認する</li>
         <li>汎用のレビューは組み込みスキル、チーム独自の観点は自作 <code class="inline">/custom-review</code> のように、<strong>組み込みスキルでカバーされない定型作業は自作スキルで作っていく</strong></li>
