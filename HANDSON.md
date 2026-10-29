@@ -730,7 +730,7 @@ loops-guide.html を A4 縦の PDF に変換して、loops-guide.pdf として�
 * `CLAUDE.md`・メモリ・`settings.json` の仕組みを理解し、設定が効いているかを確認できる
 * プラグインで機能を追加し、プロンプトから自作スキルを作れる
 * コネクタ・MCP で外部サービス（Figma など）を接続し、デザインからコード生成の流れを理解する
-* 題材の OSS（Backlog.md）への機能追加からレビュー・PR 作成まで、Claude Code との会話で完遂できる
+* 題材の OSS（Backlog.md）への機能追加からレビュー・コミット・push まで、Claude Code との会話で完遂できる
 
 ## 時間配分（120分）
 
@@ -1086,7 +1086,7 @@ custom-review/
 
 ### 4. 実践：アプリ開発の一連フロー（28分）
 
-**個人開発のフロー** を最初から最後まで回す。自分の fork（Backlog.md）をクローン → 機能追加（マルチ言語対応） → レビュー → 修正 → 独自観点のレビュー → セキュリティレビュー → fork 元リポジトリへの PR 作成まで、すべて Claude Code との会話で進める。
+**個人開発のフロー** を最初から最後まで回す。自分の fork（Backlog.md）をクローン → 機能追加（マルチ言語対応） → レビュー → 修正 → 独自観点のレビュー → セキュリティレビュー → 自分の fork への push と Codespace での動作確認まで、すべて Claude Code との会話で進める。
 
 #### 4-1. 題材（Backlog.md）を clone（2分）
 
@@ -1171,21 +1171,18 @@ $ claude
 * `/code-review`（バグ・改善点）と `/security-review`（セキュリティ）は **観点が違う** — 両方かけると安心
 * 3章で `security-guidance` プラグインを入れていれば、編集のたびに **自動でも** 同様のチェックが走る
 
-#### 4-7. リポジトリへコミット、PR 作成（4分）
+#### 4-7. リポジトリへコミット、push（4分）
 
-修正をコミットして自分の fork に push し、fork 元（`cl-y-arai/Backlog.md-handson`）へ PR を作成する:
+修正をコミットして自分の fork に push する:
 
 ```
 !git checkout -b feature/i18n-[自分の名前]
 !git add -A && git commit -m "CLI のマルチ言語対応（英語・日本語）by [自分の名前]"
 !git push -u origin HEAD
-# fork 元 (cl-y-arai/Backlog.md-handson) に向けた PR を作成
-!gh pr create --fill
 ```
 
-* `gh pr create` が base リポジトリを聞いてきたら **fork 元の `cl-y-arai/Backlog.md-handson`** を選ぶ（初回のみ `gh auth login`）。自分の fork 宛てにしてしまった場合は、GitHub の PR 画面で base を変更できる
-* `--fill` はコミットメッセージから PR のタイトル・本文を自動生成する
-* ブランチ名・コミットメッセージ・PR 本文は Claude に任せてもよい（「fork 元に PR を作って」）
+* push 先の `origin` は自分の fork（`<自分のアカウント>/Backlog.md-handson`）。fork 元（`cl-y-arai/Backlog.md-handson`）への PR はこの章では作らない（PR を使ったチーム開発は Section 3 で行う）
+* ブランチ名・コミットメッセージは Claude に任せてもよい（「ブランチを切ってコミットし、自分の fork に push して」）
 
 **Codespace で動作確認**：push したブランチを Codespace で動かして確認する（[backlog-md.html](backlog-md.html) で作った Codespace を開く）:
 
@@ -1599,7 +1596,7 @@ exit 0
 
 ##### 演習
 
-4-7 で作成した PR（`cl-y-arai/Backlog.md-handson` 向け）を題材に、CI とレビューコメントの変化を定期的に確認させる。`Backlog.md-handson` のディレクトリで `claude` を起動し:
+Section 3 の 2-4 で作成する PR を題材に、CI とレビューコメントの変化を定期的に確認させる（PR を作ったあとに試す）。`Backlog.md-handson` のディレクトリで `claude` を起動し:
 
 ```
 /loop 2m gh で自分の PR の CI ステータスとレビューコメントを確認して、前回から変化があれば教えて

@@ -204,7 +204,7 @@
         <li><code class="inline">CLAUDE.md</code>・メモリ・<code class="inline">settings.json</code> の仕組みを理解し、設定が効いているかを確認できる</li>
         <li>プラグインで機能を追加し、プロンプトから自作スキルを作れる</li>
         <li>コネクタ・MCP で外部サービス（Figma など）を接続し、デザインからコード生成の流れを理解する</li>
-        <li>題材の OSS（Backlog.md）への機能追加からレビュー・PR 作成まで、Claude Code との会話で完遂できる</li>
+        <li>題材の OSS（Backlog.md）への機能追加からレビュー・コミット・push まで、Claude Code との会話で完遂できる</li>
       </ul>
       <h3>時間配分（120分）</h3>
       <table>
@@ -535,7 +535,7 @@ allowed-tools: Read, Grep, Glob, Bash
 
     <section id="sec4">
       <h2 class="step"><span class="step-num">4</span>実践：アプリ開発の一連フロー（28分）</h2>
-      <p><strong>個人開発のフロー</strong> を最初から最後まで回す。自分の fork（Backlog.md）をクローン → 機能追加（マルチ言語対応） → レビュー → 修正 → 独自観点のレビュー → セキュリティレビュー → fork 元リポジトリへの PR 作成まで、すべて Claude Code との会話で進める。</p>
+      <p><strong>個人開発のフロー</strong> を最初から最後まで回す。自分の fork（Backlog.md）をクローン → 機能追加（マルチ言語対応） → レビュー → 修正 → 独自観点のレビュー → セキュリティレビュー → 自分の fork への push と Codespace での動作確認まで、すべて Claude Code との会話で進める。</p>
 
       <h3>4-1. 題材（Backlog.md）を clone（2分）</h3>
       <p>改修の題材は <strong>Backlog.md</strong>（Section 1 のソースコード解析で使った、Markdown ベースのタスク管理ツール）。<a href="backlog-md.html">Backlog.md を GitHub Codespaces で動かす</a> の手順1 で作った <strong>自分の fork</strong> を、ローカルに clone して準備する（fork がまだなら先に作る）:</p>
@@ -601,17 +601,14 @@ $ claude</pre>
         <li>3章で <code class="inline">security-guidance</code> プラグインを入れていれば、編集のたびに <strong>自動でも</strong> 同様のチェックが走る</li>
       </ul>
 
-      <h3>4-7. リポジトリへコミット、PR 作成（4分）</h3>
-      <p>修正をコミットして自分の fork に push し、fork 元（<code class="inline">cl-y-arai/Backlog.md-handson</code>）へ PR を作成する:</p>
+      <h3>4-7. リポジトリへコミット、push（4分）</h3>
+      <p>修正をコミットして自分の fork に push する:</p>
 <pre>!git checkout -b feature/i18n-[自分の名前]
 !git add -A && git commit -m "CLI のマルチ言語対応（英語・日本語）by [自分の名前]"
-!git push -u origin HEAD
-<span class="comment"># fork 元 (cl-y-arai/Backlog.md-handson) に向けた PR を作成</span>
-!gh pr create --fill</pre>
+!git push -u origin HEAD</pre>
       <ul>
-        <li><code class="inline">gh pr create</code> が base リポジトリを聞いてきたら <strong>fork 元の <code class="inline">cl-y-arai/Backlog.md-handson</code></strong> を選ぶ（初回のみ <code class="inline">gh auth login</code>）。自分の fork 宛てにしてしまった場合は、GitHub の PR 画面で base を変更できる</li>
-        <li><code class="inline">--fill</code> はコミットメッセージから PR のタイトル・本文を自動生成する</li>
-        <li>ブランチ名・コミットメッセージ・PR 本文は Claude に任せてもよい（「fork 元に PR を作って」）</li>
+        <li>push 先の <code class="inline">origin</code> は自分の fork（<code class="inline">&lt;自分のアカウント&gt;/Backlog.md-handson</code>）。fork 元（<code class="inline">cl-y-arai/Backlog.md-handson</code>）への PR はこの章では作らない（PR を使ったチーム開発は Section 3 で行う）</li>
+        <li>ブランチ名・コミットメッセージは Claude に任せてもよい（「ブランチを切ってコミットし、自分の fork に push して」）</li>
       </ul>
       <p><strong>Codespace で動作確認</strong>：push したブランチを Codespace で動かして確認する（<a href="backlog-md.html">backlog-md.html</a> で作った Codespace を開く）:</p>
 <pre><span class="prompt">$</span> git fetch origin &amp;&amp; git checkout feature/i18n-[自分の名前]
@@ -1043,7 +1040,7 @@ exit 0</pre>
 /loop 20m /code-review
 /loop CI が通ってレビューコメントが無くなるまで確認を続けて</pre>
       <h4>演習</h4>
-      <p>4-7 で作成した PR（<code class="inline">cl-y-arai/Backlog.md-handson</code> 向け）を題材に、CI とレビューコメントの変化を定期的に確認させる。<code class="inline">Backlog.md-handson</code> のディレクトリで <code class="inline">claude</code> を起動し:</p>
+      <p>Section 3 の 2-4 で作成する PR を題材に、CI とレビューコメントの変化を定期的に確認させる（PR を作ったあとに試す）。<code class="inline">Backlog.md-handson</code> のディレクトリで <code class="inline">claude</code> を起動し:</p>
       <div class="prompt-box">
         <span class="label">あなたの指示</span>
         <p>/loop 2m gh で自分の PR の CI ステータスとレビューコメントを確認して、前回から変化があれば教えて</p>
