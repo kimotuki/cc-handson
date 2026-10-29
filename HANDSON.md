@@ -33,7 +33,7 @@
 * Cursor / VSCode が入っている（必要に応じて）
 * Claude Codeインストール済み
 * Gitコマンド、および、ghコマンドが入っている
-* sqlite3 が入っている（題材の agmsg で使用）
+* GitHub Codespaces が使えること（題材の Backlog.md は Codespaces 上で動かす。手順は [backlog-md.html](backlog-md.html)）
 
 ### コース構成（全3 Section・計5.5時間）
 
@@ -511,7 +511,7 @@ Do you want to proceed?
 ##### `#` — メモリ追記
 
 ```
-# このプロジェクトのテストは bats tests/ で実行する
+# このプロジェクトのテストは bun run test で実行する
 ```
 
 * セッション内メモリに追記される。`/memory` で管理。
@@ -540,12 +540,14 @@ Do you want to proceed?
 
 ※ 普段、開発業務を行わない方は「付録：Web 記事を html形式でのプレゼン資料にする」を実施してください。
 
-題材は **agmsg** — Claude Code・Codex・Gemini CLI などの CLI AI エージェント同士が、共有の SQLite データベースを介してメッセージを交換できるようにする OSS（Bash + SQLite 製）。まず GitHub からクローンして準備する:
+題材は **Backlog.md** — タスクを Markdown ファイルとしてリポジトリ内に置き、CLI・ターミナルのかんばん・Web UI で管理する OSS（TypeScript + Bun 製）。ハンズオン用のリポジトリ（[cl-y-arai/Backlog.md-handson](https://github.com/cl-y-arai/Backlog.md-handson)）を GitHub からクローンして準備する:
 
 ```bash
-git clone https://github.com/fujibee/agmsg
-cd agmsg
+git clone https://github.com/cl-y-arai/Backlog.md-handson
+cd Backlog.md-handson
 ```
+
+> 💡 この章は **コードを読むだけ** なので、Bun のインストールは不要。実際に動かすのは Section 2 以降で、GitHub Codespaces 上で行う（手順は [backlog-md.html](backlog-md.html)）。
 
 「構造把握 → 該当箇所の特定 → 深掘り質問 → サマリ取得」の一連の流れを体験する。
 
@@ -560,7 +562,7 @@ cd agmsg
 ディレクトリごとの役割も簡潔にまとめて。
 ```
 
-* Claude が `README.md` や `ARCHITECTURE.md`、`scripts/` を自分で読んで回答することを観察する
+* Claude が `README.md` や `MANIFESTO.md`、`src/` を自分で読んで回答することを観察する
 * **何のファイルを読んだか** がツール実行ログに出る — エージェントループの実物
 
 #### 7-2. 該当箇所の特定（4分）
@@ -568,11 +570,11 @@ cd agmsg
 機能から逆引きで実装箇所を特定させる。
 
 ```
-エージェントがメッセージを送信したとき、どのスクリプトが実行され、
-どこで SQLite データベースに書き込まれるか、該当ファイルと行を特定して。
+backlog task create でタスクを作成したとき、どのコードが実行され、
+どこで Markdown ファイルとして書き込まれるか、該当ファイルと関数を特定して。
 ```
 
-* `scripts/send.sh` → SQLite への書き込み、と追跡されることを確認
+* `src/cli.ts`（コマンド定義）→ `src/core/backlog.ts`（createTaskFromInput）→ `src/file-system/operations.ts`（saveTask で Markdown を書き込み）、と追跡されることを確認
 * grep 相当の探索を Claude が自律的に行う様子を観察する
 
 #### 7-3. 深掘り質問（4分）
@@ -580,9 +582,9 @@ cd agmsg
 `@` プレフィックスで対象を明示して、ピンポイントに聞く。
 
 ```
-@scripts/send.sh
-このスクリプトがメッセージをどのように保存しているか、
-複数エージェントが同時に書き込んだ場合の考慮も含めて説明して。
+@src/file-system/operations.ts
+このファイルがタスクをどのように保存しているか、
+複数の人やエージェントが同時にタスクを作成した場合の考慮（ID の重複防止やロック）も含めて説明して。
 ```
 
 * `@` でファイルを渡すと **曖昧さが減り、探索分のコンテキストも節約** できる
@@ -594,8 +596,8 @@ cd agmsg
 最後に、解析結果をドキュメントとして残せる形で出力させる。
 
 ```
-あるエージェントがメッセージを送信してから、別のエージェントが
-受信するまでの流れを Mermaid のシーケンス図で出力して。
+backlog task create を実行してから、タスクの Markdown ファイルが
+保存されるまでの流れを Mermaid のシーケンス図で出力して。
 ```
 
 続けて、生成した図をファイルとして残す。Plan Mode は解除しておく:
@@ -611,7 +613,7 @@ cd agmsg
 上記の内容（7-1 〜 7-4）を実施したら、自分の GitHub アカウントでリポジトリを新規に作成して、できあがったファイルを登録しましょう。gh コマンドがインストールされている場合は、以下のように Claude Code に指定することで新規リポジトリを作成可能です。
 
 ```
-ghコマンドを使って、私のGitHubアカウントに agmsg-analysis という新しいリポジトリを作成して、保存したシーケンス図のファイルを登録して
+ghコマンドを使って、私のGitHubアカウントに backlog-analysis という新しいリポジトリを作成して、保存したシーケンス図のファイルを登録して
 ```
 
 ### 8. まとめ（4分）
@@ -916,7 +918,7 @@ Section 1 で settings.json の配置場所（user / project / local）に触れ
 * `#` プレフィックスでセッション中に得た知見をその場で追記できる
 
 ```
-# このプロジェクトのテストは bats tests/ で実行する
+# このプロジェクトのテストは bun run test で実行する
 ```
 
 * `/memory` で保存先（CLAUDE.md など）を選択・編集できる

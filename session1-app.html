@@ -674,7 +674,7 @@ Hello world</pre>
         <li>プロンプトとして送らず <strong>シェルだけ実行</strong>。手元の状態を Claude に渡したいときに便利。</li>
       </ul>
       <h4><code class="inline">#</code> — メモリ追記（アプリには無い）</h4>
-      <p>CLI では <code class="inline">#</code> で始めた入力（例: <code class="inline"># このプロジェクトのテストは bats tests/ で実行する</code>）がメモリに追記され、<code class="inline">/memory</code> で管理する。アプリには <code class="inline">#</code> も <code class="inline">/memory</code> も無いので、<code class="inline">CLAUDE.md</code>（4-1）を直接編集するか、Claude に追記を頼む。</p>
+      <p>CLI では <code class="inline">#</code> で始めた入力（例: <code class="inline"># このプロジェクトのテストは bun run test で実行する</code>）がメモリに追記され、<code class="inline">/memory</code> で管理する。アプリには <code class="inline">#</code> も <code class="inline">/memory</code> も無いので、<code class="inline">CLAUDE.md</code>（4-1）を直接編集するか、Claude に追記を頼む。</p>
       <h4><code class="inline">@</code> — ファイル / ディレクトリ参照</h4>
 <pre>@README.md このプロジェクトの概要を3行でまとめて</pre>
       <ul>
@@ -696,7 +696,11 @@ Hello world</pre>
     <section id="sec7">
       <h2 class="step"><span class="step-num">7</span>実践：ソースコードの解析（15分）</h2>
       <p>※ 普段、開発業務を行わない方は「<a href="#appendix">付録：Web 記事を html形式でのプレゼン資料にする</a>」を実施してください。</p>
-      <p>題材は <strong>agmsg</strong> — Claude Code・Codex・Gemini CLI などの CLI AI エージェント同士が、共有の SQLite データベースを介してメッセージを交換できるようにする OSS（Bash + SQLite 製）。まず GitHub からクローンして準備する。</p>
+      <p>題材は <strong>Backlog.md</strong> — タスクを Markdown ファイルとしてリポジトリ内に置き、CLI・ターミナルのかんばん・Web UI で管理する OSS（TypeScript + Bun 製）。ハンズオン用のリポジトリ（<a href="https://github.com/cl-y-arai/Backlog.md-handson" target="_blank" rel="noopener">cl-y-arai/Backlog.md-handson</a>）を GitHub からクローンして準備する。</p>
+      <div class="callout tip">
+        <strong>💡 この章はコードを読むだけ</strong>
+        Bun のインストールは不要。実際に動かすのは Section 2 以降で、GitHub Codespaces 上で行う（手順は <a href="backlog-md.html">Backlog.md を GitHub Codespaces で動かす</a>）。
+      </div>
       <p>アプリでは、クローン先にしたいフォルダを作業フォルダとして開き（3-1）、画面右上の <strong>ターミナルボタン</strong> を押す。ターミナルは <strong>作業フォルダの場所で開く</strong> ので、<code class="inline">cd</code> で移動しなくてよい。</p>
       <figure class="shot">
         <img src="Image/session1-app/terminal-button.png" alt="画面右上のターミナルボタン" style="max-width: 200px">
@@ -704,8 +708,8 @@ Hello world</pre>
       <figure class="shot">
         <img src="Image/session1-app/terminal-open.png" alt="ターミナルを開いた状態">
       </figure>
-      <p>開いたターミナルでそのまま実行する。作業フォルダの中に <code class="inline">agmsg</code> フォルダができる:</p>
-<pre><span class="prompt">$</span> git clone https://github.com/fujibee/agmsg</pre>
+      <p>開いたターミナルでそのまま実行する。作業フォルダの中に <code class="inline">Backlog.md-handson</code> フォルダができる:</p>
+<pre><span class="prompt">$</span> git clone https://github.com/cl-y-arai/Backlog.md-handson</pre>
       <p>「構造把握 → 該当箇所の特定 → 深掘り質問 → サマリ取得」の一連の流れを体験する。</p>
       <div class="callout tip">
         <strong>💡 ポイント</strong>
@@ -713,13 +717,13 @@ Hello world</pre>
       </div>
 
       <h3>7-1. 構造把握（4分）</h3>
-      <p>クローンした <code class="inline">agmsg</code> フォルダを作業フォルダとして開き（3-1。講師の画面では <code class="inline">cd agmsg</code> → <code class="inline">claude</code> にあたる）、まず全体像を聞く。</p>
+      <p>クローンした <code class="inline">Backlog.md-handson</code> フォルダを作業フォルダとして開き（3-1。講師の画面では <code class="inline">cd Backlog.md-handson</code> → <code class="inline">claude</code> にあたる）、まず全体像を聞く。</p>
       <div class="prompt-box">
         <span class="label">あなたの指示</span>
         <p>このリポジトリの全体構造と技術スタックを教えて。ディレクトリごとの役割も簡潔にまとめて。</p>
       </div>
       <ul>
-        <li>Claude が <code class="inline">README.md</code> や <code class="inline">ARCHITECTURE.md</code>、<code class="inline">scripts/</code> を自分で読んで回答することを観察する</li>
+        <li>Claude が <code class="inline">README.md</code> や <code class="inline">MANIFESTO.md</code>、<code class="inline">src/</code> を自分で読んで回答することを観察する</li>
         <li><strong>何のファイルを読んだか</strong> がツール実行ログに出る — エージェントループの実物</li>
       </ul>
 
@@ -727,10 +731,10 @@ Hello world</pre>
       <p>機能から逆引きで実装箇所を特定させる。</p>
       <div class="prompt-box">
         <span class="label">あなたの指示</span>
-        <p>エージェントがメッセージを送信したとき、どのスクリプトが実行され、どこで SQLite データベースに書き込まれるか、該当ファイルと行を特定して。</p>
+        <p>backlog task create でタスクを作成したとき、どのコードが実行され、どこで Markdown ファイルとして書き込まれるか、該当ファイルと関数を特定して。</p>
       </div>
       <ul>
-        <li><code class="inline">scripts/send.sh</code> → SQLite への書き込み、と追跡されることを確認</li>
+        <li><code class="inline">src/cli.ts</code>（コマンド定義）→ <code class="inline">src/core/backlog.ts</code>（createTaskFromInput）→ <code class="inline">src/file-system/operations.ts</code>（saveTask で Markdown を書き込み）、と追跡されることを確認</li>
         <li>grep 相当の探索を Claude が自律的に行う様子を観察する</li>
       </ul>
 
@@ -738,7 +742,7 @@ Hello world</pre>
       <p><code class="inline">@</code> プレフィックスで対象を明示して、ピンポイントに聞く。</p>
       <div class="prompt-box">
         <span class="label">あなたの指示</span>
-        <p>@scripts/send.sh<br>このスクリプトがメッセージをどのように保存しているか、複数エージェントが同時に書き込んだ場合の考慮も含めて説明して。</p>
+        <p>@src/file-system/operations.ts<br>このファイルがタスクをどのように保存しているか、複数の人やエージェントが同時にタスクを作成した場合の考慮（ID の重複防止やロック）も含めて説明して。</p>
       </div>
       <ul>
         <li><code class="inline">@</code> でファイルを渡すと <strong>曖昧さが減り、探索分のコンテキストも節約</strong> できる</li>
@@ -751,7 +755,7 @@ Hello world</pre>
       <p>最後に、解析結果をドキュメントとして残せる形で出力させる。</p>
       <div class="prompt-box">
         <span class="label">あなたの指示</span>
-        <p>あるエージェントがメッセージを送信してから、別のエージェントが受信するまでの流れを Mermaid のシーケンス図で出力して。</p>
+        <p>backlog task create を実行してから、タスクの Markdown ファイルが保存されるまでの流れを Mermaid のシーケンス図で出力して。</p>
       </div>
       <p>続けて、生成した図をファイルとして残す。「プラン」は解除しておく:</p>
       <div class="prompt-box">
@@ -768,7 +772,7 @@ Hello world</pre>
         <p>上記の内容（7-1 〜 7-4）を実施したら、自分の GitHub アカウントでリポジトリを新規に作成して、できあがったファイルを登録しましょう。gh コマンドがインストールされている場合は、以下のように Claude Code に指定することで新規リポジトリを作成可能です。</p>
         <div class="prompt-box">
           <span class="label">あなたの指示</span>
-          <p>ghコマンドを使って、私のGitHubアカウントに agmsg-analysis という新しいリポジトリを作成して、保存したシーケンス図のファイルを登録して</p>
+          <p>ghコマンドを使って、私のGitHubアカウントに backlog-analysis という新しいリポジトリを作成して、保存したシーケンス図のファイルを登録して</p>
         </div>
       </div>
     </section>
