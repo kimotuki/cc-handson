@@ -958,43 +958,34 @@ CLAUDE.md とは別に、**Claude が自分で書き溜めるプロジェクト�
 
 #### 3-3. プロンプトでスキルを作る（4分）
 
-スキルは `SKILL.md` を置くだけで作れる。ここでは Claude に頼んで、**独自のレビュー観点でレビューする `custom-review` スキル** を、4章で改修する自分の fork の中に **プロジェクトスコープ**（`.claude/skills/`）で作る。
-
-まず 4章で使う自分の fork を clone して `claude` を起動する（fork の作り方は [backlog-md.html](backlog-md.html) の手順1）:
-
-```
-$ gh repo clone <自分のアカウント>/Backlog.md-handson
-$ cd Backlog.md-handson
-$ rm CLAUDE.md AGENTS.md   # 上流の運用ルールを一度削除する（4-1 の注意を参照）
-$ claude
-```
+スキルは `SKILL.md` を置くだけで作れる。ここでは Claude に頼んで、**独自のレビュー観点でレビューする `custom-review` スキル** を、どのプロジェクトからでも呼べる **ユーザースコープ**（`~/.claude/skills/`）で作る。`claude` はどのディレクトリで起動していてもよい（例：Section 1 で clone した `Backlog.md-handson`）。
 
 作りたいスキルを言葉で伝える:
 
 ```
-.claude/skills/custom-review/SKILL.md として、独自の観点でコードレビューするスキル custom-review を作って。
+~/.claude/skills/custom-review/SKILL.md として、独自の観点でコードレビューするスキル custom-review を作って。
 対象は引数で受け取ったファイルかディレクトリ（省略時は git diff の変更分）。観点は次の2つ:
 ① エラーメッセージの親切さ — 原因と「次に何をすればよいか」が書かれているか、人とエージェントの両方が読めるか
 ② 多言語対応の漏れ — ハードコードされた英語文言が残っていないか、日本語訳が自然か
 指摘ごとに「観点 / 該当ファイル・行 / 問題のコード / 理由 / 修正案」を示す手順にして。
 ```
 
-* Claude が `.claude/skills/custom-review/SKILL.md` を生成する。`description` に「いつ使うか」が書かれていることを確認する（Claude が自動起動を判断する鍵。3-4 で扱う）
+* Claude が `~/.claude/skills/custom-review/SKILL.md` を生成する。`description` に「いつ使うか」が書かれていることを確認する（Claude が自動起動を判断する鍵。3-4 で扱う）
 * 観点は、自分のチームが「レビューで毎回言っていること」に置き換えるとよい（例：後方互換、テスト不足、ログに個人情報を出さない）
 
-作成されたスキルの中身を確認し、試しに呼び出す:
+作成されたスキルの中身を確認し、試しに呼び出す（Section 1 で clone した `Backlog.md-handson` のディレクトリで）:
 
 ```
-!cat .claude/skills/custom-review/SKILL.md
+!cat ~/.claude/skills/custom-review/SKILL.md
 ```
 
 ```
 /custom-review src/core/search-service.ts
 ```
 
-* `/skills` で `custom-review` が **プロジェクト（.claude/skills）** のスキルとして一覧に出ることを確認する
+* `/skills` で `custom-review` が **個人（~/.claude/skills）** のスキルとして一覧に出ることを確認する
 
-> 💡 **スキルの置き場所**：リポジトリ内の `.claude/skills/` に置くと **そのプロジェクト専用** になり、コミットすればチーム全員で共有できる（Section 3）。どのプロジェクトでも使いたい個人用スキルは `~/.claude/skills/` に置く。
+> 💡 **スキルの置き場所**：自作スキル（`/custom-review` 等）は `~/.claude/skills/` に置いておくと **どのプロジェクトでも呼び出せる**。リポジトリ内の `.claude/skills/` はそのプロジェクト専用で、コミットすればチームで共有できる（Section 3）。
 
 #### 3-4. スキルのフォルダ構成（4分）
 
@@ -1096,7 +1087,7 @@ custom-review/
 
 #### 4-1. 題材（Backlog.md）を clone（2分）
 
-改修の題材は **Backlog.md**（Section 1 のソースコード解析で使った、Markdown ベースのタスク管理ツール）。**3-3 で clone した自分の fork をそのまま使う**。まだなら、[Backlog.md を GitHub Codespaces で動かす](backlog-md.html) の手順1 で fork を作ってから clone する:
+改修の題材は **Backlog.md**（Section 1 のソースコード解析で使った、Markdown ベースのタスク管理ツール）。[Backlog.md を GitHub Codespaces で動かす](backlog-md.html) の手順1 で作った **自分の fork** を、ローカルに clone して準備する（fork がまだなら先に作る）:
 
 ```
 $ gh repo clone <自分のアカウント>/Backlog.md-handson
@@ -1891,7 +1882,7 @@ Section 2 で作った自作スキルは `~/.claude/skills/` にあり、**自�
 
 * Section 2 で作った `custom-review` スキルをコミットし、隣の受講者のリポジトリで動かしてもらう
 
-Section 2 で作った `custom-review` は、自分の fork の `.claude/skills/`（プロジェクトスコープ）にある。ただし手元の clone に置いただけなので、まだ誰にも届いていない。これを fork の main にコミットして push し、隣の受講者に clone して動かしてもらう。
+Section 2 で作った `custom-review` は個人用の `~/.claude/skills/` にあるので、自分の PC でしか使えない。これをリポジトリの `.claude/skills/` にコピーしてコミットし、隣の受講者に clone して動かしてもらう。push 先は Section 2 でも使った **自分の fork**（`<自分のアカウント>/Backlog.md-handson`）。
 
 **共有する側（自分）**
 
@@ -1902,14 +1893,20 @@ git switch main
 claude
 ```
 
-2. `/skills` を実行し、`custom-review` が **プロジェクト（.claude/skills）** のスキルとして一覧に出ることを確認する
-3. コミットして自分の fork に push する:
+2. 個人用スキルを、名前を変えてリポジトリにコピーする（隣の受講者も自分の `custom-review` を持っているため、名前を分ける）:
 
 ```
-.claude/skills/custom-review をコミットして、自分の fork（<自分のアカウント>/Backlog.md-handson）の main に push して
+~/.claude/skills/custom-review を、このリポジトリの .claude/skills/custom-review-<自分の名前> としてコピーして。SKILL.md の name も合わせて直して
 ```
 
-4. 隣の受講者に自分の GitHub アカウント名を伝える
+3. `/skills` を実行し、`custom-review-<自分の名前>` が **プロジェクト（.claude/skills）** のスキルとして一覧に出ることを確認する
+4. コミットして自分の fork に push する:
+
+```
+.claude/skills/custom-review-<自分の名前> をコミットして、自分の fork（<自分のアカウント>/Backlog.md-handson）の main に push して
+```
+
+5. 隣の受講者に自分の GitHub アカウント名を伝える
 
 **動かす側（隣の受講者）**
 
@@ -1921,18 +1918,18 @@ cd backlog-<相手の名前>
 claude
 ```
 
-2. `/skills` で `custom-review` が一覧に出ることを確認する（自分では作っていないスキルが、clone しただけで使える）
+2. `/skills` で `custom-review-<相手の名前>` が一覧に出ることを確認する（自分では作っていないスキルが、clone しただけで使える）
 3. スキルを実行してレビューさせる:
 
 ```
-/custom-review src/core/search-service.ts
+/custom-review-<相手の名前> src/core/search-service.ts
 ```
 
-4. 指摘が **相手の観点**（エラーメッセージの親切さ・多言語対応の漏れ）で返ってくることを確認する。自分の fork で作った `custom-review` とは別物が動いている
+4. 指摘が **相手の観点** で返ってくることを確認する。自分の `~/.claude/skills/custom-review` とは別物が動いている
 
 * **確認ポイント**：`.claude/skills/` をコミットするだけで、clone した人全員が同じ手順のスキルを使える（3-1 の表のとおり）。個人用 `~/.claude/skills/` のスキルはどれだけ便利でも本人にしか届かない
 
-> 💡 **同名スキルの優先順位**：同じ名前のスキルが複数の場所にあるときの優先順位は **Enterprise ＞ 個人（~/.claude/skills）＞ プロジェクト（.claude/skills）＞ 組み込み**。個人用 `~/.claude/skills/` に同名の `custom-review` を置いていると、プロジェクト側は呼ばれない。チームで共有するスキルは、各自の個人用スキルと名前がぶつからないようにしておく。
+> 💡 **同名スキルの優先順位**：同じ名前のスキルが複数の場所にあるときの優先順位は **Enterprise ＞ 個人（~/.claude/skills）＞ プロジェクト（.claude/skills）＞ 組み込み**。個人用に `custom-review` が残っていると、プロジェクト側の同名スキルは呼ばれない。この演習で名前を分けたのはそのため。チームで共有するスキルは、各自の個人用スキルと名前がぶつからないようにしておく。
 
 #### 3-3. プラグイン（5分）
 
@@ -2021,7 +2018,7 @@ cc-plugins-<自分の名前>/
 ```
 
 * `source` はマーケットプレイスのルート（`.claude-plugin/` がある場所）からの相対パス。プラグイン側の `.claude-plugin/plugin.json` は省略可（無ければ標準の配置 `skills/` 等がそのまま読まれる）
-* プラグインに入れたスキルは **`/<プラグイン名>:<スキル名>`**（ここでは `/dev-tools:custom-review`）で呼ぶ。名前空間が分かれるので、プロジェクトの `custom-review` とぶつからない
+* プラグインに入れたスキルは **`/<プラグイン名>:<スキル名>`**（ここでは `/dev-tools:custom-review`）で呼ぶ。名前空間が分かれるので、演習1 のように個人用の `custom-review` とぶつからない
 
 **共有する側（自分）**
 
@@ -2036,7 +2033,7 @@ claude
 2. 上の構成を Claude に作らせる:
 
 ```
-このディレクトリを Claude Code のプラグインマーケットプレイスにして。.claude-plugin/marketplace.json は name を「<自分の名前>-plugins」、owner を自分にして、plugins に name「dev-tools」、source「./plugins/dev-tools」を登録して。<Backlog.md-handson のパス>/.claude/skills/custom-review を plugins/dev-tools/skills/custom-review にコピーして
+このディレクトリを Claude Code のプラグインマーケットプレイスにして。.claude-plugin/marketplace.json は name を「<自分の名前>-plugins」、owner を自分にして、plugins に name「dev-tools」、source「./plugins/dev-tools」を登録して。~/.claude/skills/custom-review を plugins/dev-tools/skills/custom-review にコピーして
 ```
 
 3. 構成を検証する（JSON の必須項目・名前の整合性をチェックしてくれる）:

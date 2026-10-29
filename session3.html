@@ -275,18 +275,24 @@
         <span class="label">やってみよう</span>
         <p>Section 2 で作った custom-review スキルをコミットし、隣の受講者のリポジトリで動かしてもらう</p>
       </div>
-      <p>Section 2 で作った <code class="inline">custom-review</code> は、自分の fork の <code class="inline">.claude/skills/</code>（プロジェクトスコープ）にある。ただし手元の clone に置いただけなので、まだ誰にも届いていない。これを fork の main にコミットして push し、隣の受講者に clone して動かしてもらう。</p>
+      <p>Section 2 で作った <code class="inline">custom-review</code> は個人用の <code class="inline">~/.claude/skills/</code> にあるので、自分の PC でしか使えない。これをリポジトリの <code class="inline">.claude/skills/</code> にコピーしてコミットし、隣の受講者に clone して動かしてもらう。push 先は Section 2 でも使った <strong>自分の fork</strong>（<code class="inline">&lt;自分のアカウント&gt;/Backlog.md-handson</code>）。</p>
       <h4>共有する側（自分）</h4>
       <ol>
         <li>Section 2 で使った <code class="inline">Backlog.md-handson</code> のディレクトリで、main ブランチに戻って <code class="inline">claude</code> を起動する:
 <pre><span class="prompt">$</span> git switch main
 <span class="prompt">$</span> claude</pre>
         </li>
-        <li><code class="inline">/skills</code> を実行し、<code class="inline">custom-review</code> が <strong>プロジェクト（.claude/skills）</strong> のスキルとして一覧に出ることを確認する</li>
+        <li>個人用スキルを、名前を変えてリポジトリにコピーする（隣の受講者も自分の <code class="inline">custom-review</code> を持っているため、名前を分ける）:
+          <div class="prompt-box">
+            <span class="label">あなたの指示</span>
+            <p>~/.claude/skills/custom-review を、このリポジトリの .claude/skills/custom-review-&lt;自分の名前&gt; としてコピーして。SKILL.md の name も合わせて直して</p>
+          </div>
+        </li>
+        <li><code class="inline">/skills</code> を実行し、<code class="inline">custom-review-&lt;自分の名前&gt;</code> が <strong>プロジェクト（.claude/skills）</strong> のスキルとして一覧に出ることを確認する</li>
         <li>コミットして自分の fork に push する:
           <div class="prompt-box">
             <span class="label">あなたの指示</span>
-            <p>.claude/skills/custom-review をコミットして、自分の fork（&lt;自分のアカウント&gt;/Backlog.md-handson）の main に push して</p>
+            <p>.claude/skills/custom-review-&lt;自分の名前&gt; をコミットして、自分の fork（&lt;自分のアカウント&gt;/Backlog.md-handson）の main に push して</p>
           </div>
         </li>
         <li>隣の受講者に自分の GitHub アカウント名を伝える</li>
@@ -298,21 +304,21 @@
 <span class="prompt">$</span> cd backlog-&lt;相手の名前&gt;
 <span class="prompt">$</span> claude</pre>
         </li>
-        <li><code class="inline">/skills</code> で <code class="inline">custom-review</code> が一覧に出ることを確認する（自分では作っていないスキルが、clone しただけで使える）</li>
+        <li><code class="inline">/skills</code> で <code class="inline">custom-review-&lt;相手の名前&gt;</code> が一覧に出ることを確認する（自分では作っていないスキルが、clone しただけで使える）</li>
         <li>スキルを実行してレビューさせる:
           <div class="prompt-box">
             <span class="label">あなたの指示</span>
-            <p>/custom-review src/core/search-service.ts</p>
+            <p>/custom-review-&lt;相手の名前&gt; src/core/search-service.ts</p>
           </div>
         </li>
-        <li>指摘が <strong>相手の観点</strong>（エラーメッセージの親切さ・多言語対応の漏れ）で返ってくることを確認する。自分の fork で作った <code class="inline">custom-review</code> とは別物が動いている</li>
+        <li>指摘が <strong>相手の観点</strong> で返ってくることを確認する。自分の <code class="inline">~/.claude/skills/custom-review</code> とは別物が動いている</li>
       </ol>
       <ul>
         <li><strong>確認ポイント</strong>：<code class="inline">.claude/skills/</code> をコミットするだけで、clone した人全員が同じ手順のスキルを使える（3-1 の表のとおり）。個人用 <code class="inline">~/.claude/skills/</code> のスキルはどれだけ便利でも本人にしか届かない</li>
       </ul>
       <div class="callout tip">
         <strong>💡 同名スキルの優先順位</strong>
-        同じ名前のスキルが複数の場所にあるときの優先順位は <strong>Enterprise ＞ 個人（~/.claude/skills）＞ プロジェクト（.claude/skills）＞ 組み込み</strong>。個人用 <code class="inline">~/.claude/skills/</code> に同名の <code class="inline">custom-review</code> を置いていると、プロジェクト側は呼ばれない。チームで共有するスキルは、各自の個人用スキルと名前がぶつからないようにしておく。
+        同じ名前のスキルが複数の場所にあるときの優先順位は <strong>Enterprise ＞ 個人（~/.claude/skills）＞ プロジェクト（.claude/skills）＞ 組み込み</strong>。個人用に <code class="inline">custom-review</code> が残っていると、プロジェクト側の同名スキルは呼ばれない。この演習で名前を分けたのはそのため。チームで共有するスキルは、各自の個人用スキルと名前がぶつからないようにしておく。
       </div>
 
       <h3>3-3. プラグイン（5分）</h3>
@@ -380,7 +386,7 @@
 }</pre>
       <ul>
         <li><code class="inline">source</code> はマーケットプレイスのルート（<code class="inline">.claude-plugin/</code> がある場所）からの相対パス。プラグイン側の <code class="inline">.claude-plugin/plugin.json</code> は省略可（無ければ標準の配置 <code class="inline">skills/</code> 等がそのまま読まれる）</li>
-        <li>プラグインに入れたスキルは <strong><code class="inline">/&lt;プラグイン名&gt;:&lt;スキル名&gt;</code></strong>（ここでは <code class="inline">/dev-tools:custom-review</code>）で呼ぶ。名前空間が分かれるので、プロジェクトの <code class="inline">custom-review</code> とぶつからない</li>
+        <li>プラグインに入れたスキルは <strong><code class="inline">/&lt;プラグイン名&gt;:&lt;スキル名&gt;</code></strong>（ここでは <code class="inline">/dev-tools:custom-review</code>）で呼ぶ。名前空間が分かれるので、演習1 のように個人用の <code class="inline">custom-review</code> とぶつからない</li>
       </ul>
       <h4>共有する側（自分）</h4>
       <ol>
@@ -392,7 +398,7 @@
         <li>上の構成を Claude に作らせる:
           <div class="prompt-box">
             <span class="label">あなたの指示</span>
-            <p>このディレクトリを Claude Code のプラグインマーケットプレイスにして。.claude-plugin/marketplace.json は name を「&lt;自分の名前&gt;-plugins」、owner を自分にして、plugins に name「dev-tools」、source「./plugins/dev-tools」を登録して。&lt;Backlog.md-handson のパス&gt;/.claude/skills/custom-review を plugins/dev-tools/skills/custom-review にコピーして</p>
+            <p>このディレクトリを Claude Code のプラグインマーケットプレイスにして。.claude-plugin/marketplace.json は name を「&lt;自分の名前&gt;-plugins」、owner を自分にして、plugins に name「dev-tools」、source「./plugins/dev-tools」を登録して。~/.claude/skills/custom-review を plugins/dev-tools/skills/custom-review にコピーして</p>
           </div>
         </li>
         <li>構成を検証する（JSON の必須項目・名前の整合性をチェックしてくれる）:

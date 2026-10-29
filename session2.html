@@ -416,30 +416,25 @@
       </div>
 
       <h3>3-3. プロンプトでスキルを作る（4分）</h3>
-      <p>スキルは <code class="inline">SKILL.md</code> を置くだけで作れる。ここでは Claude に頼んで、<strong>独自のレビュー観点でレビューする <code class="inline">custom-review</code> スキル</strong> を、4章で改修する自分の fork の中に <strong>プロジェクトスコープ</strong>（<code class="inline">.claude/skills/</code>）で作る。</p>
-      <p>まず 4章で使う自分の fork を clone して <code class="inline">claude</code> を起動する（fork の作り方は <a href="backlog-md.html">backlog-md.html</a> の手順1）:</p>
-<pre>$ gh repo clone &lt;自分のアカウント&gt;/Backlog.md-handson
-$ cd Backlog.md-handson
-$ rm CLAUDE.md AGENTS.md   <span class="comment"># 上流の運用ルールを一度削除する（4-1 の注意を参照）</span>
-$ claude</pre>
+      <p>スキルは <code class="inline">SKILL.md</code> を置くだけで作れる。ここでは Claude に頼んで、<strong>独自のレビュー観点でレビューする <code class="inline">custom-review</code> スキル</strong> を、どのプロジェクトからでも呼べる <strong>ユーザースコープ</strong>（<code class="inline">~/.claude/skills/</code>）で作る。<code class="inline">claude</code> はどのディレクトリで起動していてもよい（例：Section 1 で clone した <code class="inline">Backlog.md-handson</code>）。</p>
       <p>作りたいスキルを言葉で伝える:</p>
       <div class="prompt-box">
         <span class="label">あなたの指示</span>
-        <p>.claude/skills/custom-review/SKILL.md として、独自の観点でコードレビューするスキル custom-review を作って。対象は引数で受け取ったファイルかディレクトリ（省略時は git diff の変更分）。観点は次の2つ: ① エラーメッセージの親切さ — 原因と「次に何をすればよいか」が書かれているか、人とエージェントの両方が読めるか ② 多言語対応の漏れ — ハードコードされた英語文言が残っていないか、日本語訳が自然か。指摘ごとに「観点 / 該当ファイル・行 / 問題のコード / 理由 / 修正案」を示す手順にして。</p>
+        <p>~/.claude/skills/custom-review/SKILL.md として、独自の観点でコードレビューするスキル custom-review を作って。対象は引数で受け取ったファイルかディレクトリ（省略時は git diff の変更分）。観点は次の2つ: ① エラーメッセージの親切さ — 原因と「次に何をすればよいか」が書かれているか、人とエージェントの両方が読めるか ② 多言語対応の漏れ — ハードコードされた英語文言が残っていないか、日本語訳が自然か。指摘ごとに「観点 / 該当ファイル・行 / 問題のコード / 理由 / 修正案」を示す手順にして。</p>
       </div>
       <ul>
-        <li>Claude が <code class="inline">.claude/skills/custom-review/SKILL.md</code> を生成する。<code class="inline">description</code> に「いつ使うか」が書かれていることを確認する（Claude が自動起動を判断する鍵。3-4 で扱う）</li>
+        <li>Claude が <code class="inline">~/.claude/skills/custom-review/SKILL.md</code> を生成する。<code class="inline">description</code> に「いつ使うか」が書かれていることを確認する（Claude が自動起動を判断する鍵。3-4 で扱う）</li>
         <li>観点は、自分のチームが「レビューで毎回言っていること」に置き換えるとよい（例：後方互換、テスト不足、ログに個人情報を出さない）</li>
       </ul>
-      <p>作成されたスキルの中身を確認し、試しに呼び出す:</p>
-<pre>!cat .claude/skills/custom-review/SKILL.md</pre>
+      <p>作成されたスキルの中身を確認し、試しに呼び出す（Section 1 で clone した <code class="inline">Backlog.md-handson</code> のディレクトリで）:</p>
+<pre>!cat ~/.claude/skills/custom-review/SKILL.md</pre>
 <pre>/custom-review src/core/search-service.ts</pre>
       <ul>
-        <li><code class="inline">/skills</code> で <code class="inline">custom-review</code> が <strong>プロジェクト（.claude/skills）</strong> のスキルとして一覧に出ることを確認する</li>
+        <li><code class="inline">/skills</code> で <code class="inline">custom-review</code> が <strong>個人（~/.claude/skills）</strong> のスキルとして一覧に出ることを確認する</li>
       </ul>
       <div class="callout tip">
         <strong>💡 スキルの置き場所</strong>
-        リポジトリ内の <code class="inline">.claude/skills/</code> に置くと <strong>そのプロジェクト専用</strong> になり、コミットすればチーム全員で共有できる（Section 3）。どのプロジェクトでも使いたい個人用スキルは <code class="inline">~/.claude/skills/</code> に置く。
+        自作スキル（<code class="inline">/custom-review</code> 等）は <code class="inline">~/.claude/skills/</code> に置いておくと <strong>どのプロジェクトでも呼び出せる</strong>。リポジトリ内の <code class="inline">.claude/skills/</code> はそのプロジェクト専用で、コミットすればチームで共有できる（Section 3）。
       </div>
 
       <h3>3-4. スキルのフォルダ構成（4分）</h3>
@@ -534,7 +529,7 @@ allowed-tools: Read, Grep, Glob, Bash
       <p><strong>個人開発のフロー</strong> を最初から最後まで回す。自分の fork（Backlog.md）をクローン → 機能追加（マルチ言語対応） → レビュー → 修正 → 独自観点のレビュー → セキュリティレビュー → fork 元リポジトリへの PR 作成まで、すべて Claude Code との会話で進める。</p>
 
       <h3>4-1. 題材（Backlog.md）を clone（2分）</h3>
-      <p>改修の題材は <strong>Backlog.md</strong>（Section 1 のソースコード解析で使った、Markdown ベースのタスク管理ツール）。<strong>3-3 で clone した自分の fork をそのまま使う</strong>。まだなら、<a href="backlog-md.html">Backlog.md を GitHub Codespaces で動かす</a> の手順1 で fork を作ってから clone する:</p>
+      <p>改修の題材は <strong>Backlog.md</strong>（Section 1 のソースコード解析で使った、Markdown ベースのタスク管理ツール）。<a href="backlog-md.html">Backlog.md を GitHub Codespaces で動かす</a> の手順1 で作った <strong>自分の fork</strong> を、ローカルに clone して準備する（fork がまだなら先に作る）:</p>
 <pre>$ gh repo clone &lt;自分のアカウント&gt;/Backlog.md-handson
 $ cd Backlog.md-handson
 $ rm CLAUDE.md AGENTS.md   <span class="comment"># 上流の運用ルール（下の注意を参照）を一度削除する</span>
