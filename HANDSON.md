@@ -1939,7 +1939,7 @@ claude --from-pr <N>   # N はレビューする PR 番号
 2章で回した「Issue 起点の開発フロー」は毎回同じ手順の繰り返し — つまり **スキル化の好対象**。フロー全体を1つのスキルに落とし込み、1コマンドで回せるようにする。
 
 ```
-issue-flow というスキルを作って。Issue 番号を引数で受け取り、
+issue-driven-flow というスキルを作って。Issue 番号を引数で受け取り、
 1. gh issue view で Issue の内容を確認
 2. fix/issue-<番号> ブランチを作成
 3. Plan Mode で対応方針を立ててから修正を実装
@@ -1951,11 +1951,11 @@ issue-flow というスキルを作って。Issue 番号を引数で受け取り
 作成できたら、新しい Issue を1つ作って実行してみる:
 
 ```
-/issue-flow 2
+/issue-driven-flow 2
 ```
 
 * 定型フローをスキル化すれば、**チームの誰でも同じ品質のフローを1コマンドで再現** できる
-* `.claude/skills/issue-flow/` をコミットすれば、5章「Skills の共有」で扱うとおりチーム全員に共有される
+* `.claude/skills/issue-driven-flow/` をコミットすれば、5章「Skills の共有」で扱うとおりチーム全員に共有される
 
 > 💡 **GitHub 上でも回す — Claude Code GitHub Actions**：`/install-github-app` を実行すると、GitHub App のインストールとワークフローの追加まで対話的にセットアップできる。以後は PR や Issue のコメントで `@claude` にメンションすると、GitHub Actions 上の Claude Code がレビューや修正を行い、結果をコメント・コミットで返す。認証はサブスクリプションなら `claude setup-token` で作る OAuth トークン（Pro / Max / Team / Enterprise）、API 利用なら API キーをリポジトリの Secret に登録する。Issue / PR の本文は **信頼できない入力** なので、Actions 側の権限は最小にし、マージは人がレビューしてから行う。
 
@@ -1966,7 +1966,7 @@ claude -p "前回のタグ以降にマージされた PR を gh で集めて、C
   --allowedTools "Read,Edit,Bash(gh pr list:*),Bash(git tag:*),Bash(git log:*)"
 ```
 
-> ✅ **自分のチームのワークフローをスキルにしよう**：ここで作った issue-flow はあくまで一例。自分のチームの開発ワークフロー（Issue の書き方、ブランチ運用、レビュー観点、リリース手順）に合わせてスキルを作り、使いながら育てていくことで、継続的に開発生産性を高めていきましょう！
+> ✅ **自分のチームのワークフローをスキルにしよう**：ここで作った issue-driven-flow はあくまで一例。自分のチームの開発ワークフロー（Issue の書き方、ブランチ運用、レビュー観点、リリース手順）に合わせてスキルを作り、使いながら育てていくことで、継続的に開発生産性を高めていきましょう！
 > 作ったスキルは、5章「Skills の共有」の内容を参考にして、チームや組織で共有していきましょう！
 
 ### 4. チームでの CLAUDE.md 運用（12分）

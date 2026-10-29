@@ -340,7 +340,7 @@
       <p>2章で回した「Issue 起点の開発フロー」は毎回同じ手順の繰り返し — つまり <strong>スキル化の好対象</strong>。フロー全体を1つのスキルに落とし込み、1コマンドで回せるようにする。</p>
       <div class="prompt-box">
         <span class="label">あなたの指示</span>
-        <p>issue-review-flow というスキルを作って。Issue 番号を引数で受け取り、<br>
+        <p>issue-driven-flow というスキルを作って。Issue 番号を引数で受け取り、<br>
         1. gh issue view で Issue の内容を確認<br>
         2. fix/issue-&lt;番号&gt; ブランチを作成<br>
         3. 対応方針を立てて、確認してから修正を実装<br>
@@ -349,12 +349,12 @@
         という手順にして。</p>
       </div>
       <p>作成できたら、実行する前に生成されたスキルの内容を確認する。指示した5つの手順がそのまま入っているか、意図しない操作が紛れ込んでいないかをレビューしておく:</p>
-<pre><span class="prompt">$</span> cat .claude/skills/issue-review-flow/SKILL.md</pre>
+<pre><span class="prompt">$</span> cat .claude/skills/issue-driven-flow/SKILL.md</pre>
       <p>内容に問題がなければ、新しい Issue を1つ作って実行してみる:</p>
-<pre>/issue-review-flow 2</pre>
+<pre>/issue-driven-flow 2</pre>
       <ul>
         <li>定型フローをスキル化すれば、<strong>チームの誰でも同じ品質のフローを1コマンドで再現</strong> できる</li>
-        <li><code class="inline">.claude/skills/issue-review-flow/</code> をコミットすれば、5章「Skills の共有」で扱うとおりチーム全員に共有される</li>
+        <li><code class="inline">.claude/skills/issue-driven-flow/</code> をコミットすれば、5章「Skills の共有」で扱うとおりチーム全員に共有される</li>
       </ul>
       <div class="callout tip">
         <strong>💡 GitHub 上でも回す — Claude Code GitHub Actions</strong>
@@ -368,7 +368,7 @@
     --allowedTools "Read,Edit,Bash(gh pr list:*),Bash(git tag:*),Bash(git log:*)"</pre>
       <div class="callout ok">
         <strong>✅ 自分のチームのワークフローをスキルにしよう</strong>
-        ここで作った issue-flow はあくまで一例。自分のチームの開発ワークフロー（Issue の書き方、ブランチ運用、レビュー観点、リリース手順）に合わせてスキルを作り、使いながら育てていくことで、継続的に開発生産性を高めていきましょう！<br>
+        ここで作った issue-driven-flow はあくまで一例。自分のチームの開発ワークフロー（Issue の書き方、ブランチ運用、レビュー観点、リリース手順）に合わせてスキルを作り、使いながら育てていくことで、継続的に開発生産性を高めていきましょう！<br>
         作ったスキルは、5章「Skills の共有」の内容を参考にして、チームや組織で共有していきましょう！
       </div>
     </section>
