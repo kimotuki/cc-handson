@@ -1100,7 +1100,7 @@ $ claude
 ```
 
 * `gh repo clone` で fork を clone すると、`origin` が自分の fork、`upstream` が fork 元（`cl-y-arai/Backlog.md-handson`）に自動で設定される
-* 以降のステップ（機能追加・レビュー・修正）は、この **ローカルの clone を対象** に Claude Code で進める。**ローカルでは Bun を動かさない**。動作確認とテストは 4-7 で push したあと、Codespace で行う
+* 以降のステップ（機能追加・レビュー・修正）は、この **ローカルの clone を対象** に Claude Code で進める。**ローカルでは Bun を動かさないこと。** 動作確認とテストは 4-7 で push したあと、Codespace で行う
 * Section 1 の「ソースコード解析」と同じ題材なので、構造を把握済みならスムーズに改修へ入れる
 
 > ⚠️ **リポジトリ付属の CLAUDE.md に注意**：リポジトリに `CLAUDE.md` / `AGENTS.md` が付属している場合は、まずは最初に中身を確認する。今回の Backlog.md の `CLAUDE.md` / `AGENTS.md` には、Backlog.md 開発チーム向けの運用ルール（MANIFESTO.md を先に読む、判断に迷ったら作者に聞く、など）が書かれている。この clone したフォルダで Claude Code を動かすと、それらのファイルを参照して動作する。今回のハンズオンの演習では、`CLAUDE.md` / `AGENTS.md` は一度削除する。
