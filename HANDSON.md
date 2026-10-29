@@ -746,7 +746,7 @@ loops-guide.html を A4 縦の PDF に変換して、loops-guide.pdf として�
 * `CLAUDE.md`・メモリ・`settings.json` の仕組みを理解し、設定が効いているかを確認できる
 * プラグインで機能を追加し、skill-creator で自作スキルを作れる
 * コネクタ・MCP で外部サービス（Figma など）を接続し、デザインからコード生成の流れを理解する
-* 題材の OSS（agmsg）への機能追加からレビュー・PR 作成まで、Claude Code との会話で完遂できる
+* 題材の OSS（Backlog.md）への機能追加からレビュー・PR 作成まで、Claude Code との会話で完遂できる
 
 ## 時間配分（120分）
 
@@ -817,21 +817,21 @@ $ claude
 リポジトリのCLAUDE.mdファイルへ以下の記載を追記して
 ```
 
-記入例（agmsg の場合）:
+記入例（Backlog.md の場合）:
 
 ```markdown
-## テストコマンド
+## テストコマンド（GitHub Codespaces 上で実行する）
 
-- 全テスト実行: `bats tests/`
-- 単一ファイル: `bats tests/test_send.bats`
-- 静的解析: `shellcheck scripts/*.sh`
+- 全テスト実行: `bun run test`
+- 単一ファイル: `bun test --timeout=10000 src/test/<ファイル>.test.ts`
+- 整形・静的解析: `bun run check`（Biome）、型チェック: `bun run check:types`
 
 ## コーディング規約
 
-- シェルスクリプトは先頭で `set -euo pipefail` を宣言する
-- 変数展開は必ずダブルクォートで囲む（`"$var"`）
-- SQLite への値の埋め込みは文字列連結ではなくパラメータ化する
-- 新しいスクリプトには対応する bats テストを追加する
+- TypeScript はタブインデント・ダブルクォート（biome.json の設定に従う）
+- CLI のコマンド定義は src/cli.ts、ロジックは src/core/、ファイル操作は src/file-system/ 経由で行う
+- 新しい機能には src/test/ に対応する bun test のテストを追加する
+- ローカルでは Bun を実行しない。テストは push 後に Codespace で実行して確認する
 ```
 
 #### 2-3. settings.json と設定の確認（8分）
@@ -864,7 +864,7 @@ Section 1 で settings.json の配置場所（user / project / local）に触れ
 ```json
 {
   "permissions": {
-    "allow": ["Bash(bats:*)"],
+    "allow": ["Bash(git log:*)"],
     "deny": ["Read(./.env)", "Bash(rm -rf *)"],
     "ask": ["Bash(git push:*)"]
   }
@@ -872,7 +872,7 @@ Section 1 で settings.json の配置場所（user / project / local）に触れ
 ```
 
 * `allow`=確認なしで許可 / `deny`=実行不可 / `ask`=毎回確認
-* `:*` は末尾ワイルドカード。`Bash(bats:*)` は `bats tests/test_send.bats` のように後ろに何が続いても一致する（`bash` など別コマンドは対象外）。`**` は複数階層のパスにマッチ
+* `:*` は末尾ワイルドカード。`Bash(git log:*)` は `git log --oneline -5` のように後ろに何が続いても一致する（`git push` など別コマンドは対象外）。`**` は複数階層のパスにマッチ
 * よく使う安全なコマンドを `allow` に登録しておくと、**承認ダイアログの往復が減ってテンポが上がる**（承認時に「Yes, and don't ask again」を選ぶと自動追記される）
 
 ##### 設定例：秘密ファイルの読み取りを禁止する
@@ -985,8 +985,9 @@ CLAUDE.md とは別に、**Claude が自分で書き溜めるプロジェクト�
 
 ```
 テストを生成する test-gen というスキルを作って。
-対象のファイルを引数で受け取り、リポジトリの既存テスト形式に合わせて
-正常系・異常系のテストを作成し、テストが通るまで直す手順にして。
+対象のファイルを引数で受け取り、リポジトリの既存テスト形式（src/test/ の bun test）に合わせて
+正常系・異常系のテストを作成する手順にして。テストの実行は Codespace で行うので、
+最後に実行コマンド（bun test --timeout=10000 <テストファイル>）を案内して。
 ```
 
 * skill-creator が `SKILL.md` と必要な補助ファイルを生成してくれる
@@ -1280,7 +1281,7 @@ Figmaの「AI Chat」ファイルのExamples/AI Chatの内容をもとにHTML + 
 | `Plan` | 編集前の計画づくりのための調査 | 読み取り専用（編集不可） | Plan Mode で計画を立てるときの調査 |
 | `general-purpose` | 調査と修正の両方を含む、複数ステップの複雑なタスク | すべてのツール | 種類を指定せずにサブエージェントを起動したとき（既定）。モデルはメイン会話を継承（`CLAUDE_CODE_SUBAGENT_MODEL` で固定も可） |
 
-* 動いているサブエージェントは `/tasks` で一覧・確認・停止できる。特定のサブエージェントを確実に使わせたいときは `@"shell-code-reviewer (agent)"` のように @ で指名するか、`claude --agent shell-code-reviewer` でセッション全体に適用する
+* 動いているサブエージェントは `/tasks` で一覧・確認・停止できる。特定のサブエージェントを確実に使わせたいときは `@"ts-code-reviewer (agent)"` のように @ で指名するか、`claude --agent ts-code-reviewer` でセッション全体に適用する
 
 > 💡 **スキル / プラグイン との違い**：スキルは **メイン会話の中** で手順を実行する。サブエージェントは **別コンテキストで実行してサマリーだけ返す**。プラグインはそれらをまとめて配布する入れ物。
 
@@ -1297,10 +1298,10 @@ Figmaの「AI Chat」ファイルのExamples/AI Chatの内容をもとにHTML + 
 
 | 観点 | 自動（組み込みサブエージェント） | 自分で作る（カスタムサブエージェント） |
 |------|----------------------------------|------------------------------------------|
-| 起動のきっかけ | Claude が「広く探索する必要がある」と判断したとき。頼まなくても起動する | 定義した `description` に合う依頼が来たとき Claude が委譲する、または「shell-code-reviewer でレビューして」と名前で指名する |
+| 起動のきっかけ | Claude が「広く探索する必要がある」と判断したとき。頼まなくても起動する | 定義した `description` に合う依頼が来たとき Claude が委譲する、または「ts-code-reviewer でレビューして」と名前で指名する |
 | 定義 | Claude Code 組み込み（`Explore` / `Plan` / `general-purpose`）。プロンプトやツールは固定 | `.claude/agents/<name>.md` に自分で書く。システムプロンプト・使えるツール・モデルを指定できる |
 | 得意なこと | その場限りの調査・探索・計画。コンテキスト節約が主目的 | 毎回同じ観点・同じ品質で繰り返す作業（レビュー、テスト観点の確認）。権限を絞った安全な実行。チームでの共有 |
-| 見え方 | ログに `Agent(Explore)` など | ログに `Agent(shell-code-reviewer)` など |
+| 見え方 | ログに `Agent(Explore)` など | ログに `Agent(ts-code-reviewer)` など |
 
 * **使い分け**：一回きりで「広く調べてほしい」だけなら Claude の自動起動に任せてよい。「レビューの観点を固定したい」「書き込みをさせたくない」「チームで同じ基準を使いたい」なら自分で作る
 * 自分で作ったサブエージェントも、`description` が依頼内容に合えば **Claude が自動で委譲する**。つまり自作とは「自動で使われる候補を、自分の観点で増やす」こと。description は「いつ使うか」が分かるように具体的に書く
@@ -1310,7 +1311,7 @@ Figmaの「AI Chat」ファイルのExamples/AI Chatの内容をもとにHTML + 
 
 作り方は2つ:
 
-* ① **Claude に自然言語で頼む**（「シェルスクリプトのコードレビューをするサブエージェントを作って」のように依頼）
+* ① **Claude に自然言語で頼む**（「TypeScript のコードレビューをするサブエージェントを作って」のように依頼）
 * ② `.claude/agents/` に **Markdown ファイルを直接作成する**
 
 > 💡 以前あった `/agents` ウィザード（対話的な作成 UI）は **廃止された**。`/agents` を実行すると、上記2つの方法への案内が表示される。
@@ -1325,24 +1326,24 @@ Figmaの「AI Chat」ファイルのExamples/AI Chatの内容をもとにHTML + 
 例として、レビュー専用サブエージェントを Claude に頼んで作る。プロンプトに続けて、ファイルに書く内容も一緒に渡す:
 
 ```
-「シェルスクリプトのシニアコードレビュアー」を作って。
-ファイルは .claude/agents/shell-code-reviewer.md で、内容は以下にして。
+「TypeScript のシニアコードレビュアー」を作って。
+ファイルは .claude/agents/ts-code-reviewer.md で、内容は以下にして。
 ```
 
 ```markdown
 ---
-name: shell-code-reviewer
-description: シェルスクリプトのコードレビュー専門家。コードを書いた/変更した直後に積極的に使う。
+name: ts-code-reviewer
+description: TypeScript のコードレビュー専門家。コードを書いた/変更した直後に積極的に使う。
 tools: Read, Grep, Glob, Bash
 model: sonnet
 ---
 
-あなたはシェルスクリプトのシニアコードレビュアーです。次の観点でレビューしてください：
-1. クォート漏れ（変数展開が "$var" になっているか）
-2. エラーハンドリング（set -euo pipefail、失敗時の後始末）
-3. SQLite への値の埋め込み（文字列連結によるインジェクションがないか）
-4. 移植性（macOS / Linux での挙動差、bash 依存の明示）
-5. テストの不足
+あなたは TypeScript のシニアコードレビュアーです。次の観点でレビューしてください：
+1. 型安全性（any の濫用、null / undefined の扱い）
+2. エラーハンドリング（例外の握りつぶし、失敗時の後始末）
+3. ファイル操作の安全性（パスの検証、同時書き込み時のロック）
+4. Backlog.md の層分け（src/cli.ts → src/core/ → src/file-system/ の責務を守っているか）
+5. テストの不足（src/test/ の bun test）
 
 指摘ごとに「観点 / 該当ファイル・行 / 問題のコード / 理由 / 修正案」を示すこと。
 ```
@@ -1351,10 +1352,10 @@ model: sonnet
 
 #### 6-3. ハンズオン：レビュー専用サブエージェントを使う（4分）
 
-上の `shell-code-reviewer` を作成し（または Claude に「シェルスクリプトのコードレビュー用サブエージェントを作って」と頼んで生成し）、呼び出してみる。
+上の `ts-code-reviewer` を作成し（または Claude に「TypeScript のコードレビュー用サブエージェントを作って」と頼んで生成し）、呼び出してみる。
 
 ```
-shell-code-reviewer エージェントで scripts/ の変更をレビューして
+ts-code-reviewer エージェントで src/ の変更をレビューして
 ```
 
 * サブエージェントが別コンテキストで該当コードを読み込み・レビューし、**メイン会話には結果のサマリーだけ** 返ることを観察する
@@ -1365,7 +1366,7 @@ shell-code-reviewer エージェントで scripts/ の変更をレビューし�
 委譲すると、メイン画面に **別タスクとして実行中の状態** が表示される:
 
 ```
-● shell-code-reviewer(scripts/ の変更をレビュー)
+● ts-code-reviewer(src/ の変更をレビュー)
   ⎿ Running… (18s · ↓ 4.2k tokens · esc to interrupt)
 ```
 
@@ -1454,33 +1455,37 @@ exit 0
 
 | 目的                     | フック                      | コマンド例                       |
 |--------------------------|-----------------------------|----------------------------------|
-| コード整形の強制         | `PostToolUse`（Edit/Write） | `shfmt -w scripts/`              |
-| 静的解析（ShellCheck）   | `PostToolUse`（Edit/Write） | `shellcheck scripts/*.sh`        |
-| テストの自動実行         | `Stop`                      | `bats tests/`                    |
+| コード整形の強制         | `PostToolUse`（Edit/Write） | `bun run format`（Biome）        |
+| 静的解析（Biome）        | `PostToolUse`（Edit/Write） | `bun run check`                  |
+| テストの自動実行         | `Stop`                      | `bun run test`                   |
 | 危険コマンドのブロック   | `PreToolUse`（Bash）        | 検知スクリプトで `exit 2`        |
+
+> 💡 Backlog.md では Bun を Codespace 側にだけ入れているため、上の整形・静的解析・テストを手元のフックで動かすには Bun のローカル導入が必要。本ハンズオンでは「こう書ける」という例として読み、テストと静的解析は Codespace のターミナルで手動実行する。
 
 ### 8. 実践：アプリ開発の一連フロー（28分）
 
-**個人開発のフロー** を最初から最後まで回す。題材の agmsg をクローン → 機能追加（メッセージ検索） → レビュー → 修正 → テスト生成 → セキュリティレビュー → クローン元リポジトリへの PR 作成まで、すべて Claude Code との会話で進める。
+**個人開発のフロー** を最初から最後まで回す。自分の fork（Backlog.md）をクローン → 機能追加（マルチ言語対応） → レビュー → 修正 → テスト生成 → セキュリティレビュー → fork 元リポジトリへの PR 作成まで、すべて Claude Code との会話で進める。
 
-#### 8-1. 題材（agmsg）をクローン（2分）
+#### 8-1. 題材（Backlog.md）を clone（2分）
 
-改修の題材は **agmsg**（Section 1 のソースコード解析で使った、CLI AI エージェント間のメッセージングツール）。GitHub からクローンして準備する:
+改修の題材は **Backlog.md**（Section 1 のソースコード解析で使った、Markdown ベースのタスク管理ツール）。[Backlog.md を GitHub Codespaces で動かす](backlog-md.html) の手順1 で作った **自分の fork** を、ローカルに clone して準備する（fork がまだなら先に作る）:
 
 ```
-$ git clone https://github.com/kimotuki/agmsg
-$ cd agmsg
+$ gh repo clone <自分のアカウント>/Backlog.md-handson
+$ cd Backlog.md-handson
 $ claude
 ```
 
-* 以降のステップ（機能追加・レビュー・修正）は、この **クローンしたリポジトリを対象** に進める
+* `gh repo clone` で fork を clone すると、`origin` が自分の fork、`upstream` が fork 元（`cl-y-arai/Backlog.md-handson`）に自動で設定される
+* 以降のステップ（機能追加・レビュー・修正）は、この **ローカルの clone を対象** に Claude Code で進める。**ローカルでは Bun を動かさない**。動作確認とテストは 8-7 で push したあと、Codespace で行う
 * Section 1 の「ソースコード解析」と同じ題材なので、構造を把握済みならスムーズに改修へ入れる
 
-#### 8-2. 「メッセージ検索」機能を追加（8分）
+#### 8-2. 「マルチ言語対応（英語・日本語）」機能を追加（8分）
 
 ```
-このagmsgに「メッセージ検索」機能を追加してください。
-scripts/search.sh として、キーワードで過去のメッセージを検索できるようにして。
+この Backlog.md に、CLI の表示言語を英語と日本語で切り替えられるマルチ言語対応を追加してください。
+まずは backlog --help のコマンド説明と、backlog task list の見出し・ステータス表示を対象にして。
+環境変数 BACKLOG_LANG=ja（既定は en）で切り替え、文言は src/i18n/ にまとめて。
 ```
 
 実装が終わったら、どのような変更が入ったかを `git diff` で **人の目で確認する**:
@@ -1519,13 +1524,13 @@ scripts/search.sh として、キーワードで過去のメッセージを検�
 
 #### 8-5. 自作スキルでテストを生成してレビュー（3分）
 
-3-3 で作った自作スキル `/test-gen` で、追加した検索機能のテストを生成して検証する。
+3-3 で作った自作スキル `/test-gen` で、追加したマルチ言語対応のテストを生成する。
 
 ```
-/test-gen scripts/search.sh
+/test-gen src/i18n/index.ts
 ```
 
-* 正常系・異常系のテストが `tests/` に生成され（agmsg のテストは bats 形式）、テストが通るまで修正される
+* 正常系・異常系のテストが `src/test/` に生成される（Backlog.md のテストは `bun test` 形式）。引数のファイル名は Claude が作った i18n のファイルに合わせる。テストの実行は 8-7 で push したあと Codespace で行う
 * レビューは組み込みスキル、テスト生成は自作 `/test-gen` のように、**組み込みスキルでカバーされない定型作業は自作スキルで作っていく**
 
 #### 8-6. 組み込みスキルでセキュリティレビュー（4分）
@@ -1542,22 +1547,33 @@ scripts/search.sh として、キーワードで過去のメッセージを検�
 
 #### 8-7. リポジトリへコミット、PR 作成（4分）
 
-修正をコミットし、クローン元（`kimotuki/agmsg`）へ PR を作成する:
+修正をコミットして自分の fork に push し、fork 元（`cl-y-arai/Backlog.md-handson`）へ PR を作成する:
 
 ```
-!git checkout -b feature/message-search-[自分の名前]
-!git add -A && git commit -m "メッセージ検索機能の追加 by [自分の名前]"
-# クローン元 (kimotuki/agmsg) に向けた PR を作成
+!git checkout -b feature/i18n-[自分の名前]
+!git add -A && git commit -m "CLI のマルチ言語対応（英語・日本語）by [自分の名前]"
+!git push -u origin HEAD
+# fork 元 (cl-y-arai/Backlog.md-handson) に向けた PR を作成
 !gh pr create --fill
 ```
 
-* クローン元には書き込み権限がないため、`gh pr create` が push 先を聞いてくる — **「Create a fork of kimotuki/agmsg」を選ぶ** と、fork の作成 → push → PR 作成まで一気に進む（初回のみ `gh auth login`）
+* `gh pr create` が base リポジトリを聞いてきたら **fork 元の `cl-y-arai/Backlog.md-handson`** を選ぶ（初回のみ `gh auth login`）。自分の fork 宛てにしてしまった場合は、GitHub の PR 画面で base を変更できる
 * `--fill` はコミットメッセージから PR のタイトル・本文を自動生成する
-* ブランチ名・コミットメッセージ・PR 本文は Claude に任せてもよい（「クローン元に PR を作って」）
+* ブランチ名・コミットメッセージ・PR 本文は Claude に任せてもよい（「fork 元に PR を作って」）
+
+**Codespace で動作確認**：push したブランチを Codespace で動かして確認する（[backlog-md.html](backlog-md.html) で作った Codespace を開く）:
+
+```bash
+git fetch origin && git checkout feature/i18n-[自分の名前]
+bun run test
+BACKLOG_LANG=ja bun run cli --help
+```
+
+* テストが失敗したら、エラー出力をローカルの Claude Code に貼り付けて直し、再度 push → Codespace で `git pull` して確認する
 
 #### 8-8. オプション課題
 
-* 余裕があれば「メッセージ統計」機能も追加する — 「エージェントごとの送信数を集計する scripts/stats.sh を追加して」
+* 余裕があれば Web UI（`src/web/`）の表示言語も `BACKLOG_LANG` で切り替えられるようにする — 「Web UI のかんばんの列名とボタンも日本語化して」
 
 ### 9. まとめ（8分）
 
@@ -1593,7 +1609,7 @@ scripts/search.sh として、キーワードで過去のメッセージを検�
 
 ##### 演習
 
-8-7 で作成した PR（`kimotuki/agmsg` 向け）を題材に、CI とレビューコメントの変化を定期的に確認させる。`agmsg` のディレクトリで `claude` を起動し:
+8-7 で作成した PR（`cl-y-arai/Backlog.md-handson` 向け）を題材に、CI とレビューコメントの変化を定期的に確認させる。`Backlog.md-handson` のディレクトリで `claude` を起動し:
 
 ```
 /loop 2m gh で自分の PR の CI ステータスとレビューコメントを確認して、前回から変化があれば教えて
@@ -1607,11 +1623,11 @@ scripts/search.sh として、キーワードで過去のメッセージを検�
 * `/goal <完了条件>` で条件を設定すると、**条件が満たされるまで Claude がターンをまたいで自動的に作業を続ける**。各ターンの終わりに小型モデル（既定は Haiku）が条件を判定し、「未達（理由つきで次ターンへ）／達成（自動解除）／達成不可能（自動解除）」のいずれかを返す
 * 有効な間は `◎ /goal active` が表示される。`Ctrl+O` で判定理由を確認できる
 * `/goal`（引数なし）で状態表示、`/goal clear`（`stop` `reset` `cancel` `off` も同じ）で解除。1セッションに1つだけ有効で、新しく設定すると置き換わる
-* 条件は **機械的に検証できる形** で書く（「`bats tests/` がすべて成功する」など）。「または10ターンで止める」のような **上限を条件に含めて** 暴走を防ぐ
+* 条件は **機械的に検証できる形** で書く（「`bun run test` がすべて成功する」など。ただしテストはその環境で実行できる必要がある）。「または10ターンで止める」のような **上限を条件に含めて** 暴走を防ぐ
 * 続けている間はトークンを消費し続ける。セッションを `--resume` すると有効だった目標は復元される（ターン数などはリセット）
 
 ```
-/goal bats tests/ がすべて成功し、shellcheck scripts/*.sh が警告なしで終わる。または10ターンで止める
+/goal src/i18n/ の文言がすべて英語と日本語の両方で定義され、/code-review で重大な指摘が無くなる。または10ターンで止める
 /goal
 /goal clear
 ```
@@ -1626,19 +1642,20 @@ scripts/search.sh として、キーワードで過去のメッセージを検�
 
 ##### 演習
 
-`agmsg` のディレクトリで、まず完了条件を設定してから機能追加を依頼する:
+`Backlog.md-handson` のディレクトリで、まず完了条件を設定してから機能追加を依頼する:
 
 ```
-/goal bats tests/ がすべて成功し、shellcheck scripts/*.sh が警告なしで終わる。または10ターンで止める
+/goal src/i18n/ の文言がすべて英語と日本語の両方で定義され、/code-review で重大な指摘が無くなる。または10ターンで止める
 ```
 
 ```
-scripts/search.sh に、表示件数を絞る --limit N オプションを追加して。対応する bats テストも追加して
+task list の出力に表示されるステータス名（To Do / In Progress / Done）も BACKLOG_LANG=ja のとき日本語で表示されるようにして。対応するテストも src/test/ に追加して
 ```
 
-* テストが通らない間は Claude が自動で次のターンに進み、修正を続けることを観察する（`Ctrl+O` で「なぜ未達か」の判定理由を見る）
+* 条件を満たさない間は Claude が自動で次のターンに進み、修正を続けることを観察する（`Ctrl+O` で「なぜ未達か」の判定理由を見る）
 * 条件を満たすと `/goal` が自動で解除される。途中でやめたいときは `/goal clear`
 * 終わったら `git diff` で変更内容を人の目で確認し、不要なら `git checkout -- .` で元に戻す
+* テストの成否を条件にしたいときは、Bun が動く Codespace のターミナルで `claude` を起動して行う
 
 ##### 参考リンク
 
@@ -1691,18 +1708,18 @@ scripts/search.sh に、表示件数を絞る --limit N オプションを追加
 
 ```
 3人のチームメイトを立てて、この PR をレビューして：
-- 1人はセキュリティ（入力検証・SQL の扱い）
-- 1人はシェルスクリプトの堅牢性（set -euo pipefail・クォート・エラー処理）
-- 1人はテスト網羅（tests/ の bats で足りていない観点）
+- 1人はセキュリティ（入力検証・環境変数やファイルパスの扱い）
+- 1人は TypeScript の堅牢性（型の扱い・エラー処理・非同期処理）
+- 1人はテスト網羅（src/test/ の bun test で足りていない観点）
 各自の所見を共有し合って、最後に1つのレポートにまとめて
 ```
 
 ```
-4人のチームメイトで並列にリファクタして。モデルは Sonnet。担当は scripts/ / tests/ / docs/ / README で分けて、担当外のファイルは触らないで
+4人のチームメイトで並列にリファクタして。モデルは Sonnet。担当は src/cli.ts / src/core/ / src/web/ / README で分けて、担当外のファイルは触らないで
 ```
 
 ```
-セキュリティ担当に、search.sh の LIKE 句のエスケープも確認するよう伝えて
+セキュリティ担当に、BACKLOG_LANG に想定外の値が入ったときの既定動作も確認するよう伝えて
 ```
 
 ```
@@ -1711,7 +1728,7 @@ scripts/search.sh に、表示件数を絞る --limit N オプションを追加
 
 ##### 演習
 
-`agmsg` のディレクトリで、Agent Teams を有効にして起動する:
+`Backlog.md-handson` のディレクトリで、Agent Teams を有効にして起動する:
 
 ```bash
 export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
@@ -1721,14 +1738,14 @@ claude
 1. 観点別の並列レビューを依頼する:
 
 ```
-3人のチームメイトを立てて scripts/ をレビューして。1人はセキュリティ（SQLite への値の埋め込み・入力検証）、1人はシェルスクリプトの堅牢性（set -euo pipefail・変数のクォート・エラー処理）、1人はテスト網羅（tests/ の bats で足りていない観点）。各自の所見を共有し合って、最後に1つのレビューレポートにまとめて
+3人のチームメイトを立てて src/i18n/ と今回の変更をレビューして。1人はセキュリティ（環境変数の扱い・入力検証）、1人は TypeScript の堅牢性（型の扱い・エラー処理・非同期処理）、1人はテスト網羅（src/test/ の bun test で足りていない観点）。各自の所見を共有し合って、最後に1つのレビューレポートにまとめて
 ```
 
 2. `Ctrl+T` でタスクリストを開き、誰が何を担当しているかを見る。エージェントパネルで `↑↓` → `Enter` でチームメイトの画面を覗く
 3. 途中でリードに追加の指示を出す:
 
 ```
-セキュリティ担当に、search.sh の LIKE 句のエスケープも確認するよう伝えて
+セキュリティ担当に、BACKLOG_LANG に想定外の値が入ったときの既定動作も確認するよう伝えて
 ```
 
 4. まとめさせて解散する:
@@ -1737,7 +1754,7 @@ claude
 レポートを review-report.md に保存して、チームメイトを全員終了させて
 ```
 
-* 6章で `shell-code-reviewer` サブエージェント1体に頼んだときと、観点の広がり・所要時間・`/usage` のトークン消費を比べてみる
+* 6章で `ts-code-reviewer` サブエージェント1体に頼んだときと、観点の広がり・所要時間・`/usage` のトークン消費を比べてみる
 * 終わったら `review-report.md` は `git status` で確認し、リポジトリに入れないなら削除する
 
 ##### 参考リンク
@@ -1747,7 +1764,7 @@ claude
 
 ### 付録C：agmsg — 別々の AI エージェント同士をつなぐメッセージング
 
-Section 1〜3 で題材にしてきた **agmsg**（[fujibee/agmsg](https://github.com/fujibee/agmsg)）は、それ自体が「複数の CLI AI エージェント同士をつなぐ」ための OSS。Claude Code・Codex・Gemini CLI・GitHub Copilot CLI などの **別々に動いているエージェントが、共有のローカル SQLite データベースを介して直接メッセージを交換** できる。人間がターミナル間でコピー＆ペーストの仲介をしなくてよくなる。
+ここで紹介する **agmsg**（[fujibee/agmsg](https://github.com/fujibee/agmsg)）は、「複数の CLI AI エージェント同士をつなぐ」ための OSS。Claude Code・Codex・Gemini CLI・GitHub Copilot CLI などの **別々に動いているエージェントが、共有のローカル SQLite データベースを介して直接メッセージを交換** できる。人間がターミナル間でコピー＆ペーストの仲介をしなくてよくなる。
 
 #### C-1. agmsg とは
 
@@ -1756,7 +1773,7 @@ Section 1〜3 で題材にしてきた **agmsg**（[fujibee/agmsg](https://githu
 * **導入と使い方**：`npx agmsg` でインストール（Claude Code なら `/plugin marketplace add fujibee/agmsg` → `/plugin install agmsg@fujibee-agmsg` でも可）→ エージェントを再起動 → `/agmsg`（Codex / Gemini CLI は `$agmsg`）でチーム名・エージェント名・配信モードを登録。以後は「alice にデプロイ完了と送って」「メッセージを確認して」「チームのメンバーは？」のように **自然言語で頼めばよい**
 * **配信モード**：`monitor`（Claude Code の既定。数秒でリアルタイムに届く）／`turn`（Codex 等の既定。次のターンの区切りで届く）／`both`／`off`（手動確認のみ）
 * **仲間を増やす**：`/agmsg spawn codex reviewer` のように、別ターミナルに新しいエージェントを起動してチームに参加させられる（`--boot-prompt` で最初のタスクも渡せる）。同じプロジェクトで役割だけ切り替えるなら `/agmsg actas tech-lead`
-* **構成**：`scripts/*.sh`（send / inbox / history / whoami / team / spawn …）＋ SQLite DB ＋ `tests/` の bats テスト。8章でメッセージ検索機能を足した `scripts/search.sh` もこの仲間
+* **構成**：`scripts/*.sh`（send / inbox / history / whoami / team / spawn …）＋ SQLite DB ＋ `tests/` の bats テスト
 
 > 💡 **agmsg は「〇〇ではない」（README より）**：**MCP ではない**（MCP サーバーも追加ランタイムも要らない）。**サブエージェントではない**（別ツールの対等なセッション同士をつなぐ。`spawn` で起動した相手も、この会話が管理する子ではなく独立したセッション）。**メッセージキューでもない**（ブローカーは存在せず、SQLite ファイルが「床」で、エージェントがその上でやりとりする）。
 
@@ -1779,19 +1796,19 @@ Section 1〜3 で題材にしてきた **agmsg**（[fujibee/agmsg](https://githu
 
 ##### 演習
 
-ターミナルを2つ開き、それぞれで `agmsg` のディレクトリから `claude` を起動して、2つの Claude Code をつなぐ（事前に `npx agmsg` でインストールし、Claude Code を再起動しておく）。
+ターミナルを2つ開き、それぞれで `Backlog.md-handson` のディレクトリから `claude` を起動して、2つの Claude Code をつなぐ（事前に `npx agmsg` でインストールし、Claude Code を再起動しておく）。
 
 1. 両方のセッションで `/agmsg` を実行し、同じチーム名（例：`handson`）に、片方は `alice`、もう片方は `bob` として参加する。配信モードは既定の monitor でよい
 2. alice 側から依頼を送る:
 
 ```
-bob に「scripts/search.sh をレビューして、気になる点を返信して」と送って
+bob に「src/i18n/ の変更をレビューして、気になる点を返信して」と送って
 ```
 
 3. bob 側に数秒でメッセージが届き、レビューして返信するのを観察する（届かなければ bob 側で「メッセージを確認して」）
 4. alice 側で返信を受け取ったら、「これまでのやりとりの履歴を見せて」で DB に残った履歴を確認する
 
-* 余裕があれば `/agmsg spawn codex reviewer --boot-prompt "scripts/search.sh をレビューして"` で、Codex を第3のメンバーとして呼び込む（Codex CLI のインストールが必要）
+* 余裕があれば `/agmsg spawn codex reviewer --boot-prompt "src/i18n/ をレビューして"` で、Codex を第3のメンバーとして呼び込む（Codex CLI のインストールが必要）
 * 付録B の Agent Teams でやった「3人で並列レビュー」と比べ、参加者・調整役・履歴の残り方がどう違うかを言葉にしてみる
 
 ##### 参考リンク
@@ -1871,7 +1888,7 @@ Section 2 で作った自作スキルは `~/.claude/skills/` にあり、**自�
 
 * テスト生成の手順を `/test-gen` スキルとして共有 → **テスト観点の平準化**
 * `PostToolUse` でリンタを強制 → **「Claude が書いてもチーム標準のコード」を担保**
-* Section 2 で作った `shell-code-reviewer` サブエージェントをコミット → **レビュー観点の統一**（誰が回しても同じ基準でレビューされる）
+* Section 2 で作った `ts-code-reviewer` サブエージェントをコミット → **レビュー観点の統一**（誰が回しても同じ基準でレビューされる）
 * 新メンバーのオンボーディング：`claude` を起動して「このプロジェクトの開発の流れを教えて」
 
 ##### 演習1
@@ -2363,7 +2380,7 @@ gh repo delete <自分のアカウント>/agmsg --yes
 |----------------|----|
 | 広く読む調査 | 「scripts/ 配下で SQLite を直接呼んでいる箇所を全部洗い出して」 |
 | 長い出力の分析 | 「bats tests/ を実行して、失敗したテストの原因だけ要約して」 |
-| 観点を絞ったレビュー | 6章で作った `shell-code-reviewer` にレビューを任せる |
+| 観点を絞ったレビュー | 6章で作った `ts-code-reviewer` にレビューを任せる |
 | メイン会話と無関係な脇道 | 「この依存ライブラリの最新版の変更点を調べて」 |
 
 * 使い方は自然言語でよい：「**サブエージェントで**調べて」「**別コンテキストで**レビューして」。調査の規模が大きいと Claude が自分でサブエージェントを使うこともある
