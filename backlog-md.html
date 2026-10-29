@@ -226,24 +226,24 @@
       <p>自分のアカウントにコピー（fork）を作り、以降の変更はすべて自分の fork 上で行う。fork 元の <a href="https://github.com/cl-y-arai/Backlog.md-handson" target="_blank" rel="noopener">cl-y-arai/Backlog.md-handson</a> を GitHub で開き、右上の <strong>Fork</strong> ボタンを押す。</p>
       <div class="callout warn">
         <strong>⚠️ fork 元を間違えない</strong>
-        必ず講師のフォーク <code class="inline">cl-y-arai/Backlog.md-handson</code> を fork する。上流の <code class="inline">MrLesk/Backlog.md</code> を直接 fork すると、あとで <code class="inline">gh repo clone</code> が設定する <code class="inline">upstream</code> と、<code class="inline">gh pr create</code> が提案する PR の宛先が本家の OSS になってしまう。以下の画面キャプチャは上流リポジトリで撮ったもので、ボタンの位置と操作は同じ。
+        必ず講師のフォーク <code class="inline">cl-y-arai/Backlog.md-handson</code> を fork する。上流の <code class="inline">MrLesk/Backlog.md</code> を直接 fork すると、あとで <code class="inline">gh repo clone</code> が設定する <code class="inline">upstream</code> と、<code class="inline">gh pr create</code> が提案する PR の宛先が本家の OSS になってしまう。
       </div>
       <figure class="shot">
-        <img src="Image/backlog-md/01-upstream-repo.png" alt="MrLesk/Backlog.md のリポジトリページ。右上の Fork ボタンを赤枠で強調">
-        <figcaption>fork 元のリポジトリページ（画面は上流の MrLesk/Backlog.md で撮影。実際は cl-y-arai/Backlog.md-handson を開く）。右上の <strong>Fork</strong> を押す</figcaption>
+        <img src="Image/backlog-md/01-fork-source.png" alt="cl-y-arai/Backlog.md-handson のリポジトリページ。右上の Fork ボタンを赤枠で強調">
+        <figcaption>fork 元の cl-y-arai/Backlog.md-handson。右上の <strong>Fork</strong> を押す</figcaption>
       </figure>
       <figure class="shot">
         <img src="Image/backlog-md/02-fork-menu.png" alt="Fork ボタンのメニュー。Create a new fork を赤枠で強調">
         <figcaption>まだ fork が無ければ <strong>Create a new fork</strong> を選ぶ</figcaption>
       </figure>
-      <p>作成画面では <strong>Repository name</strong> を分かりやすい名前（例：<code class="inline">Backlog.md-handson</code>）に変え、<strong>Copy the main branch only</strong> はチェックしたまま <strong>Create fork</strong> を押す。</p>
+      <p>作成画面では <strong>Repository name</strong> は既定のまま（<code class="inline">Backlog.md-handson</code>）、<strong>Copy the main branch only</strong> もチェックしたまま <strong>Create fork</strong> を押す。</p>
       <figure class="shot">
         <img src="Image/backlog-md/03-create-fork.png" alt="Create a new fork の画面。Repository name 欄と Create fork ボタンを赤枠で強調">
-        <figcaption>Owner は自分のアカウント。名前を付けて <strong>Create fork</strong></figcaption>
+        <figcaption>Owner は自分のアカウント、名前は既定のままで <strong>Create fork</strong>（画面は講師が fork したときの例）</figcaption>
       </figure>
       <figure class="shot">
-        <img src="Image/backlog-md/04-forked-repo.png" alt="fork されたリポジトリのページ。forked from MrLesk/Backlog.md の表示と Code ボタンを赤枠で強調">
-        <figcaption>fork が完成。リポジトリ名の下に「forked from cl-y-arai/Backlog.md-handson」と出る（画面では上流名になっている）。次は右側の <strong>Code</strong> ボタンへ</figcaption>
+        <img src="Image/backlog-md/04-forked-repo.png" alt="fork されたリポジトリのページ。forked from の表示と Code ボタンを赤枠で強調">
+        <figcaption>fork が完成。リポジトリ名の下に「forked from cl-y-arai/Backlog.md-handson」と出る（画面は講師の fork の例で、上流名が表示されている）。次は右側の <strong>Code</strong> ボタンへ</figcaption>
       </figure>
     </section>
 
