@@ -1895,11 +1895,11 @@ Section 2 で作った自作スキルは `~/.claude/skills/` にあり、**自�
 
 * Section 2 で作った `test-gen` スキルをコミットし、隣の受講者のリポジトリで動かしてもらう
 
-Section 2 で作った `test-gen` は個人用の `~/.claude/skills/` にあるので、自分の PC でしか使えない。これをリポジトリの `.claude/skills/` に移してコミットし、隣の受講者に clone して動かしてもらう。push 先は Section 2 の 8-7 で `gh pr create` が作った **自分の fork**（`<自分のアカウント>/agmsg`）を使う。
+Section 2 で作った `test-gen` は個人用の `~/.claude/skills/` にあるので、自分の PC でしか使えない。これをリポジトリの `.claude/skills/` に移してコミットし、隣の受講者に clone して動かしてもらう。push 先は Section 2 でも使った **自分の fork**（`<自分のアカウント>/Backlog.md-handson`）を使う。
 
 **共有する側（自分）**
 
-1. Section 2 で使った `agmsg` のディレクトリで `claude` を起動する
+1. Section 2 で使った `Backlog.md-handson` のディレクトリで `claude` を起動する
 2. 個人用スキルを、名前を変えてリポジトリにコピーする（隣の受講者も自分の `test-gen` を持っているため、名前を分ける）:
 
 ```
@@ -1910,10 +1910,10 @@ Section 2 で作った `test-gen` は個人用の `~/.claude/skills/` にある�
 4. コミットして自分の fork に push する:
 
 ```
-.claude/skills/test-gen-<自分の名前> をコミットして、自分の fork（<自分のアカウント>/agmsg）の main に push して
+.claude/skills/test-gen-<自分の名前> をコミットして、自分の fork（<自分のアカウント>/Backlog.md-handson）の main に push して
 ```
 
-   * fork がまだ無い場合は「kimotuki/agmsg を自分のアカウントに fork して remote に追加して」と頼む（`gh repo fork --remote` 相当）
+   * fork がまだ無い場合は「cl-y-arai/Backlog.md-handson を自分のアカウントに fork して remote に追加して」と頼む（`gh repo fork --remote` 相当）
 
 5. 隣の受講者に自分の GitHub アカウント名を伝える
 
@@ -1922,8 +1922,8 @@ Section 2 で作った `test-gen` は個人用の `~/.claude/skills/` にある�
 1. 別のディレクトリに相手の fork を clone して `claude` を起動する:
 
 ```bash
-git clone https://github.com/<相手のアカウント>/agmsg agmsg-<相手の名前>
-cd agmsg-<相手の名前>
+git clone https://github.com/<相手のアカウント>/Backlog.md-handson backlog-<相手の名前>
+cd backlog-<相手の名前>
 claude
 ```
 
@@ -1931,10 +1931,10 @@ claude
 3. スキルを実行してテストを生成させる:
 
 ```
-/test-gen-<相手の名前> scripts/send.sh
+/test-gen-<相手の名前> src/core/search-service.ts
 ```
 
-4. `tests/` にテストが追加され、`bats tests/` が通ることを確認する
+4. `src/test/` にテストが追加されることを確認する（実行は Codespace で `bun run test`）
 
 * **確認ポイント**：`.claude/skills/` をコミットするだけで、clone した人全員が同じ手順のスキルを使える（3-1 の表のとおり）。個人用 `~/.claude/skills/` のスキルはどれだけ便利でも本人にしか届かない
 
@@ -2061,7 +2061,7 @@ gh でこのディレクトリを自分のアカウントの新しい public リ
 
 **インストールする側（隣の受講者）**
 
-1. 自分の作業中の Claude Code（どのリポジトリでもよい。例: Section 2 の `agmsg`）で、相手のマーケットプレイスを登録してプラグインを入れる:
+1. 自分の作業中の Claude Code（どのリポジトリでもよい。例: Section 2 の `Backlog.md-handson`）で、相手のマーケットプレイスを登録してプラグインを入れる:
 
 ```
 /plugin marketplace add <相手のアカウント>/cc-plugins-<相手の名前>
@@ -2073,7 +2073,7 @@ gh でこのディレクトリを自分のアカウントの新しい public リ
 3. スキルを実行してテストを生成させる:
 
 ```
-/dev-tools:test-gen scripts/send.sh
+/dev-tools:test-gen src/core/search-service.ts
 ```
 
 * **更新の流れ**：作成者がスキルを直して push → 利用者は `/plugin marketplace update <相手の名前>-plugins` → `/plugin update dev-tools@<相手の名前>-plugins`。clone し直す必要がない
@@ -2089,7 +2089,7 @@ gh でこのディレクトリを自分のアカウントの新しい public リ
 | 知識の種類 | 例 | 置き場所 | 読み込まれるタイミング |
 |------------|----|----------|------------------------|
 | 常に守らせるルール | テストコマンド、コーディング規約、ブランチ運用 | `CLAUDE.md` | セッション開始時に常時 |
-| 特定のファイルを触るときだけのルール | `scripts/` 配下のシェル規約、テストの書き方 | `.claude/rules/*.md`（frontmatter の `paths:` で対象を指定） | 該当ファイルを扱うときに遅延読み込み |
+| 特定のファイルを触るときだけのルール | `src/` 配下の TypeScript 規約、テストの書き方 | `.claude/rules/*.md`（frontmatter の `paths:` で対象を指定） | 該当ファイルを扱うときに遅延読み込み |
 | 設計・背景の知識（長文） | アーキテクチャ、設計判断の記録、仕様書、用語集 | `docs/` に階層化して置き、`docs/INDEX.md` で一覧化。CLAUDE.md からは **インデックスだけを指す**（本文の `@import` は常時読み込みになるので、短い規約向け） | 必要なときにインデックス経由で読む |
 | 定型作業の手順 | リリース手順、テスト生成の手順 | `.claude/skills/<name>/SKILL.md` | 呼び出し時・Claude が必要と判断した時 |
 | コード以外の資料 | 仕様書 PDF、議事録、顧客要件 | claude.ai の Projects のナレッジ（付録C） | チャットで質問したとき |
@@ -2124,29 +2124,29 @@ docs/ 配下のドキュメントを読んで、パス・1行の説明・どん�
 
 ```markdown
 # CLAUDE.md（抜粋）— ルールは短く、資料はインデックス経由で
-- テスト: `bats tests/`、静的解析: `shellcheck scripts/*.sh`
+- テスト: `bun run test`、整形・静的解析: `bun run check`（Codespace 上で実行する）
 - 設計・仕様の資料は docs/INDEX.md を見て、必要なものだけ読むこと
 ```
 
 ```markdown
-# .claude/rules/shell.md — scripts/ 配下を編集するときだけ読み込まれる
+# .claude/rules/typescript.md — src/ 配下を編集するときだけ読み込まれる
 ---
 paths:
-  - "scripts/**/*.sh"
+  - "src/**/*.ts"
 ---
-- 先頭で `set -euo pipefail` を宣言する
-- 変数展開は必ずダブルクォートで囲む
+- 型は明示し、`any` を使わない
+- ファイル操作は src/file-system/ の FileSystem 経由で行う
 ```
 
 > 💡 **TIPS：SSOT（Single Source of Truth：信頼できる唯一の情報源）を明確にする**
 > 同じ情報が Wiki・古い仕様書・人が要約したメモなど複数の場所にあると、Claude はどれを信じてよいか分からず、古い方を根拠にすることがある。「この情報の正はここ」を決めて INDEX.md にも明記しておく。**SSOT が明確であれば、Claude Code がそこを直接読み取って情報を抽出・整理できる** ため、人間が事前に整理した要約を使うより正確なデータが得られる場合がある（要約は作った時点で古くなり、抜け漏れや解釈も混ざる）。派生資料（要約・図・議事録）には原本の場所を書き、整理そのものは「原本から〇〇の観点で整理して」と Claude に任せ、人は原本の鮮度と正しさを保つことと、あるべき状態を明確にすることに集中することが重要。
 
-#### 4-3. 演習：agmsg のドキュメントを Claude Code から参照できるようにする（5分）
+#### 4-3. 演習：Backlog.md のドキュメントを Claude Code から参照できるようにする（5分）
 
-Section 2 で使った `agmsg` のディレクトリで `claude` を起動する。agmsg には `docs/spec/`・`docs/adr/`・`docs/design.md` など既存のドキュメントがそろっているので、これを題材にインデックスを作る。
+Section 2 で使った `Backlog.md-handson` のディレクトリで `claude` を起動する。Backlog.md にはルート直下の `MANIFESTO.md`・`DEVELOPMENT.md`・`CLI-INSTRUCTIONS.md`・`ADVANCED-CONFIG.md` と、`backlog/docs/`（テストスタイルガイドなど）・`backlog/decisions/`（設計判断の記録）に既存のドキュメントがそろっているので、これを題材にインデックスを作る。
 
 ```
-docs/ 配下（spec/ と adr/ を含む）と ARCHITECTURE.md を読んで、パス・1行の説明・どんなときに読むべきかをまとめた docs/INDEX.md を作って
+ルート直下の *.md と backlog/docs/・backlog/decisions/ を読んで、パス・1行の説明・どんなときに読むべきかをまとめた docs/INDEX.md を作って
 ```
 
 ```
@@ -2154,17 +2154,17 @@ CLAUDE.md に、開発時に常に守るべき規約を5行以内で追記して
 ```
 
 ```
-scripts/ 配下の .sh を編集するときだけ適用されるルールを .claude/rules/shell.md に作って。set -euo pipefail と変数のダブルクォートを必須にして
+src/ 配下の .ts を編集するときだけ適用されるルールを .claude/rules/typescript.md に作って。any の禁止と、ファイル操作は src/file-system/ 経由で行うことを必須にして
 ```
 
 * `!cat docs/INDEX.md` で内容を確認する。説明が1行に収まっているか、「いつ読むか」が書かれているかを見る
-* 「ストレージをドライバとして差し替えられるようにしたのはなぜ？」と質問し、`docs/adr/` の設計判断の記録を根拠に答えることを確認する（インデックス経由で該当ファイルを開くはず）
-* 「scripts/send.sh のエラーメッセージを分かりやすくして」と頼み、`.claude/rules/shell.md` の規約が守られることを確認する
+* 「Web UI のスタイルに Tailwind CSS v4 を使うことにしたのはなぜ？」と質問し、`backlog/decisions/` の設計判断の記録を根拠に答えることを確認する（インデックス経由で該当ファイルを開くはず）
+* 「src/cli.ts の task create のエラーメッセージを分かりやすくして」と頼み、`.claude/rules/typescript.md` の規約が守られることを確認する
 * `/context` で常時の消費が増えていないことを確認し、できあがった INDEX.md・CLAUDE.md・rules を `git diff` で見る。5章で自分のリポジトリを作成したら同じ変更をコミットしておくと、以降の Issue 対応で Claude が規約とドキュメントを踏まえて動くようになる
 
 ### 5. 実践：チーム開発フロー（35分）
 
-題材：チーム共有のリポジトリ（例：Section 2 で使った `agmsg` の fork から1つ選ぶ）に対して、**Issue 起点の開発フロー** を一周する。
+題材：Section 2 で使った **自分の fork**（`<自分のアカウント>/Backlog.md-handson`）に対して、**Issue 起点の開発フロー** を一周する。
 
 ![Issue 起点の開発フロー — Issue 作成 → ブランチ作成 → fix 実装 → レビュー・PR → 相互レビュー・マージ](Image/issue-flow.svg)
 
@@ -2186,7 +2186,20 @@ scripts/ 配下の .sh を編集するときだけ適用されるルールを .c
 
 > 💡 **Issue に書くこと**：背景（なぜ）・やること（何を）・受け入れ条件（どうなれば完了か）・やらないこと（スコープ外）の4点。書き慣れないうちは、Claude に「この Issue を、背景・やること・受け入れ条件・スコープ外の形式に整えて」と頼んでもよい。
 
-#### 5-1. gh で Issue を作成（5分）
+#### 5-1. 自分の fork を用意する（5分）
+
+Section 2 でローカルに clone した自分の fork をそのまま使う（まだなら `gh repo clone <自分のアカウント>/Backlog.md-handson`）。以降の Issue・PR はすべて **自分の fork 上** で回す。
+
+```bash
+cd Backlog.md-handson
+gh repo set-default <自分のアカウント>/Backlog.md-handson
+claude
+```
+
+* fork は既定で **Issues が無効**。GitHub で自分の fork を開き、Settings → General → Features の **Issues** にチェックを入れておく
+* `gh repo set-default` で、`gh issue` / `gh pr` の対象を自分の fork に固定する（fork 元の `cl-y-arai/Backlog.md-handson` に向かないようにする）
+
+#### 5-2. gh で Issue を作成（5分）
 
 ```
 「README に日本語のクイックスタートを追記してほしい」という Issue を gh で作成して
@@ -2195,15 +2208,7 @@ scripts/ 配下の .sh を編集するときだけ適用されるルールを .c
 * `gh issue create` が実行される — タイトル・本文も Claude が整えてくれる
 * **Issue 本文がそのまま Claude への要件になる** — 再現手順や期待動作を丁寧に書くほど後工程の精度が上がる
 
-#### 5-2. clone してブランチを作成（5分）
-
-チームのリポジトリを clone し、Issue 対応のブランチを切る。
-
-```bash
-git clone <チームのリポジトリURL>
-cd <リポジトリ名>
-claude
-```
+#### 5-3. ブランチを切って fix を実装（10分）
 
 ```
 Issue #1 に対応するブランチを切って
@@ -2211,14 +2216,12 @@ Issue #1 に対応するブランチを切って
 
 * `gh issue view 1` で内容を確認し、`fix/issue-1` のようなブランチが作られる
 
-#### 5-3. Issue に対する fix を実装（10分）
-
 ```
 Issue #1 を読んで、Plan Mode で対応方針を立ててから修正して
 ```
 
-* Claude が Issue 本文を読み、計画を提示 → レビューして承認 → 実装 → テスト
-* 人間は **計画と差分のレビュー** に集中する
+* Claude が Issue 本文を読み、計画を提示 → レビューして承認 → 実装
+* 人間は **計画と差分のレビュー** に集中する。テストが必要な変更なら、push 後に Codespace で `bun run test` を実行して確認する
 
 #### 5-4. スキルでレビューして PR を作成（5分）
 
@@ -2236,7 +2239,7 @@ Issue #1 を closes する PR を作成して
 
 * PR 本文に `Closes #1` が入り、**マージすると Issue が自動クローズ** される
 
-> 💡 **main が先に進んでいたら**：PR を作る前に main を取り込み、競合があれば Claude に解消させる —「origin/main を取り込んで、競合があれば解消して。bats tests/ が通ることを確認して」。解消結果は `git diff` で必ず人が確認する。
+> 💡 **main が先に進んでいたら**：PR を作る前に main を取り込み、競合があれば Claude に解消させる —「origin/main を取り込んで、競合があれば解消して」。解消結果は `git diff` で必ず人が確認し、Codespace で `bun run test` を実行する。
 
 #### 5-5. 他の人の PR をレビューしてマージ（10分）
 
@@ -2297,16 +2300,17 @@ claude -p "前回のタグ以降にマージされた PR を gh で集めて、C
 
 ### 7. 後片付け：作成したリポジトリの削除（2分）
 
-5章で自分のアカウントに作成した `agmsg` はハンズオン用の練習リポジトリ。演習が終わったら、以下のコマンドを手動で実行して削除しておく。`gh repo delete` には追加の権限（`delete_repo` スコープ）が必要なので、先に `gh auth refresh` で付与してから実行する:
+[backlog-md.html](backlog-md.html) の手順1 で自分のアカウントに作成した fork `Backlog.md-handson` はハンズオン用の練習リポジトリ。演習が終わったら、以下のコマンドを手動で実行して削除しておく。`gh repo delete` には追加の権限（`delete_repo` スコープ）が必要なので、先に `gh auth refresh` で付与してから実行する:
 
 ```bash
 gh auth refresh -h github.com -s delete_repo
-gh repo delete <自分のアカウント>/agmsg --yes
+gh repo delete <自分のアカウント>/Backlog.md-handson --yes
 ```
 
-> ⚠️ **注意**：リポジトリの削除は取り消せない。削除対象が `<自分のアカウント>/agmsg` であること（clone 元の `kimotuki/agmsg` や自分の別リポジトリを指定していないこと）を必ず確認してから実行する。
+> ⚠️ **注意**：リポジトリの削除は取り消せない。削除対象が `<自分のアカウント>/Backlog.md-handson` であること（fork 元の `cl-y-arai/Backlog.md-handson` や自分の別リポジトリを指定していないこと）を必ず確認してから実行する。
 
-* ローカルの clone が不要になったら、あわせて `cd .. && rm -rf agmsg` で削除しておく
+* ローカルの clone が不要になったら、あわせて `cd .. && rm -rf Backlog.md-handson` で削除しておく
+* Codespace も不要なら削除する（[backlog-md.html](backlog-md.html) の 10章「後片付け」）
 * 5-5 で clone した相手のリポジトリのローカルコピーも同様に削除してよい（リポジトリ本体の削除は作成した本人が行う）
 
 ### 8. まとめ・コース総括（8分）
@@ -2378,8 +2382,8 @@ gh repo delete <自分のアカウント>/agmsg --yes
 
 | 向いている作業 | 例 |
 |----------------|----|
-| 広く読む調査 | 「scripts/ 配下で SQLite を直接呼んでいる箇所を全部洗い出して」 |
-| 長い出力の分析 | 「bats tests/ を実行して、失敗したテストの原因だけ要約して」 |
+| 広く読む調査 | 「src/ 配下で process.env を直接参照している箇所を全部洗い出して」 |
+| 長い出力の分析 | 「bun run test の出力ログを読んで、失敗したテストの原因だけ要約して」 |
 | 観点を絞ったレビュー | 6章で作った `ts-code-reviewer` にレビューを任せる |
 | メイン会話と無関係な脇道 | 「この依存ライブラリの最新版の変更点を調べて」 |
 
@@ -2390,13 +2394,13 @@ gh repo delete <自分のアカウント>/agmsg --yes
 * さらに大きく分けたいときは Section 2 付録B の **Agent Teams**（独立コンテキストのチームメイトを並列に動かす）
 
 ```
-サブエージェントで scripts/ 配下を調査して、SQLite を直接呼んでいるファイルと行番号の一覧だけ返して。調査の途中経過はメイン会話に出さないで
+サブエージェントで src/ 配下を調査して、process.env を直接参照しているファイルと行番号の一覧だけ返して。調査の途中経過はメイン会話に出さないで
 ```
 
 ##### 演習
 
 * `/context` で現在の使用量を確認 → `/compact` を指示付きで実行 → 使用量の変化を見る
-* 同じ調査（scripts/ 配下の SQLite 呼び出しの洗い出し）を、① メイン会話で直接頼んだ場合と ② サブエージェントに任せた場合で行い、`/context` の増え方を比べる
+* 同じ調査（src/ 配下の process.env 参照の洗い出し）を、① メイン会話で直接頼んだ場合と ② サブエージェントに任せた場合で行い、`/context` の増え方を比べる
 
 ### 付録B：git worktree で並行開発
 
@@ -2437,15 +2441,15 @@ cd ../project-feature-a && claude
 
 #### B-2. 演習：長めのタスクを worktree に任せる
 
-5章で使った `agmsg` リポジトリを題材に、長めのタスクを別 worktree の Claude Code に任せてみる。**新しいターミナルを開いて**、worktree セッションを起動する:
+5章で使った自分の fork `Backlog.md-handson` を題材に、長めのタスクを別 worktree の Claude Code に任せてみる。**新しいターミナルを開いて**、worktree セッションを起動する:
 
 ```bash
-cd agmsg
+cd Backlog.md-handson
 claude --worktree feature-export
 ```
 
 ```
-メッセージ履歴を Markdown ファイルに書き出すエクスポート機能（scripts/export.sh）を追加して。bats テストも書いて、bats tests/ が通ることを確認して
+かんばんを CSV ファイルに書き出すエクスポート機能（backlog board export --csv）を追加して。src/test/ にテストも書いて、最後に Codespace で実行するテストコマンドを案内して
 ```
 
 * タスクが走っている間も、**元のターミナルのセッションはそのまま使える** — 6章のスキル改良や別の Issue 対応を並行して進める
