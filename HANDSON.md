@@ -1464,7 +1464,7 @@ $ claude
 * 以降のステップ（機能追加・レビュー・修正）は、この **ローカルの clone を対象** に Claude Code で進める。**ローカルでは Bun を動かさない**。動作確認とテストは 8-7 で push したあと、Codespace で行う
 * Section 1 の「ソースコード解析」と同じ題材なので、構造を把握済みならスムーズに改修へ入れる
 
-> ⚠️ **リポジトリ付属の CLAUDE.md に注意**：上流の `CLAUDE.md` / `AGENTS.md` には、Backlog.md 開発チーム向けの運用ルール（MANIFESTO.md を先に読む、判断に迷ったら作者に聞く、など）が書かれている。ハンズオンの演習では、講師が用意した CLAUDE.md に差し替えるか、自分の fork で内容を調整してから Claude Code を使う。
+> ⚠️ **リポジトリ付属の CLAUDE.md に注意**：リポジトリに `CLAUDE.md` / `AGENTS.md` が付属している場合は、まずは最初に中身を確認する。今回の Backlog.md の `CLAUDE.md` / `AGENTS.md` には、Backlog.md 開発チーム向けの運用ルール（MANIFESTO.md を先に読む、判断に迷ったら作者に聞く、など）が書かれている。この clone したフォルダで Claude Code を動かすと、それらのファイルを参照して動作する。今回のハンズオンの演習では、`CLAUDE.md` / `AGENTS.md` は一度削除する。
 
 #### 8-2. 「マルチ言語対応（英語・日本語）」機能を追加（8分）
 
