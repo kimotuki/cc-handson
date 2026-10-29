@@ -2294,14 +2294,18 @@ src/ 配下の .ts を編集するときだけ適用されるルールを .claud
 
 ### 7. 後片付け：作成したリポジトリの削除（2分）
 
-[backlog-md.html](backlog-md.html) の手順1 で自分のアカウントに作成した fork `Backlog.md-handson` はハンズオン用の練習リポジトリ。演習が終わったら、以下のコマンドを手動で実行して削除しておく。`gh repo delete` には追加の権限（`delete_repo` スコープ）が必要なので、先に `gh auth refresh` で付与してから実行する:
+[backlog-md.html](backlog-md.html) の手順1 で自分のアカウントに作成した fork `Backlog.md-handson` はハンズオン用の練習リポジトリ。演習が終わったら、GitHub の画面から削除しておく。
 
-```bash
-gh auth refresh -h github.com -s delete_repo
-gh repo delete <自分のアカウント>/Backlog.md-handson --yes
-```
+1. GitHub で自分の fork（`https://github.com/<自分のアカウント>/Backlog.md-handson`）を開き、**Settings** タブ → ページ最下部の **Danger Zone** までスクロールする
+2. **Delete this repository** を押す
 
-> ⚠️ **注意**：リポジトリの削除は取り消せない。削除対象が `<自分のアカウント>/Backlog.md-handson` であること（fork 元の `cl-y-arai/Backlog.md-handson` や自分の別リポジトリを指定していないこと）を必ず確認してから実行する。
+![Settings 最下部の Danger Zone。Delete this repository ボタン](Image/repo-delete-danger-zone.png)
+
+3. 確認ダイアログで **I want to delete this repository** を押し、続く確認（影響の説明への同意 → リポジトリ名の入力）を進めて削除する
+
+![削除の確認ダイアログ。I want to delete this repository ボタン](Image/repo-delete-confirm.png)
+
+> ⚠️ **注意**：リポジトリの削除は取り消せない。ダイアログの見出しが `<自分のアカウント>/Backlog.md-handson` であること（fork 元の `cl-y-arai/Backlog.md-handson` や自分の別リポジトリを開いていないこと）を必ず確認してから進める。
 
 * ローカルの clone が不要になったら、あわせて `cd .. && rm -rf Backlog.md-handson` で削除しておく
 * Codespace も不要なら削除する（[backlog-md.html](backlog-md.html) の 9章「後片付け」）

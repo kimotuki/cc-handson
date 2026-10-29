@@ -667,12 +667,25 @@ paths:
 
     <section id="sec7">
       <h2 class="step"><span class="step-num">7</span>後片付け：作成したリポジトリの削除（2分）</h2>
-      <p><a href="backlog-md.html">backlog-md.html</a> の手順1 で自分のアカウントに作成した fork <code class="inline">Backlog.md-handson</code> はハンズオン用の練習リポジトリ。演習が終わったら、以下のコマンドを手動で実行して削除しておく。<code class="inline">gh repo delete</code> には追加の権限（<code class="inline">delete_repo</code> スコープ）が必要なので、先に <code class="inline">gh auth refresh</code> で付与してから実行する:</p>
-<pre><span class="prompt">$</span> gh auth refresh -h github.com -s delete_repo
-<span class="prompt">$</span> gh repo delete &lt;自分のアカウント&gt;/Backlog.md-handson --yes</pre>
+      <p><a href="backlog-md.html">backlog-md.html</a> の手順1 で自分のアカウントに作成した fork <code class="inline">Backlog.md-handson</code> はハンズオン用の練習リポジトリ。演習が終わったら、GitHub の画面から削除しておく。</p>
+      <ol>
+        <li>GitHub で自分の fork（<code class="inline">https://github.com/&lt;自分のアカウント&gt;/Backlog.md-handson</code>）を開き、<strong>Settings</strong> タブ → ページ最下部の <strong>Danger Zone</strong> までスクロールする</li>
+        <li><strong>Delete this repository</strong> を押す
+          <figure class="shot">
+            <img src="Image/repo-delete-danger-zone.png" alt="Settings 最下部の Danger Zone。Delete this repository ボタンを赤枠で強調">
+            <figcaption>Settings → Danger Zone の一番下にある <strong>Delete this repository</strong></figcaption>
+          </figure>
+        </li>
+        <li>確認ダイアログで <strong>I want to delete this repository</strong> を押し、続く確認（影響の説明への同意 → リポジトリ名の入力）を進めて削除する
+          <figure class="shot" style="max-width:520px;">
+            <img src="Image/repo-delete-confirm.png" alt="削除の確認ダイアログ。I want to delete this repository ボタンを赤枠で強調">
+            <figcaption>ダイアログの見出しが自分の fork であることを確認してから進める（画面は講師の fork の例）</figcaption>
+          </figure>
+        </li>
+      </ol>
       <div class="callout warn">
         <strong>注意</strong>
-        リポジトリの削除は取り消せない。削除対象が <code class="inline">&lt;自分のアカウント&gt;/Backlog.md-handson</code> であること（fork 元の <code class="inline">cl-y-arai/Backlog.md-handson</code> や自分の別リポジトリを指定していないこと）を必ず確認してから実行する。
+        リポジトリの削除は取り消せない。ダイアログの見出しが <code class="inline">&lt;自分のアカウント&gt;/Backlog.md-handson</code> であること（fork 元の <code class="inline">cl-y-arai/Backlog.md-handson</code> や自分の別リポジトリを開いていないこと）を必ず確認してから進める。
       </div>
       <ul>
         <li>ローカルの clone が不要になったら、あわせて <code class="inline">cd .. &amp;&amp; rm -rf Backlog.md-handson</code> で削除しておく</li>
