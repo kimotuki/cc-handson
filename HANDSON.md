@@ -1464,6 +1464,8 @@ $ claude
 * 以降のステップ（機能追加・レビュー・修正）は、この **ローカルの clone を対象** に Claude Code で進める。**ローカルでは Bun を動かさない**。動作確認とテストは 8-7 で push したあと、Codespace で行う
 * Section 1 の「ソースコード解析」と同じ題材なので、構造を把握済みならスムーズに改修へ入れる
 
+> ⚠️ **リポジトリ付属の CLAUDE.md に注意**：上流の `CLAUDE.md` / `AGENTS.md` には、Backlog.md 開発チーム向けの運用ルール（MANIFESTO.md を先に読む、判断に迷ったら作者に聞く、など）が書かれている。ハンズオンの演習では、講師が用意した CLAUDE.md に差し替えるか、自分の fork で内容を調整してから Claude Code を使う。
+
 #### 8-2. 「マルチ言語対応（英語・日本語）」機能を追加（8分）
 
 ```
@@ -2294,7 +2296,7 @@ gh repo delete <自分のアカウント>/Backlog.md-handson --yes
 > ⚠️ **注意**：リポジトリの削除は取り消せない。削除対象が `<自分のアカウント>/Backlog.md-handson` であること（fork 元の `cl-y-arai/Backlog.md-handson` や自分の別リポジトリを指定していないこと）を必ず確認してから実行する。
 
 * ローカルの clone が不要になったら、あわせて `cd .. && rm -rf Backlog.md-handson` で削除しておく
-* Codespace も不要なら削除する（[backlog-md.html](backlog-md.html) の 10章「後片付け」）
+* Codespace も不要なら削除する（[backlog-md.html](backlog-md.html) の 9章「後片付け」）
 * 5-5 で clone した相手のリポジトリのローカルコピーも同様に削除してよい（リポジトリ本体の削除は作成した本人が行う）
 
 ### 8. まとめ・コース総括（8分）
