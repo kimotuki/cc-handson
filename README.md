@@ -2,7 +2,7 @@
 
 Claude Code の基本操作からソフトウェア開発・チーム開発までを **全3 Section・計5.5時間**（Section 1 90分 / Section 2 120分 / Section 3 120分）で実践するハンズオンコースです。
 
-題材には OSS の **[agmsg](https://github.com/fujibee/agmsg)**（CLI AI エージェント間のメッセージングツール。Bash + SQLite 製）を使い、ソースコード解析 → 機能追加 → レビュー → PR 作成 → チーム開発フローまでを一気通貫で体験します。
+題材には OSS の **[Backlog.md](https://github.com/MrLesk/Backlog.md)**（Markdown ベースのタスク管理ツール。TypeScript + Bun 製。ハンズオン用 fork は [cl-y-arai/Backlog.md-handson](https://github.com/cl-y-arai/Backlog.md-handson)）を使い、ソースコード解析 → 機能追加 → レビュー → PR 作成 → チーム開発フローまでを一気通貫で体験します。
 
 ## 📖 教材の閲覧
 
