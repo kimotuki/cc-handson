@@ -917,6 +917,7 @@ exit 0</pre>
       <p>改修の題材は <strong>Backlog.md</strong>（Section 1 のソースコード解析で使った、Markdown ベースのタスク管理ツール）。<a href="backlog-md.html">Backlog.md を GitHub Codespaces で動かす</a> の手順1 で作った <strong>自分の fork</strong> を、ローカルに clone して準備する（fork がまだなら先に作る）:</p>
 <pre>$ gh repo clone &lt;自分のアカウント&gt;/Backlog.md-handson
 $ cd Backlog.md-handson
+$ rm CLAUDE.md AGENTS.md   <span class="comment"># 上流の運用ルール（下の注意を参照）を一度削除する</span>
 $ claude</pre>
       <ul>
         <li><code class="inline">gh repo clone</code> で fork を clone すると、<code class="inline">origin</code> が自分の fork、<code class="inline">upstream</code> が fork 元（<code class="inline">cl-y-arai/Backlog.md-handson</code>）に自動で設定される</li>

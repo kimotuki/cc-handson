@@ -1457,6 +1457,7 @@ exit 0
 ```
 $ gh repo clone <自分のアカウント>/Backlog.md-handson
 $ cd Backlog.md-handson
+$ rm CLAUDE.md AGENTS.md   # 上流の運用ルール（下の注意を参照）を一度削除する
 $ claude
 ```
 
