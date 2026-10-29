@@ -213,7 +213,7 @@
       <ul>
         <li>GitHub アカウント（個人アカウントには Codespaces の無料枠がある。上限は GitHub の料金ページを参照）</li>
         <li>ブラウザ（Chrome / Edge / Safari など）。VS Code のインストールは不要</li>
-        <li>fork 元のリポジトリ：講師が指定するもの（上流の <code class="inline">MrLesk/Backlog.md</code>、または講師が用意したフォーク）</li>
+        <li>fork 元のリポジトリ：講師が用意したハンズオン用フォーク <a href="https://github.com/cl-y-arai/Backlog.md-handson" target="_blank" rel="noopener"><code class="inline">cl-y-arai/Backlog.md-handson</code></a>（上流の <code class="inline">MrLesk/Backlog.md</code> を直接 fork しない）</li>
       </ul>
       <div class="callout tip">
         <strong>💡 なぜ Node ではなく Bun なのか</strong>
@@ -223,10 +223,14 @@
 
     <section id="fork">
       <h2 class="step"><span class="step-num">2</span>手順1：リポジトリを fork する</h2>
-      <p>自分のアカウントにコピー（fork）を作り、以降の変更はすべて自分の fork 上で行う。fork 元のリポジトリを GitHub で開き、右上の <strong>Fork</strong> ボタンを押す。</p>
+      <p>自分のアカウントにコピー（fork）を作り、以降の変更はすべて自分の fork 上で行う。fork 元の <a href="https://github.com/cl-y-arai/Backlog.md-handson" target="_blank" rel="noopener">cl-y-arai/Backlog.md-handson</a> を GitHub で開き、右上の <strong>Fork</strong> ボタンを押す。</p>
+      <div class="callout warn">
+        <strong>⚠️ fork 元を間違えない</strong>
+        必ず講師のフォーク <code class="inline">cl-y-arai/Backlog.md-handson</code> を fork する。上流の <code class="inline">MrLesk/Backlog.md</code> を直接 fork すると、あとで <code class="inline">gh repo clone</code> が設定する <code class="inline">upstream</code> と、<code class="inline">gh pr create</code> が提案する PR の宛先が本家の OSS になってしまう。以下の画面キャプチャは上流リポジトリで撮ったもので、ボタンの位置と操作は同じ。
+      </div>
       <figure class="shot">
         <img src="Image/backlog-md/01-upstream-repo.png" alt="MrLesk/Backlog.md のリポジトリページ。右上の Fork ボタンを赤枠で強調">
-        <figcaption>fork 元のリポジトリ（例：MrLesk/Backlog.md）。右上の <strong>Fork</strong> を押す</figcaption>
+        <figcaption>fork 元のリポジトリページ（画面は上流の MrLesk/Backlog.md で撮影。実際は cl-y-arai/Backlog.md-handson を開く）。右上の <strong>Fork</strong> を押す</figcaption>
       </figure>
       <figure class="shot">
         <img src="Image/backlog-md/02-fork-menu.png" alt="Fork ボタンのメニュー。Create a new fork を赤枠で強調">
@@ -239,7 +243,7 @@
       </figure>
       <figure class="shot">
         <img src="Image/backlog-md/04-forked-repo.png" alt="fork されたリポジトリのページ。forked from MrLesk/Backlog.md の表示と Code ボタンを赤枠で強調">
-        <figcaption>fork が完成。リポジトリ名の下に「forked from MrLesk/Backlog.md」と出る。次は右側の <strong>Code</strong> ボタンへ</figcaption>
+        <figcaption>fork が完成。リポジトリ名の下に「forked from cl-y-arai/Backlog.md-handson」と出る（画面では上流名になっている）。次は右側の <strong>Code</strong> ボタンへ</figcaption>
       </figure>
     </section>
 
