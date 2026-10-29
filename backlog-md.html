@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Backlog.md を GitHub Codespaces で動かす — Claude Code ハンズオン</title>
+<style>
+  :root {
+    --accent: #d97757;
+    --accent-light: #f7e4d8;
+    --bg: #f5f3ee;
+    --code-bg: #2b2724;
+    --code-fg: #e0d9cc;
+    --border: #e4dfd5;
+    --text: #292524;
+    --muted: #78716c;
+    --ok: #16a34a;
+    --warn: #dc2626;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+  }
+  .layout { display: flex; max-width: 1180px; margin: 0 auto; }
+  nav {
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    width: 260px;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 28px 18px;
+    border-right: 1px solid var(--border);
+    background: #fff;
+    flex-shrink: 0;
+  }
+  nav h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 12px; }
+  nav ol { list-style: none; margin: 0; padding: 0; }
+  nav li { margin: 0; }
+  nav a {
+    display: block;
+    padding: 6px 10px;
+    font-size: 14px;
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 6px;
+    border-left: 3px solid transparent;
+  }
+  nav a:hover { background: var(--accent-light); border-left-color: var(--accent); }
+  main { flex: 1; min-width: 0; padding: 40px 48px 120px; }
+  header.hero {
+    background: linear-gradient(135deg, #d97757 0%, #a84e32 100%);
+    color: #fff;
+    padding: 48px;
+    border-radius: 16px;
+    margin-bottom: 40px;
+  }
+  header.hero h1 { margin: 0 0 12px; font-size: 30px; line-height: 1.4; }
+  header.hero p { margin: 0; opacity: .95; font-size: 16px; }
+  .badges { margin-top: 20px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge {
+    background: rgba(255,255,255,.2);
+    border: 1px solid rgba(255,255,255,.35);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+  }
+  section { margin-bottom: 48px; scroll-margin-top: 20px; }
+  h2.step {
+    font-size: 24px;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 8px;
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .step-num {
+    background: var(--accent);
+    color: #fff;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  h3 { font-size: 18px; margin-top: 28px; color: #a84e32; }
+  h4 { font-size: 15.5px; margin: 22px 0 8px; }
+  pre {
+    background: var(--code-bg);
+    color: var(--code-fg);
+    padding: 16px 18px;
+    border-radius: 10px;
+    overflow-x: auto;
+    font-size: 13.5px;
+    line-height: 1.6;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+  }
+  pre .prompt { color: #38bdf8; }
+  pre .comment { color: #94a3b8; }
+  code.inline {
+    background: #efeae1;
+    padding: 2px 7px;
+    border-radius: 5px;
+    font-family: "SF Mono", Menlo, Consolas, monospace;
+    font-size: .9em;
+    color: #a84e32;
+    border: 1px solid #e0d9cc;
+  }
+  .callout {
+    border-left: 4px solid var(--accent);
+    background: var(--accent-light);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 18px 0;
+  }
+  .callout.tip { border-color: #0ea5e9; background: #e0f2fe; }
+  .callout.warn { border-color: var(--warn); background: #fef2f2; }
+  .callout.ok { border-color: var(--ok); background: #f0fdf4; }
+  .callout > strong:first-child { display: block; margin-bottom: 4px; }
+  .prompt-box {
+    background: #fff;
+    border: 2px dashed var(--accent);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 16px 0;
+  }
+  .prompt-box .label { font-size: 12px; color: var(--accent); font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+  .prompt-box p { margin: 6px 0 0; font-size: 16px; }
+  table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 14px; }
+  th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; }
+  th { background: #efeae1; font-weight: 600; }
+  td code { font-size: .9em; }
+  footer { border-top: 1px solid var(--border); padding-top: 24px; color: var(--muted); font-size: 14px; }
+  .lesson {
+    background: #fbf3ec;
+    border: 1px solid #f0c9b4;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 18px 0;
+  }
+  .lesson h4 { margin: 0 0 8px; color: #a84e32; font-size: 15px; }
+  .lesson ul { margin: 0; padding-left: 20px; }
+  .shot { margin: 18px 0; }
+  .shot img {
+    max-width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.08);
+  }
+  .shot figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  @media (max-width: 860px) {
+    nav { display: none; }
+    main { padding: 24px; }
+    header.hero { padding: 28px; }
+  }
+</style>
+
+</head>
+<body>
+<div class="layout">
+  <nav>
+    <p style="margin:0 0 16px;"><a href="index.html" style="font-size:13px;color:var(--accent);text-decoration:none;font-weight:600;">← コースポータルへ戻る</a></p>
+    <h2>目次</h2>
+    <ol>
+      <li><a href="#intro">1. この資料について</a></li>
+      <li><a href="#fork">2. 手順1：リポジトリを fork する</a></li>
+      <li><a href="#create">3. 手順2：Codespace を作成する</a></li>
+      <li><a href="#wait">4. 手順3：初期化を待つ</a></li>
+      <li><a href="#bun">5. 手順4：Bun を入れてソースから起動する</a></li>
+      <li><a href="#webui">6. 手順5：Web UI をブラウザで開く</a></li>
+      <li><a href="#commands">7. よく使うコマンド</a></li>
+      <li><a href="#claude">8. Claude Code と組み合わせる</a></li>
+      <li><a href="#trouble">9. トラブルシューティング</a></li>
+      <li><a href="#cleanup">10. 後片付け：Codespace の停止・削除</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <h1>Backlog.md を GitHub Codespaces で動かす</h1>
+      <p>「ソースコードを fork し、ブラウザだけで Backlog.md をソースのまま起動する」</p>
+      <div class="badges">
+        <span class="badge">所要 約10分</span>
+        <span class="badge">fork</span>
+        <span class="badge">Codespaces</span>
+        <span class="badge">Bun</span>
+        <span class="badge">Web UI</span>
+      </div>
+    </header>
+
+    <section id="intro">
+      <h2 class="step"><span class="step-num">1</span>この資料について</h2>
+      <p><a href="https://github.com/MrLesk/Backlog.md" target="_blank" rel="noopener">Backlog.md</a> は、タスクを Markdown ファイルとしてリポジトリ内に置き、CLI・ターミナルのかんばん・Web UI で管理する OSS（TypeScript / Bun 製、MIT ライセンス）。ハンズオンではこのソースコードを題材に、Claude Code で読み解き・改良する。</p>
+      <p>この資料では、<strong>ローカル PC に何も入れずに</strong>、GitHub Codespaces 上で Backlog.md をソースコードのまま起動するまでの手順を、画面キャプチャつきで説明する。devcontainer の設定ファイルは使わず、Codespaces の既定イメージに Bun を手動で入れる最小構成とする。</p>
+      <h3>前提</h3>
+      <ul>
+        <li>GitHub アカウント（個人アカウントには Codespaces の無料枠がある。上限は GitHub の料金ページを参照）</li>
+        <li>ブラウザ（Chrome / Edge / Safari など）。VS Code のインストールは不要</li>
+        <li>fork 元のリポジトリ：講師が指定するもの（上流の <code class="inline">MrLesk/Backlog.md</code>、または講師が用意したフォーク）</li>
+      </ul>
+      <div class="callout tip">
+        <strong>💡 なぜ Node ではなく Bun なのか</strong>
+        Backlog.md のソースは <code class="inline">Bun.serve</code> などの Bun 固有 API を使っているため、Node.js では起動できない。Codespaces の既定イメージには Node.js は入っているが Bun は入っていないので、手順4 で1コマンドだけ追加する。
+      </div>
+    </section>
+
+    <section id="fork">
+      <h2 class="step"><span class="step-num">2</span>手順1：リポジトリを fork する</h2>
+      <p>自分のアカウントにコピー（fork）を作り、以降の変更はすべて自分の fork 上で行う。fork 元のリポジトリを GitHub で開き、右上の <strong>Fork</strong> ボタンを押す。</p>
+      <figure class="shot">
+        <img src="Image/backlog-md/01-upstream-repo.png" alt="MrLesk/Backlog.md のリポジトリページ。右上の Fork ボタンを赤枠で強調">
+        <figcaption>fork 元のリポジトリ（例：MrLesk/Backlog.md）。右上の <strong>Fork</strong> を押す</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="Image/backlog-md/02-fork-menu.png" alt="Fork ボタンのメニュー。Create a new fork を赤枠で強調">
+        <figcaption>まだ fork が無ければ <strong>Create a new fork</strong> を選ぶ</figcaption>
+      </figure>
+      <p>作成画面では <strong>Repository name</strong> を分かりやすい名前（例：<code class="inline">Backlog.md-handson</code>）に変え、<strong>Copy the main branch only</strong> はチェックしたまま <strong>Create fork</strong> を押す。</p>
+      <figure class="shot">
+        <img src="Image/backlog-md/03-create-fork.png" alt="Create a new fork の画面。Repository name 欄と Create fork ボタンを赤枠で強調">
+        <figcaption>Owner は自分のアカウント。名前を付けて <strong>Create fork</strong></figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="Image/backlog-md/04-forked-repo.png" alt="fork されたリポジトリのページ。forked from MrLesk/Backlog.md の表示と Code ボタンを赤枠で強調">
+        <figcaption>fork が完成。リポジトリ名の下に「forked from MrLesk/Backlog.md」と出る。次は右側の <strong>Code</strong> ボタンへ</figcaption>
+      </figure>
+    </section>
+
+    <section id="create">
+      <h2 class="step"><span class="step-num">3</span>手順2：Codespace を作成する</h2>
+      <p>fork したリポジトリのページで緑の <strong>Code</strong> ボタンを押し、<strong>Codespaces</strong> タブに切り替える。</p>
+      <figure class="shot" style="max-width:240px;">
+        <img src="Image/backlog-md/05-code-button.png" alt="緑の Code ボタン">
+        <figcaption>緑の <strong>Code</strong> ボタン</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="Image/backlog-md/06-code-local-tab.png" alt="Code ボタンのメニュー。Local タブが開いている状態で、Codespaces タブを赤枠で強調">
+        <figcaption>最初は Local タブ（clone 用の URL）が開く。<strong>Codespaces</strong> タブをクリック</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="Image/backlog-md/07-codespaces-tab.png" alt="Codespaces タブ。Create codespace on main ボタンを赤枠で強調">
+        <figcaption><strong>Create codespace on main</strong> を押すと、ブラウザ上で VS Code が起動する</figcaption>
+      </figure>
+      <div class="callout tip">
+        <strong>💡 課金の表示</strong>
+        画面下部の「Codespace usage for this repository is paid for by &lt;自分のアカウント&gt;」は、利用時間が自分のアカウントの枠から消費されることを示す。使い終わったら 10章の手順で停止・削除する。
+      </div>
+    </section>
+
+    <section id="wait">
+      <h2 class="step"><span class="step-num">4</span>手順3：初期化を待つ</h2>
+      <p>VS Code が開くと、最初に「このフォルダー内のファイルの作成者を信頼しますか?」と聞かれる。ターミナルを使うために <strong>フォルダーを信頼して続行</strong> を押す。</p>
+      <figure class="shot">
+        <img src="Image/backlog-md/08-trust-dialog.png" alt="VS Code の信頼ダイアログ。フォルダーを信頼して続行ボタンを赤枠で強調">
+        <figcaption>自分で fork したリポジトリなので「フォルダーを信頼して続行」でよい</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="Image/backlog-md/09-codespace-opened.png" alt="Codespace の VS Code 画面。README のプレビューと下部のターミナルを赤枠で強調">
+        <figcaption>左にファイル一覧、中央に README、下にターミナル。以降の操作はこのターミナルで行う</figcaption>
+      </figure>
+      <p>ターミナルには作成ログが流れる。既定イメージは <code class="inline">package.json</code> を見つけると自動で <code class="inline">npm install</code> を走らせるので、終わるまで待つ（1〜2分）。</p>
+      <figure class="shot">
+        <img src="Image/backlog-md/10-creation-log-running.png" alt="作成ログ。Running npm install の行を赤枠で強調">
+        <figcaption>「Running 'npm install'...」の間は待つ。Node.js 20 が検出されるが、Backlog.md の起動には使わない</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="Image/backlog-md/11-creation-log-done.png" alt="作成ログの完了。Finished configuring codespace の行を赤枠で強調">
+        <figcaption>「Finished configuring codespace. Press any key to exit.」が出たら完了。「Running postCreateCommand」に ✖ が付くのは devcontainer を使っていないためで、問題ない</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="Image/backlog-md/12-terminal-ready.png" alt="bash ターミナル。プロンプト行を赤枠で強調">
+        <figcaption>キーを押すと bash のプロンプトになる。作業ディレクトリは <code class="inline">/workspaces/&lt;リポジトリ名&gt;</code>（clone 済み）</figcaption>
+      </figure>
+    </section>
+
+    <section id="bun">
+      <h2 class="step"><span class="step-num">5</span>手順4：Bun を入れてソースから起動する</h2>
+      <p>ターミナルで次の4つを順に実行する。</p>
+<pre><span class="prompt">$</span> curl -fsSL https://bun.sh/install | bash
+<span class="prompt">$</span> export PATH="$HOME/.bun/bin:$PATH"
+<span class="prompt">$</span> bun install
+<span class="prompt">$</span> bun run cli browser --no-open</pre>
+      <figure class="shot">
+        <img src="Image/backlog-md/13-install-bun-and-run.png" alt="ターミナルの実行結果。Bun のインストール、PATH の設定と bun install、bun run cli browser の各コマンドを赤枠で強調">
+        <figcaption>上から順に ① Bun のインストール ② PATH の設定と依存の取得 ③ ソースから Web UI を起動。「running at http://127.0.0.1:6420」が出れば成功</figcaption>
+      </figure>
+      <table>
+        <tr><th>コマンド</th><th>やっていること</th></tr>
+        <tr><td><code class="inline">curl -fsSL https://bun.sh/install | bash</code></td><td>Bun を <code class="inline">~/.bun/bin</code> に入れる。数十秒で終わる。<code class="inline">~/.bashrc</code> にも PATH が追記される</td></tr>
+        <tr><td><code class="inline">export PATH="$HOME/.bun/bin:$PATH"</code></td><td>いま開いているターミナルで <code class="inline">bun</code> を使えるようにする。新しいターミナルを開く場合は不要</td></tr>
+        <tr><td><code class="inline">bun install</code></td><td>依存パッケージを取得する（数秒）。<code class="inline">husky</code> が git の pre-commit フックを設定し、配布版バイナリ <code class="inline">backlog.md-linux-x64</code> も入るが、ソース実行には使わない</td></tr>
+        <tr><td><code class="inline">bun run cli browser --no-open</code></td><td><code class="inline">bun src/cli.ts browser --no-open</code> の短縮形。<strong>ソースコードをそのまま実行</strong>して Web UI を 6420 番ポートで起動する。<code class="inline">--no-open</code> はコンテナ内でブラウザを開こうとしないための指定</td></tr>
+      </table>
+      <div class="callout tip">
+        <strong>💡 ソースを書き換えたら</strong>
+        起動中のサーバーを Ctrl+C で止め、同じコマンドで起動し直すと変更が反映される。ビルドやトランスパイルの工程は無い。
+      </div>
+    </section>
+
+    <section id="webui">
+      <h2 class="step"><span class="step-num">6</span>手順5：Web UI をブラウザで開く</h2>
+      <p>サーバーはコンテナ内の 127.0.0.1:6420 で待ち受けている。Codespaces がこのポートを自動で検出し、<strong>ポート</strong> タブに転送先 URL が現れる。</p>
+      <figure class="shot">
+        <img src="Image/backlog-md/14-ports-tab.png" alt="ポートタブ。6420 番の行と転送されたアドレスを赤枠で強調">
+        <figcaption>「ポート」タブに 6420 が自動転送される。表示範囲は Private（自分だけが開ける）</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="Image/backlog-md/15-open-in-browser.png" alt="転送されたアドレスの横の地球儀アイコン（ブラウザーで開く）を赤枠で強調">
+        <figcaption>転送されたアドレスにマウスを乗せ、地球儀アイコン <strong>ブラウザーで開く</strong> をクリック</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="Image/backlog-md/16-kanban-board.png" alt="ブラウザで開いた Backlog.md の Kanban Board。URL は codespace名-6420.app.github.dev">
+        <figcaption>新しいタブで Kanban Board が開く。URL は <code class="inline">https://&lt;codespace名&gt;-6420.app.github.dev/</code> の形。表示されているタスクは Backlog.md プロジェクト自身の開発タスク</figcaption>
+      </figure>
+      <ul>
+        <li>ポートタブに 6420 が出ないときは、<strong>ポートの追加</strong> で 6420 を手動で追加する</li>
+        <li>URL を開いて GitHub のログインを求められたら、Codespace を作ったアカウントでログインする（Private のため本人しか開けない）</li>
+        <li>サーバーを止めるときは、ターミナルで Ctrl+C</li>
+      </ul>
+    </section>
+
+    <section id="commands">
+      <h2 class="step"><span class="step-num">7</span>よく使うコマンド</h2>
+      <p>すべてリポジトリのルート（<code class="inline">/workspaces/&lt;リポジトリ名&gt;</code>）で実行する。<code class="inline">bun run cli</code> の後ろに書いた引数は、そのまま <code class="inline">src/cli.ts</code> に渡る。</p>
+      <table>
+        <tr><th>目的</th><th>コマンド</th></tr>
+        <tr><td>バージョン確認</td><td><code class="inline">bun run cli --version</code></td></tr>
+        <tr><td>タスク一覧</td><td><code class="inline">bun run cli task list</code></td></tr>
+        <tr><td>タスク作成</td><td><code class="inline">bun run cli task create "タイトル" --ac "受け入れ条件"</code></td></tr>
+        <tr><td>ターミナルのかんばん</td><td><code class="inline">bun run cli board</code></td></tr>
+        <tr><td>Web UI</td><td><code class="inline">bun run cli browser --no-open</code>（ポートを変えるなら <code class="inline">--port 8080</code>）</td></tr>
+        <tr><td>検索</td><td><code class="inline">bun run cli search "キーワード"</code></td></tr>
+        <tr><td>全テスト</td><td><code class="inline">bun run test</code>（数分かかる）</td></tr>
+        <tr><td>テストを1ファイルだけ</td><td><code class="inline">bun test --timeout=10000 src/test/&lt;ファイル&gt;.test.ts</code></td></tr>
+        <tr><td>整形・lint（Biome）</td><td><code class="inline">bun run check</code></td></tr>
+        <tr><td>型チェック</td><td><code class="inline">bun run check:types</code></td></tr>
+      </table>
+      <div class="callout tip">
+        <strong>💡 別のディレクトリを対象にする</strong>
+        CLI はカレントディレクトリの <code class="inline">backlog/</code> を操作する。リポジトリのルートで実行すると Backlog.md 自身の開発タスクが対象になる。練習用の別プロジェクトに対して使うときは <code class="inline">--cwd &lt;パス&gt;</code> を付ける（例：<code class="inline">bun run cli task list --cwd ~/demo</code>）。
+      </div>
+    </section>
+
+    <section id="claude">
+      <h2 class="step"><span class="step-num">8</span>Claude Code と組み合わせる</h2>
+      <p>同じ Codespace のターミナルに Claude Code を入れれば、ソースの読み解きや改良をブラウザだけで進められる。</p>
+<pre><span class="prompt">$</span> curl -fsSL https://claude.ai/install.sh | bash
+<span class="prompt">$</span> claude</pre>
+      <ul>
+        <li>初回の <code class="inline">claude</code> 実行時、Codespace にはブラウザが無いので、ターミナルに表示される <strong>ログイン URL を手元のブラウザで開き</strong>、表示されたコードをターミナルに貼り付ける。貼り付けが効かないときは <code class="inline">claude auth login</code> を使う</li>
+        <li>毎回ログインしたくない場合は、手元の PC で <code class="inline">claude setup-token</code> を実行して作ったトークンを、GitHub の <strong>Codespaces secrets</strong> に <code class="inline">CLAUDE_CODE_OAUTH_TOKEN</code> という名前で登録しておく（Pro / Max / Team / Enterprise プラン向け）</li>
+        <li>Backlog.md を MCP 経由で使う場合：<code class="inline">claude mcp add backlog-dev -- bun /workspaces/&lt;リポジトリ名&gt;/src/cli.ts mcp start</code></li>
+      </ul>
+      <div class="callout warn">
+        <strong>⚠️ リポジトリ付属の CLAUDE.md に注意</strong>
+        上流の <code class="inline">CLAUDE.md</code> / <code class="inline">AGENTS.md</code> には、Backlog.md 開発チーム向けの運用ルール（MANIFESTO.md を先に読む、判断に迷ったら作者に聞く、など）が書かれている。ハンズオンの演習では、講師が用意した CLAUDE.md に差し替えるか、自分の fork で内容を調整してから Claude Code を使う。
+      </div>
+    </section>
+
+    <section id="trouble">
+      <h2 class="step"><span class="step-num">9</span>トラブルシューティング</h2>
+      <table>
+        <tr><th>症状</th><th>対処</th></tr>
+        <tr><td><code class="inline">bun: command not found</code></td><td><code class="inline">export PATH="$HOME/.bun/bin:$PATH"</code> を実行する。または新しいターミナル（＋ボタン）を開く</td></tr>
+        <tr><td>ポートタブに 6420 が出ない</td><td>サーバーが起動しているか確認（「running at http://127.0.0.1:6420」の表示）。出ていれば「ポートの追加」で 6420 を追加する</td></tr>
+        <tr><td>URL を開くと GitHub のログイン画面や 404 になる</td><td>Codespace を作ったアカウントでログインしているか確認する。表示範囲が Private のため、他の人には開けない</td></tr>
+        <tr><td>ポート 6420 が使用中と言われる</td><td>前回のサーバーが残っている。<code class="inline">bun run cli browser --no-open --port 6421</code> のように別ポートで起動するか、<code class="inline">pkill -f "src/cli.ts browser"</code> で止める</td></tr>
+        <tr><td>しばらく放置したら Codespace が止まった</td><td>アイドル状態が続くと自動停止する（既定 30分）。再開すれば Bun も作業内容も残っている。消えるのはコンテナを rebuild したときだけ</td></tr>
+        <tr><td><code class="inline">bun install</code> で husky のエラー</td><td>git リポジトリの外で実行している。<code class="inline">cd /workspaces/&lt;リポジトリ名&gt;</code> してから実行する</td></tr>
+      </table>
+    </section>
+
+    <section id="cleanup">
+      <h2 class="step"><span class="step-num">10</span>後片付け：Codespace の停止・削除</h2>
+      <ul>
+        <li>作業を中断するときは、ブラウザのタブを閉じるだけでよい（しばらくすると自動停止する）。手動で止めるなら、画面左下の <strong>Codespaces</strong> メニューから「Stop Current Codespace」</li>
+        <li>使い終わったら <a href="https://github.com/codespaces" target="_blank" rel="noopener">github.com/codespaces</a> を開き、該当の Codespace の「…」から <strong>Delete</strong> する。停止中の Codespace もストレージ分の枠を消費する</li>
+        <li>fork したリポジトリは残しておいて構わない。不要なら Settings の最下部「Delete this repository」から削除する</li>
+      </ul>
+      <div class="callout ok">
+        <strong>✅ ここまでできれば</strong>
+        ローカル PC に何も入れずに、fork したソースコードを Codespaces 上で動かし、ブラウザから Web UI を操作できるようになった。あとはハンズオン本編で、Claude Code を使ってこのソースコードを読み解き、改良していく。
+      </div>
+    </section>
+
+    <footer>
+      <p>Claude Code ハンズオン 補足資料 — Backlog.md を GitHub Codespaces で動かす<br>Copyright © AI-Driven Development Study Group</p>
+      <p><a href="index.html">コースポータル</a></p>
+    </footer>
+  </main>
+</div>
+</body>
+</html>
