@@ -1194,10 +1194,6 @@ BACKLOG_LANG=ja bun run cli --help
 
 * テストが失敗したら、エラー出力をローカルの Claude Code に貼り付けて直し、再度 push → Codespace で `git pull` して確認する
 
-#### 4-8. オプション課題
-
-* 余裕があれば Web UI（`src/web/`）の表示言語も `BACKLOG_LANG` で切り替えられるようにする — 「Web UI のかんばんの列名とボタンも日本語化して」
-
 ### 5. コネクタ（6分）
 
 #### 5-1. コネクタとは（3分）
