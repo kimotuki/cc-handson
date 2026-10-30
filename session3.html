@@ -179,6 +179,7 @@
       <li style="list-style:none;"><a href="#appendix-context">付録A. コンテキスト管理</a></li>
       <li style="list-style:none;"><a href="#appendix-worktree">付録B. git worktree で並行開発</a></li>
       <li style="list-style:none;"><a href="#appendix">付録C. Claude Code の Projects</a></li>
+      <li style="list-style:none;"><a href="#appendix-autonomous">付録D. Backlog.md と Claude Code による自律開発</a></li>
     </ol>
   </nav>
 
@@ -877,6 +878,137 @@ paths:
         <li><a href="https://code.claude.com/docs/ja/claude-projects" target="_blank" rel="noopener">Claude Code ドキュメント — Projects</a></li>
         <li><a href="https://claude.com/blog/projects-redesigned" target="_blank" rel="noopener">Anthropic 公式ブログ — Projects, redesigned</a></li>
         <li><a href="https://ledge.ai/articles/claude_projects_redesign" target="_blank" rel="noopener">Ledge.ai — Anthropic、Claude「Projects」を再設計　資料・会話をまとめる作業空間から、Claude Codeを並列指揮する“司令塔”へ</a></li>
+      </ul>
+    </section>
+
+    <section id="appendix-autonomous">
+      <h2 class="step"><span class="step-num">付</span>付録D：Backlog.md と Claude Code による自律開発 — 要件からタスクを切り、エージェントが自分で取って進める</h2>
+      <p>要件を Backlog のタスクに分解し、Claude Code がタスクを1件ずつ取って実装し、Backlog の状態を自分で更新しながら進める。人が見るのは「分解されたタスク」と「できあがった PR」の2か所だけ、という開発のかたち。</p>
+      <figure class="shot">
+        <img src="Image/autonomous-dev.png" alt="Backlog.md と Claude Code による自律開発の全体像 — 要件を Claude Code がタスクに分解して Backlog に登録し、自律ループがタスクごとに新しいセッションで取って計画・実装・テスト・受け入れ条件の確認・Done を繰り返す。人は分解結果と PR をレビューする">
+        <figcaption>① 要件をタスクに分解 → ② ループがタスクごとに取って Done まで進める → ③ 人は分解結果と PR だけを見る</figcaption>
+      </figure>
+
+      <h3>D-1. 全体像</h3>
+      <ol>
+        <li><strong>要件を書く</strong>（人）：「〇〇できるようにする」程度でよい</li>
+        <li><strong>タスクに分解する</strong>（Claude Code）：1セッションで終わる粒度に切り、受け入れ条件を書き、順序があるものは依存関係（<code class="inline">--dep</code>）で表して Backlog に登録する</li>
+        <li><strong>分解結果をレビューする</strong>（人）：粒度・抜け・順序を直す。ここが最初のレビュー点</li>
+        <li><strong>自律ループ</strong>（Claude Code）：To Do を1件取って In Progress にし、計画を書き、実装してテストし、受け入れ条件を確認して Done にする。これをタスクが無くなるまで繰り返す</li>
+        <li><strong>PR をレビューする</strong>（人）：2つ目のレビュー点。問題があれば Backlog にタスクを足してもう一度ループを回す</li>
+      </ol>
+
+      <h3>D-2. Backlog.md 側の仕組み</h3>
+      <p>Backlog.md はエージェント向けの手順書を同梱していて、<code class="inline">backlog instructions overview</code>（ソースから動かすときは <code class="inline">bun run cli instructions overview</code>）で読める。内容は task-creation（分解のしかた）・task-execution（取ってから実装まで）・task-finalization（完了判定）の3つ。</p>
+      <table>
+        <tr><th>段階</th><th>コマンド</th><th>意味</th></tr>
+        <tr><td>取る</td><td><code class="inline">backlog task edit &lt;id&gt; -s "In Progress" -a @claude</code></td><td>状態と担当を更新。かんばんで「誰が何をしているか」が見える</td></tr>
+        <tr><td>計画</td><td><code class="inline">backlog task edit &lt;id&gt; --plan "1. … 2. …"</code></td><td>実装前に計画をタスクへ記録する（計画の記録先を Backlog に一本化）</td></tr>
+        <tr><td>進捗</td><td><code class="inline">backlog task edit &lt;id&gt; --append-notes "…"</code></td><td>分かったこと・決めたことを残す</td></tr>
+        <tr><td>確認</td><td><code class="inline">backlog task edit &lt;id&gt; --check-ac 1 --check-dod 1</code></td><td>受け入れ条件・Definition of Done を根拠つきでチェック</td></tr>
+        <tr><td>完了</td><td><code class="inline">backlog task edit &lt;id&gt; --final-summary "…" -s Done</code></td><td>何を変えたか・検証結果・残課題をまとめて Done にする</td></tr>
+        <tr><td>次を選ぶ</td><td><code class="inline">backlog task list -s "To Do" --json</code></td><td>JSON で一覧し、<code class="inline">backlog task &lt;id&gt; --json</code> の <code class="inline">isReady</code> で依存が解決済みかを見る</td></tr>
+      </table>
+      <ul>
+        <li>タスクの状態・計画・メモはすべて Markdown ファイル（<code class="inline">backlog/tasks/</code>）に残るので、途中でセッションが切れても別のセッションが続きから取れる</li>
+        <li>同梱の手順書は「重要な判断は承認を待て」「フォローアップのタスクを勝手に作るな」と書いている。自律で回すときは、どこまで承認なしで進めてよいかを CLAUDE.md に明示する（D-4 の例）</li>
+      </ul>
+
+      <h3>D-3. ループの回し方 — 4つの方式</h3>
+      <table>
+        <tr><th>方式</th><th>仕組み</th><th>向く場面</th><th>注意点</th></tr>
+        <tr><td><code class="inline">/goal</code>（Section 2 付録A）</td><td>「To Do が 0 件になるまで」を条件に1セッションで自動継続</td><td>まず試すとき。タスク2〜5件</td><td>1つのコンテキストで全部こなすので肥大化する。上限ターンを条件に入れる</td></tr>
+        <tr><td><strong>ヘッドレスのシェルループ</strong>（D-4）</td><td>タスクごとに <code class="inline">claude -p</code> を新しいセッションで実行</td><td>本番運用。「1タスク1セッション」で文脈が常に新鮮</td><td>Bun のある Codespace や CI で動かす。<code class="inline">--allowedTools</code> でツールを絞る</td></tr>
+        <tr><td>Agent Teams（Section 2 付録B）</td><td>リードが Backlog を読み、タスクごとにチームメイトに割り当てて並列</td><td>依存の無いタスクを同時に進めたいとき</td><td>共有タスクリストと Backlog の二重管理にしない（Backlog を正にする）。worktree（付録B）で作業場所を分ける</td></tr>
+        <tr><td>Claude Code の Projects（付録C）</td><td>コーディネーターがタスクごとにクラウドのスレッドを立て、PR まで進める</td><td>大きな要件を並列で、PC を閉じても進めたいとき</td><td>Pro / Max のベータ。Project 指示に backlog コマンドでの状態更新を書く</td></tr>
+      </table>
+
+      <h3>D-4. 演習：ヘッドレスのシェルループで自律実行する</h3>
+      <div class="callout warn">
+        <strong>⚠️ Codespace のターミナルで Claude Code を動かす</strong>
+        テストを回しながら進めるため、Bun のある環境が必要。本編の「コードの修正はローカルの Claude Code で」の例外。
+      </div>
+      <h4>準備（Codespace で）</h4>
+      <ol>
+        <li>Claude Code を入れてログインする。初回は端末に出る URL を手元のブラウザで開き、表示されたコードを貼り付ける
+<pre><span class="prompt">$</span> curl -fsSL https://claude.ai/install.sh | bash
+<span class="prompt">$</span> claude      <span class="comment"># ログインできたら /exit で抜ける</span></pre>
+        </li>
+        <li>作業用ブランチを切り、上流の CLAUDE.md / AGENTS.md を消して、自律運転のルールを書いた CLAUDE.md を置く
+<pre><span class="prompt">$</span> git switch -c auto/overdue
+<span class="prompt">$</span> rm -f CLAUDE.md AGENTS.md
+<span class="prompt">$</span> cat &gt; CLAUDE.md &lt;&lt;'EOF'
+# 自律開発のルール
+- backlog コマンドは `bun run cli` で実行する。作業前に `bun run cli instructions overview` を読む
+- タスクは1件ずつ。取ったら `-s "In Progress" -a @claude`、計画を `--plan` に書いてから実装する
+- `bun run test` が通るまで Done にしない。通らなければ原因を `--append-notes` に書き、In Progress のまま終了する
+- 受け入れ条件を超える変更はしない。足りない作業は `--append-notes` に書き、新しいタスクは作らない
+- この演習中は、計画の承認を人に求めずに進めてよい
+EOF</pre>
+        </li>
+      </ol>
+      <h4>要件からタスクを作らせる（対話で）</h4>
+<pre><span class="prompt">$</span> claude</pre>
+      <div class="prompt-box">
+        <span class="label">あなたの指示</span>
+        <p>次の要件を、1件ずつ独立して実装できる小さなタスクに分解して Backlog に登録して。<br>
+各タスクに受け入れ条件を書き、順序があるものは --dep で依存関係を付けて。登録は bun run cli task create を使って。<br>
+<br>
+要件：backlog task list に --overdue オプションを追加し、期限（due date）を過ぎた未完了タスクだけを表示できるようにする。<br>
+--help に説明を載せ、テストを src/test/ に追加し、CLI-INSTRUCTIONS.md にも使い方を追記する。</p>
+      </div>
+      <ul>
+        <li>分解結果を人がレビューする：<code class="inline">bun run cli task list -s "To Do" --plain</code> で一覧し、<code class="inline">bun run cli task &lt;id&gt; --plain</code> で受け入れ条件を読む。粒度や順序が気になれば <code class="inline">bun run cli task edit</code> で直す（3件程度に分かれていれば十分）</li>
+      </ul>
+      <h4>ループスクリプト</h4>
+      <p>リポジトリ直下に <code class="inline">auto-dev.sh</code> を置く:</p>
+<pre>#!/usr/bin/env bash
+<span class="comment"># Backlog の To Do を順に取り、タスクごとに新しい Claude Code セッションで完了させる</span>
+set -euo pipefail
+MAX=${1:-5}        <span class="comment"># 安全のため、1回の実行で扱う最大件数</span>
+ids=$(bun run cli task list -s "To Do" --json | jq -r '.tasks[].id' | head -n "$MAX")
+[ -z "$ids" ] &amp;&amp; { echo "To Do はありません"; exit 0; }
+for id in $ids; do
+  if ! bun run cli task "$id" --json | jq -e '.task.isReady' &gt;/dev/null; then
+    echo "=== $id は依存が未完了なのでスキップ ==="; continue
+  fi
+  echo "=== $id を開始 ==="
+  claude -p "Backlog のタスク $id を担当して。bun run cli instructions task-execution と task-finalization の手順に従うこと。計画を --plan に書いてから実装し、bun run test が通ったら受け入れ条件を --check-ac で確認し、--final-summary を書いて -s Done にして。テストが通らなければ原因を --append-notes に書き、In Progress のまま終了して。" \
+    --allowedTools "Read,Edit,Write,Glob,Grep,Bash(bun:*),Bash(git:*)"
+  bun run cli task "$id" --plain | head -5
+done
+bun run cli board export auto-dev-report.md --force
+echo "完了。auto-dev-report.md とかんばんを確認してください"</pre>
+<pre><span class="prompt">$</span> chmod +x auto-dev.sh
+<span class="prompt">$</span> ./auto-dev.sh 3</pre>
+      <ul>
+        <li>別のターミナルで <code class="inline">bun run cli browser --no-open</code> を起動しておくと、カードが To Do → In Progress → Done と動くのをブラウザで見られる</li>
+        <li>1タスクごとに <code class="inline">claude -p</code> が <strong>新しいセッション</strong> で立ち上がる。前のタスクの会話は持ち越されず、必要な文脈はすべて Backlog のタスク（計画・メモ）から読む。これが「Backlog を正にする」利点</li>
+        <li><code class="inline">--allowedTools</code> で使えるツールを絞っているので、Claude が許可外の操作（<code class="inline">rm</code> や <code class="inline">gh</code> など）を試みても実行されない</li>
+      </ul>
+      <h4>終わったら（人のレビュー）</h4>
+<pre><span class="prompt">$</span> bun run cli task list --plain          <span class="comment"># 全部 Done になったか。In Progress が残っていれば --append-notes の理由を読む</span>
+<span class="prompt">$</span> git diff main --stat                   <span class="comment"># 変更ファイルの一覧</span>
+<span class="prompt">$</span> bun run test                           <span class="comment"># 最終確認</span>
+<span class="prompt">$</span> git push -u origin auto/overdue        <span class="comment"># 自分の fork に push し、GitHub で PR を作ってレビューする</span></pre>
+      <ul>
+        <li>失敗したタスクは、メモに書かれた原因を読んで受け入れ条件を直すか、タスクを分割してから <code class="inline">./auto-dev.sh</code> をもう一度回す</li>
+      </ul>
+
+      <h3>D-5. 運用のコツ</h3>
+      <ul>
+        <li><strong>分解の質がすべて</strong>：1セッションで終わる粒度、検証できる受け入れ条件、依存関係。分解結果のレビューに時間を使う</li>
+        <li><strong>歯止めを入れる</strong>：1回の実行で扱う件数（<code class="inline">MAX</code>）、<code class="inline">--allowedTools</code>、作業ブランチの分離、PR 必須。<code class="inline">--dangerously-skip-permissions</code> は使わない</li>
+        <li><strong>状態更新の忘れを機械的に検知する</strong>：Stop フック（Section 2 8章）で <code class="inline">bun run cli task list -s "In Progress" --plain</code> を実行し、担当が @claude のまま残っていれば警告する</li>
+        <li><strong>人の仕事は上流と下流に寄せる</strong>：要件と分解のレビュー、PR のレビュー。途中経過はかんばんと <code class="inline">--append-notes</code> で後から追える</li>
+        <li><strong>Issue との住み分け</strong>：2章の Issue 起点フローは人向けの入口、Backlog はエージェント向けの作業キュー。Issue 1件を Backlog の複数タスクに分解する関係にすると両立する</li>
+        <li><strong>大きくなったら方式を変える</strong>：タスクが増えて並列にしたいなら Agent Teams や Projects（D-3）。ただし Backlog を唯一の状態管理にする原則は変えない</li>
+      </ul>
+      <h4>参考リンク</h4>
+      <ul>
+        <li><a href="https://github.com/MrLesk/Backlog.md#working-with-ai-agents" target="_blank" rel="noopener">Backlog.md — README「Working with AI agents」</a></li>
+        <li><a href="https://github.com/MrLesk/Backlog.md/blob/main/CLI-INSTRUCTIONS.md" target="_blank" rel="noopener">Backlog.md — CLI-INSTRUCTIONS.md</a></li>
+        <li><a href="https://code.claude.com/docs/en/headless" target="_blank" rel="noopener">Claude Code ドキュメント — ヘッドレスモード</a></li>
       </ul>
     </section>
 
